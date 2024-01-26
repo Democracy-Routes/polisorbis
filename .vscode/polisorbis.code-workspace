@@ -1,7 +1,7 @@
 {
 	"folders": [
 		{
-      "name": "polis-root",
+      "name": "polisorbis-root",
 			"path": ".."
 		},
     {
@@ -35,7 +35,7 @@
   ],
   "settings": {
     "jest.disabledWorkspaceFolders": [
-      "polis-root",
+      "polisorbis-root",
       "client-admin",
       "client-participation",
       "client-report",
