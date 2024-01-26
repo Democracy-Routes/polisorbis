@@ -1,0 +1,7 @@
+{
+    "jest.jestCommandLine": "npx jest --forceExit test",
+    "jest.autoRun": {
+      "watch": false,
+      "onSave": "test-src-file"
+    }
+}

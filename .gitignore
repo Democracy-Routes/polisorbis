@@ -1,0 +1,4 @@
+.env
+prod.env
+.vscode/settings.json
+build/
