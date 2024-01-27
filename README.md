@@ -1,8 +1,6 @@
 ![PolisOrbis logo](docs/polisorbis-logo.png)
 # PolisOrbis
-This repo is a fork of the [Polis project](https://github.com/compdemocracy/polis) made by [Copernicani association](https://copernicani.it).
-
-PolisOrbis is part of the Orbis project and has received funding from the European Union’s Horizon Europe Framework Programme under grant agreement No 101094765.
+This repo is maintained by the [Copernicani association](https://copernicani.it) and contains a fork of the Polis project 
 
 The objectives of PolisOrbis is to improve the Polis code in order to:
 
@@ -19,6 +17,8 @@ PolisOrbis rewrited a significant portion of two client components of Polis:
 
 In order to implement such improvements, some minor changes where made also to other Polis components
 
+
+
 ## 🎈 🪁 Start here! 🪁 🎈
 
 If you're interested in using or contributing to PolisOrbis, please see the following:
@@ -27,6 +27,7 @@ If you're interested in using or contributing to PolisOrbis, please see the foll
 - [**PolisOrbis documentation portal**](https://gitlab.com/copernicani/polisorbis/doc): here you find the service deployment manual and the technical documentation
 - [**reference deployment**](https://polisorbis.copernicani.it): the reference deployment of the PolisOrbis codebase for demo purposes
 - [**issues**](https://gitlab.com/copernicani/polisorbis/codebase/-/issues): for well-defined technical issues
+- [**the original Polis project**](https://github.com/compdemocracy/polis)
 
 
 If you're trying to set up a PolisOrbis development environment, then please read the rest of this document 👇 ⬇️ 👇
@@ -204,4 +205,7 @@ If this happens to you, try
 ## ©️  License
 
 [AGPLv3 with additional permission under section 7](/LICENSE)
+
+
+PolisOrbis is part of the Orbis project and has received funding from the European Union’s Horizon Europe Framework Programme under grant agreement No 101094765.
 
