@@ -7,10 +7,3 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [unreleased]
 
-### Changed
-- Improved docs for configuring comment translation. [`#319`][]
-
-### Added
-- Added support for configuring comment translation credentials via base64-encoded string, stored in `GOOGLE_CREDENTIALS_BASE64` envvar. [`#319`][]
-
-   [`#319`]: https://github.com/pol-is/polisServer/issues/319
