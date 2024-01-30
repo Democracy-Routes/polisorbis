@@ -1,20 +1,12 @@
 # ![PolisOrbis](docs/polisorbis-logo.png)
-This repo is maintained by the [Copernicani association](https://copernicani.it) and it is a research effort built on a fork of the Polis project developed by Computational Democracy Project.
+This repo is maintained by the Copernicani association and it is a research effort built on a fork of the Polis project developed by Computational Democracy Project.
 
-The objectives of PolisOrbis is to improve the Polis project in order to:
+To achieve the [PolisOrbis objectives](https://doc.polisorbis.copernicani.it/overview/#why-polisorbis), we have rewritten a substantial portion of the code for two key components of Polis: 
 
-- allowing safe while-label deployment and use of PolisOrbis service in Europe;
-- ensure GDPR compliance;
-- reducing (or making optional) any dependency on OTT services (Meta, X, etc) avoiding any user profiling by external entities;
-- implement Open ID Connect authentication;
-- experiment secure and anonymous conversation leveraging EUDI wallet and SSI technologies;
-- improve deployment documentation to help any organization to setup and manage a service based on PolisOrbis
-
-In order to implement such improvements, PolisOrbis rewrited a significant portion of two client components of Polis:
 - client-admin
 - client-participation
 
-some minor changes were made also to other Polis components.
+Furthermore, minor adjustments have been made to other components throughout the Polis system.
 
 PolisOrbis tries to remain as much as possible aligned with the original Polis project methods, architecture and developments.
 
@@ -22,27 +14,22 @@ PolisOrbis tries to remain as much as possible aligned with the original Polis p
 
 If you're interested in using or contributing to PolisOrbis, please see the following:
 - [**PolisOrbis documentation portal**](https://gitlab.com/copernicani/polisorbis/doc): here you find the service deployment manual and the technical documentation
-- [**PolisOrbis Reference deployment**](https://polisorbis.copernicani.it): the reference deployment of the PolisOrbis service maintained by Copernicani
-- [**PolisOrbis Demo site**](https://demo.polisorbis.copernicani.it): a demo site that bypass some authentication and security options  
+- [**PolisOrbis Reference deployment**](): the reference deployment of the PolisOrbis service maintained by Copernicani
+- [**PolisOrbis Demo site**](): a demo site that bypass some authentication and security options  
 - [**PolisOrbis issues**](https://gitlab.com/copernicani/polisorbis/codebase/-/issues): for well-defined technical issues
 - [**the Orbis project**](https://orbis-project.eu/): The EU Umbrella for Augmenting participation, co-creation, trust and transparency in Deliberative Democracy at all scales
 - [**the original Polis project**](https://github.com/compdemocracy/polis): we started from this great project, that is maintained by [the The Computational Democracy community] (https://compdemocracy.org/) and can be used for any purpose that does not require GDPR compliance or strong security.
 
-For a detailed methods paper, see [Polis: Scaling Deliberation by Mapping High Dimensional Opinion Spaces](https://www.e-revistes.uji.es/index.php/recerca/article/view/5516/6558).
+If you're trying to set up a PolisOrbis development environment, then please read the rest of this document
 
-
-If you're trying to set up a PolisOrbis development environment, then please read the rest of this document 👇 ⬇️ 👇
-
-
-
-## ⚡ Running PolisOrbis
+## ⚡ Running PolisOrbis in your development environment
 PolisOrbis comes with Docker infrastructure for running a complete system.
 
-PolisOrbis deployment requires six specialized docker images plus a database and reverse proxy frontend (e.g. nginx). All docker runtime sholud be aorkestrated as in the following image:
+PolisOrbis deployment requires six specialized docker images plus a database and reverse proxy frontend (e.g. nginx). All docker runtime should be orchestrated as in the following image:
 
-![architecture](docker-architecture.png)
+![architecture](docs/docker-architecture.png)
 
-As a consequence, the only prerequisite to running PolisOrbis is that you install a recent `docker` (and Docker Desktop if you are on Mac or Windows).
+To run PolisOrbis you have to install a recent `docker` (and Docker Desktop if you are on Mac or Windows).
 
 If you aren't able to use Docker for some reason, the various Dockerfiles found in subdirectories (`math`, `server`, `*-client`) of this repository _can_ be used as a reference for how you'd set up a system manually.
 
@@ -57,12 +44,6 @@ make start
 That should run docker compose with the development overlay (see below) and default configuration values.
 
 Visit `localhost:80/createuser` and get started.
-
-### Docker & Docker Compose
-
-Newer versions of `docker` have `docker compose` built in as a subcommand.
-If you are using an older version (and don't want to upgrade), you'll need to separately install `docker-compose`, and use that instead in the instructions that follow.
-Note however that the newer `docker compose` command is required to [take advantage of Docker Swarm](/docs/scaling#docker-compose-over-docker-swarm) as a scaling option.
 
 Many convenient commands are found in the Makefile. Run `make help` for a list of available commands.
 
