@@ -13,7 +13,7 @@ PolisOrbis tries to remain as much as possible aligned with the original Polis p
 ## 🎈 🪁 Start here! 🪁 🎈
 
 If you're interested in using or contributing to PolisOrbis, please see the following:
-- [**PolisOrbis documentation portal**](https://gitlab.com/copernicani/polisorbis/doc): here you find the service deployment manual and the technical documentation
+- [**PolisOrbis documentation portal**](https://doc.polisorbis.copernicani.it/): here you find the service deployment manual and the technical documentation
 - [**PolisOrbis Reference deployment**](): the reference deployment of the PolisOrbis service maintained by Copernicani
 - [**PolisOrbis Demo site**](): a demo site that bypass some authentication and security options  
 - [**PolisOrbis issues**](https://gitlab.com/copernicani/polisorbis/codebase/-/issues): for well-defined technical issues
