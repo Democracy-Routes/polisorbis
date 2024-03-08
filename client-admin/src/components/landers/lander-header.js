@@ -5,6 +5,8 @@ import { Flex, Box, jsx } from 'theme-ui'
 import { Link } from 'react-router-dom'
 import Logomark from '../framework/logomark'
 
+const pTitle = process.env.P_TITLE; 
+
 class Header extends Component {
   render() {
     return (
@@ -23,7 +25,7 @@ class Header extends Component {
                 style={{ marginRight: 10, position: 'relative', top: 6 }}
                 fill={'#03a9f4'}
               />
-              Polis
+              {pTitle}
             </Link>
           </Box>
           <Box>

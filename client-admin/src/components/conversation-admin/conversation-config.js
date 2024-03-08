@@ -10,7 +10,7 @@ import {
 } from '../../actions'
 import ComponentHelpers from '../../util/component-helpers'
 import NoPermission from './no-permission'
-import { Heading, Box, Text, jsx } from 'theme-ui'
+import { Heading, Box, Text, Flex, jsx } from 'theme-ui'
 import emoji from 'react-easy-emoji'
 
 import { CheckboxField } from './CheckboxField'
@@ -166,13 +166,84 @@ class ConversationConfig extends React.Component {
           notifications when there are new comments to vote on.
         </CheckboxField>
 
-        <CheckboxField field="auth_opt_fb" label="Facebook login prompt">
+        <CheckboxField
+          sx={{ mt: [3] }}
+          field="required_certificate"
+          label="Request certificate">
+          Request voting certificate
+
+          <CheckboxField
+            field="certificate_anonymous"
+            label="Anonymous certificate">
+            Anonymous
+          </CheckboxField>
+          <CheckboxField
+            field="certificate_identified"
+            label="Identified certificate">
+            Identified
+          </CheckboxField>
+          <Flex sx={{ gap: [3] }}>
+            <CheckboxField
+              field="certificate_endpoint"
+              label="Authorized by endpoint certificate">
+              Authorized by endpoint
+            </CheckboxField>
+            <input
+              ref={(c) => (this.certificateEndpoint = c)}
+              sx={{
+                fontFamily: 'body',
+                fontSize: [2],
+                width: '9em',
+                borderRadius: 2,
+                border: '1px solid',
+                borderColor: 'mediumGray'
+              }}
+              data-test-id="certificateEndpoint"
+              onBlur={this.handleStringValueChange('certificateEndpoint').bind(this)}
+              onChange={this.handleConfigInputTyping('certificateEndpoint').bind(this)}
+              defaultValue={this.props.zid_metadata.certificateEndpoint}
+            />
+          </Flex>
+        </CheckboxField>
+
+        <CheckboxField
+          sx={{ mt: [3] }}
+          field="auth_with_openid"
+          label="Auth with OpenId">
+          Login with Open Id Connect
+
+          <Flex sx={{ gap: [3] }}>
+            <Text>
+              Identity provider
+            </Text>
+            <input
+              ref={(c) => (this.identityProvider = c)}
+              sx={{
+                fontFamily: 'body',
+                fontSize: [2],
+                width: '9em',
+                borderRadius: 2,
+                border: '1px solid',
+                borderColor: 'mediumGray'
+              }}
+              data-test-id="identityProvider"
+              onBlur={this.handleStringValueChange('identityProvider').bind(this)}
+              onChange={this.handleConfigInputTyping('identityProvider').bind(this)}
+              defaultValue={this.props.zid_metadata.identityProvider}
+            />
+          </Flex>
+          
+        </CheckboxField>
+        
+        {/* <CheckboxField field="auth_opt_fb" label="Facebook login prompt">
           Show Facebook login prompt
         </CheckboxField>
 
         <CheckboxField field="auth_opt_tw" label="Twitter login prompt">
           Show Twitter login prompt
-        </CheckboxField>
+        </CheckboxField> */}
+
+        
 
         <Heading
           as="h6"
@@ -190,14 +261,12 @@ class ConversationConfig extends React.Component {
 
         <CheckboxField
           field="auth_needed_to_write"
-          label="Require Auth to Comment">
-          Participants cannot submit comments without first connecting either
-          Facebook or Twitter
+          label="Require Certificate to Comment">
+          Participants cannot submit comments without voting certificate
         </CheckboxField>
 
-        <CheckboxField field="auth_needed_to_vote" label="Require Auth to Vote">
-          Participants cannot vote without first connecting either Facebook or
-          Twitter
+        <CheckboxField field="cert_needed_to_write" label="Require Identification to Comment">
+          Participants cannot submit comments without identification (login or voting certificate)
         </CheckboxField>
       </Box>
     )

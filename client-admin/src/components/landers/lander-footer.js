@@ -4,6 +4,9 @@ import { Box, Link, Heading, jsx } from 'theme-ui'
 
 import emoji from 'react-easy-emoji'
 
+const tosUrl = process.env.P_TOS_URL;
+const privacyUrl = process.env.P_PRIVACY_POLICY_URL;
+
 class Header extends Component {
   render() {
     return (
@@ -18,8 +21,8 @@ class Header extends Component {
           {emoji('🇺🇸')}, with contributions from around the {emoji('🌍🌏🌎')}
         </Box>
         <Box sx={{ mb: [2, null, 3] }}>
-          © {new Date().getFullYear()} The Authors <Link href="tos">TOS</Link>{' '}
-          <Link href="privacy">Privacy</Link>
+          © {new Date().getFullYear()} The Authors <Link href={tosUrl}>TOS</Link>{' '}
+          <Link href={privacyUrl}>Privacy</Link>
         </Box>
       </Box>
     )

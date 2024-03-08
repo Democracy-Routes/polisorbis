@@ -132,7 +132,11 @@ class App extends React.Component {
       <>
         <Switch>
           <Redirect from="/:url*(/+)" to={location.pathname.slice(0, -1)} />
-          <Route exact path="/home" component={Home} />
+          <Route 
+            exact 
+            path="/home" 
+            component={Home} 
+          />
           <Route
             exact
             path="/signin"

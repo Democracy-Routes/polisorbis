@@ -32,7 +32,7 @@ export const CheckboxField = ({
   }
 
   return (
-    <Flex sx={{ alignItems: 'flex-start', mb: [3] }}>
+    <Flex sx={{ alignItems: 'flex-start', mb: [2] }}>
       <Box sx={{ flexShrink: 0, position: 'relative', top: -0.5 }}>
         <input
           type="checkbox"

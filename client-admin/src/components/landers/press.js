@@ -1,7 +1,7 @@
 import React from 'react'
 import { Box, Link, Heading } from 'theme-ui'
 
-const Press = () => {
+const ReadPress = () => {
   return (
     <Box>
       <Heading
@@ -57,4 +57,4 @@ const Press = () => {
   )
 }
 
-export default Press
+export default ReadPress

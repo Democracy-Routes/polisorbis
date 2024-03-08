@@ -127,7 +127,7 @@ module.exports = (env, options) => {
         templateParameters: {
           versionString: pkg.version,
           fbAppId: fbAppId,
-          gaTrackingId: gaTrackingId,
+          gaTrackingId: gaTrackingId
         }
       }),
       // Generate the .headersJson files ...
@@ -139,7 +139,7 @@ module.exports = (env, options) => {
       }),
       new webpack.DefinePlugin({
         'process.env.FB_APP_ID': JSON.stringify(fbAppId),
-        'process.env.GA_TRACKING_ID': JSON.stringify(gaTrackingId),
+        'process.env.GA_TRACKING_ID': JSON.stringify(gaTrackingId)
       }),
       // Only compress files during production builds.
       ...((isDevBuild || isDevServer) ? [] : [

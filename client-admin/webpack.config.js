@@ -20,6 +20,16 @@ var cliArgs = mri(argv)
 var enableTwitterWidgets = process.env.ENABLE_TWITTER_WIDGETS === 'true';
 var fbAppId = process.env.FB_APP_ID;
 
+var pLogoIcoUrl = process.env.P_LOGO_ICO_URL || "/docs/polisorbis-logo-square.png";
+var pLogoUrl = process.env.P_LOGO_URL || "/docs/polisorbis-logo.png";
+var pTitle = process.env.P_TITLE || "PolisOrbis";
+var pClaim = process.env.P_CLAIM || "Input Crowd, Output Meaning";
+var pDescription = process.env.P_DESCRIPTION || "PolisOrbis is a real-time system for gathering, analyzing and understanding what large groups of people think in their own words, enabled by advanced statistics and machine learning";
+var pDocURL = process.env.P_DOC_URL || "https://doc.polisorbis.copernicani.it";
+var pRepoURL = process.env.P_REPO_URL || "https://gitlab.com/copernicani/polisorbis/codebase";
+var pTosURL = process.env.P_TOS_URL;
+var pPrivacyPolicyURL = process.env.P_PRIVACY_POLICY_URL;
+
 module.exports = (env, options) => {
   var isDevBuild = options.mode === 'development';
   var isDevServer = process.env.WEBPACK_SERVE;
@@ -60,7 +70,7 @@ module.exports = (env, options) => {
         inject: "body",
         templateParameters: {
           enableTwitterWidgets: enableTwitterWidgets,
-          fbAppId: fbAppId,
+          fbAppId: fbAppId
         },
       }),
       new LodashModuleReplacementPlugin({
@@ -72,6 +82,15 @@ module.exports = (env, options) => {
       }),
       new webpack.DefinePlugin({
         'process.env.FB_APP_ID': JSON.stringify(fbAppId),
+        'process.env.P_LOGO_ICO_URL': JSON.stringify(pLogoIcoUrl),
+        'process.env.P_LOGO_URL': JSON.stringify(pLogoUrl),
+        'process.env.P_TITLE': JSON.stringify(pTitle),
+        'process.env.P_DESCRIPTION': JSON.stringify(pDescription),
+        'process.env.P_CLAIM': JSON.stringify(pClaim),
+        'process.env.P_DOC_URL': JSON.stringify(pDocURL),
+        'process.env.P_REPO_URL': JSON.stringify(pRepoURL),
+        'process.env.P_TOS_URL': JSON.stringify(pTosURL),
+        'process.env.P_PRIVACY_POLICY_URL': JSON.stringify(pPrivacyPolicyURL)
       }),
       // Only run analyzer when specified in flag.
       ...(cliArgs.analyze ? [new BundleAnalyzerPlugin({ defaultSizes: 'gzip' })] : []),

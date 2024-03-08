@@ -2,8 +2,16 @@
 import React from 'react'
 import { jsx } from 'theme-ui'
 
+const pLogoIcoUrl = process.env.P_LOGO_ICO_URL;
+
 class Logomark extends React.Component {
   render() {
+    return <img src={pLogoIcoUrl}
+                width="20"
+                style={this.props.style}
+    ></img>
+
+    /*
     return (
       <svg
         width="20"
@@ -17,6 +25,7 @@ class Logomark extends React.Component {
         />
       </svg>
     )
+    */
   }
 }
 

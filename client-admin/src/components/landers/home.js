@@ -2,13 +2,17 @@ import React from 'react'
 import Layout from './lander-layout'
 import { Heading, Box, Text, Link } from 'theme-ui'
 import ExploreKnowledgeBase from './exploreKnowledgeBase'
-import Press from './press'
+import ReadPress from './press'
+
+const claim = process.env.P_CLAIM;
+const description = process.env.P_DESCRIPTION;
+const repoUrl = process.env.P_REPO_URL;
 
 const Index = () => {
   return (
     <Layout>
       <Heading as="h1" sx={{ my: [4, null, 5], fontSize: [6, null, 7] }}>
-        Input Crowd, Output Meaning
+        {claim}
       </Heading>
       <Heading
         as="h3"
@@ -17,16 +21,16 @@ const Index = () => {
           lineHeight: 'body',
           mb: [4, null, 5]
         }}>
-        Polis is a real-time system for gathering, analyzing and understanding
-        what large groups of people think in their own words, enabled by
-        advanced statistics and machine learning.
+        {description}
       </Heading>
+      {/*
       <Box sx={{ mb: [4, null, 5] }}>
         <Text>
           Polis has been used all over the world by governments, academics,
           independent media and citizens, and is completely open source.
         </Text>
       </Box>
+       */}
       <Heading
         as="h3"
         sx={{ fontSize: [4], lineHeight: 'body', mb: [2, null, 3] }}>
@@ -37,8 +41,10 @@ const Index = () => {
         {' or '}
         <Link href="/signin">Sign in</Link>
       </Box>
-      <Press />
+      {/* 
+      <ReadPress />
       <ExploreKnowledgeBase />
+       */}
       <Heading
         as="h3"
         sx={{ fontSize: [4], lineHeight: 'body', my: [2, null, 3] }}>
@@ -46,8 +52,8 @@ const Index = () => {
       </Heading>
       <Box sx={{ mb: [4, null, 5] }}>
         Explore the code and join the developer community{' '}
-        <Link target="_blank" href="https://github.com/compdemocracy/">
-          on Github
+        <Link target="_blank" href={repoUrl}>
+          on Gitlab
         </Link>
       </Box>
     </Layout>
