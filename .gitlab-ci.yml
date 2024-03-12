@@ -1,0 +1,46 @@
+workflow:
+  rules:
+    - if: "$CI_COMMIT_TAG"
+      variables:
+        TAG: $CI_COMMIT_TAG
+    - variables:
+        TAG: $CI_COMMIT_SHA
+
+stages:
+  - build
+
+server:
+  stage: build
+  image: docker:24.0.5
+  services:
+    - docker:24.0.5-dind
+  variables:
+    FULL_IMAGE_TAG: $CI_REGISTRY_IMAGE/server:$TAG
+  script:
+    - cd server
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - docker build -t $FULL_IMAGE_TAG --target prod --build-arg NODE_ENV=production .
+
+math:
+  stage: build
+  image: docker:24.0.5
+  services:
+    - docker:24.0.5-dind
+  variables:
+    FULL_IMAGE_TAG: $CI_REGISTRY_IMAGE/math:$TAG
+  script:
+    - cd math
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - docker build -t $FULL_IMAGE_TAG  .
+
+postgres:
+  stage: build
+  image: docker:24.0.5
+  services:
+    - docker:24.0.5-dind
+  variables:
+    FULL_IMAGE_TAG: $CI_REGISTRY_IMAGE/math:$TAG
+  script:
+    - cd server
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - docker build -t $FULL_IMAGE_TAG -f Dockerfile-db .
