@@ -20,6 +20,7 @@ server:
     - cd server
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     - docker build -t $FULL_IMAGE_TAG --target prod --build-arg NODE_ENV=production .
+    - docker push $FULL_IMAGE_TAG
 
 math:
   stage: build
@@ -32,6 +33,8 @@ math:
     - cd math
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     - docker build -t $FULL_IMAGE_TAG  .
+    - docker push $FULL_IMAGE_TAG
+
 
 postgres:
   stage: build
@@ -44,3 +47,5 @@ postgres:
     - cd server
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     - docker build -t $FULL_IMAGE_TAG -f Dockerfile-db .
+    - docker push $FULL_IMAGE_TAG
+
