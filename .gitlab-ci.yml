@@ -49,16 +49,28 @@ postgres:
     - docker push $FULL_IMAGE_TAG
 #
 #
-# file-server:
-#   stage: build
-#   image: docker:24.0.5
-#   services:
-#     - docker:24.0.5-dind
-#   variables:
-#     FULL_IMAGE_TAG: $CI_REGISTRY_IMAGE/file-server:$TAG
-#   script:
-#     - cd server
-#     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-#     - docker build -t $FULL_IMAGE_TAG -f Dockerfile-db .
-#     - docker push $FULL_IMAGE_TAG
+file-server:
+  stage: build
+  image: docker:24.0.5
+  services:
+    - docker:24.0.5-dind
+  variables:
+    FULL_IMAGE_TAG: $CI_REGISTRY_IMAGE/file-server:$TAG
+  script:
+    - cd server
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - |-
+      docker build -t $FULL_IMAGE_TAG \
+      --build-arg NODE_ENV=production \
+      --build-arg P_LOGO_ICO_URL=$P_LOGO_ICO_URL \
+      --build-arg P_LOGO_URL=$P_LOGO_URL \
+      --build-arg P_TITLE=$P_TITLE \
+      --build-arg P_CLAIM=$P_CLAIM \
+      --build-arg P_DESCRIPTION=$P_DESCRIPTION \
+      --build-arg P_DOC_URL=$P_DOC_URL \
+      --build-arg P_REPO_URL=$P_REPO_URL \
+      --build-arg P_TOS_URL=$P_TOS_URL \
+      --build-arg P_PRIVACY_POLICY_URL=$P_PRIVACY_POLICY_URL \
+        .
 
+    - docker push $FULL_IMAGE_TAG
