@@ -35,17 +35,30 @@ math:
     - docker build -t $FULL_IMAGE_TAG  .
     - docker push $FULL_IMAGE_TAG
 
-
 postgres:
   stage: build
   image: docker:24.0.5
   services:
     - docker:24.0.5-dind
   variables:
-    FULL_IMAGE_TAG: $CI_REGISTRY_IMAGE/math:$TAG
+    FULL_IMAGE_TAG: $CI_REGISTRY_IMAGE/postgres:$TAG
   script:
     - cd server
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     - docker build -t $FULL_IMAGE_TAG -f Dockerfile-db .
     - docker push $FULL_IMAGE_TAG
+#
+#
+# file-server:
+#   stage: build
+#   image: docker:24.0.5
+#   services:
+#     - docker:24.0.5-dind
+#   variables:
+#     FULL_IMAGE_TAG: $CI_REGISTRY_IMAGE/file-server:$TAG
+#   script:
+#     - cd server
+#     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+#     - docker build -t $FULL_IMAGE_TAG -f Dockerfile-db .
+#     - docker push $FULL_IMAGE_TAG
 
