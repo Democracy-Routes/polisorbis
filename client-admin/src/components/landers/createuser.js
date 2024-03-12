@@ -134,16 +134,7 @@ class Createuser extends React.Component {
           {this.maybeErrorMessage()}
 
           <Box>
-            I agree to the{' '}
-            <a href="https://pol.is/tos" tabIndex="110">
-              pol.is terms
-            </a>{' '}
-            and{' '}
-            <a href="https://pol.is/privacy" tabIndex="111">
-              {' '}
-              privacy agreement
-            </a>
-            .
+            I agree to the Terms of Service and  to the Privacy agreement.
           </Box>
           <Button
             sx={{ my: [2] }}

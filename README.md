@@ -113,6 +113,12 @@ make PROD start
 make PROD start-rebuild
 ```
 
+
+**Important:** The Docker Compose infrastructure described  here is insecure, self-signed SSL certificate, which is pre-generated and stored publicly in the source code.
+This HTTPS implementation is thus **ONLY suitable for testing.**
+Frequently, SSL support is something provided at the hosting layer, and we encourage you to pursue this option when possible.
+
+
 ### Testing out your instance
 
 You can now test your setup by visiting `http://localhost:80/home`.
@@ -121,7 +127,7 @@ Once the index page loads, you can create an account using the `/createuser` pat
 You'll be logged in right away; email validation is not required.
 
 When you're done working, you can end the process using `Ctrl+C`, or typing `docker compose down`
-if you are running in "detched mode".
+if you are running in "detached mode".
 
 
 

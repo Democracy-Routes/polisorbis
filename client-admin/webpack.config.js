@@ -20,8 +20,8 @@ var cliArgs = mri(argv)
 var enableTwitterWidgets = process.env.ENABLE_TWITTER_WIDGETS === 'true';
 var fbAppId = process.env.FB_APP_ID;
 
-var pLogoIcoUrl = process.env.P_LOGO_ICO_URL || "/docs/polisorbis-logo-square.png";
-var pLogoUrl = process.env.P_LOGO_URL || "/docs/polisorbis-logo.png";
+var pLogoIcoUrl = process.env.P_LOGO_ICO_URL || "https://doc.polisorbis.copernicani.it/images/polisorbis-logo-square.png";
+var pLogoUrl = process.env.P_LOGO_URL || "https://doc.polisorbis.copernicani.it/images/polisorbis-logo.png";
 var pTitle = process.env.P_TITLE || "PolisOrbis";
 var pClaim = process.env.P_CLAIM || "Input Crowd, Output Meaning";
 var pDescription = process.env.P_DESCRIPTION || "PolisOrbis is a real-time system for gathering, analyzing and understanding what large groups of people think in their own words, enabled by advanced statistics and machine learning";

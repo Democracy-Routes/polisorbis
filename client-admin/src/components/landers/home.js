@@ -51,6 +51,9 @@ const Index = () => {
         Contribute
       </Heading>
       <Box sx={{ mb: [4, null, 5] }}>
+        <Link href="https://doc.polisorbis.copernicani.it/">Know more about the PolisOrbis Project</Link>
+      </Box>
+      <Box sx={{ mb: [4, null, 5] }}>
         Explore the code and join the developer community{' '}
         <Link target="_blank" href={repoUrl}>
           on Gitlab
