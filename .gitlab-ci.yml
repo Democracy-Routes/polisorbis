@@ -47,8 +47,7 @@ postgres:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     - docker build -t $FULL_IMAGE_TAG -f Dockerfile-db .
     - docker push $FULL_IMAGE_TAG
-#
-#
+
 file-server:
   stage: build
   image: docker:24.0.5
@@ -57,10 +56,9 @@ file-server:
   variables:
     FULL_IMAGE_TAG: $CI_REGISTRY_IMAGE/file-server:$TAG
   script:
-    - cd server
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     - |-
-      docker build -t $FULL_IMAGE_TAG \
+      docker build -t $FULL_IMAGE_TAG -f file-server/Dockerfile \
       --build-arg NODE_ENV=production \
       --build-arg P_LOGO_ICO_URL=$P_LOGO_ICO_URL \
       --build-arg P_LOGO_URL=$P_LOGO_URL \
