@@ -184,11 +184,11 @@ class App extends React.Component {
                           Conversations
                         </Link>
                       </Box>
-                      <Box sx={{ mb: [3] }}>
+					  {/*<Box sx={{ mb: [3] }}>
                         <Link sx={{ variant: 'links.nav' }} to={`/integrate`}>
                           Integrate
                         </Link>
-                      </Box>
+                      </Box>*/}
                       <Box sx={{ mb: [3] }}>
                         <Link sx={{ variant: 'links.nav' }} to={`/account`}>
                           Account
