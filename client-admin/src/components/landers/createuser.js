@@ -134,7 +134,7 @@ class Createuser extends React.Component {
           {this.maybeErrorMessage()}
 
           <Box>
-            I agree to the Terms of Service and  to the Privacy agreement.
+            I agree to the Terms of Service and to the Privacy agreement.
           </Box>
           <Button
             sx={{ my: [2] }}
@@ -176,7 +176,7 @@ class Createuser extends React.Component {
     return (
       <Box>
         <Text>
-          A pol.is user already exists with the email address associated with
+          A pPolis user already exists with the email address associated with
           this Facebook account.
         </Text>
         <Text>
