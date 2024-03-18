@@ -172,7 +172,7 @@ class ConversationConfig extends React.Component {
           sx={{ mt: [3] }}
           field="required_certificate"
           label="Request certificate">
-          Request voting certificate
+          Request voting certificate (not available)
 
           <CheckboxField
             field="certificate_anonymous"
@@ -212,8 +212,9 @@ class ConversationConfig extends React.Component {
           sx={{ mt: [3] }}
           field="auth_with_openid"
           label="Auth with OpenId">
-          Login with Open Id Connect
-
+          Login required (not available)
+     
+	      {/*
           <Flex sx={{ gap: [3] }}>
             <Text>
               Identity provider
@@ -234,6 +235,7 @@ class ConversationConfig extends React.Component {
               defaultValue={this.props.zid_metadata.identityProvider}
             />
           </Flex>
+		  */}
           
         </CheckboxField>
         
