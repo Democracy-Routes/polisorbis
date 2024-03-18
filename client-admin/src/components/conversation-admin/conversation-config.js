@@ -156,15 +156,17 @@ class ConversationConfig extends React.Component {
           Show explanation text above voting and visualization
         </CheckboxField>
 
-        <CheckboxField
+        {/* Tis Option is disabled for GDPR concern..
+		<CheckboxField
           field="subscribe_type"
           label="Prompt participants to subscribe to updates"
           isIntegerBool>
           Prompt participants to subscribe to updates. A prompt is shown to
           users once they finish voting on all available comments. If enabled,
           participants may optionally provide their email address to receive
-          notifications when there are new comments to vote on.
-        </CheckboxField>
+          notifications when there are new comments to vote on. 
+        </CheckboxField> 
+		*/}
 
         <CheckboxField
           sx={{ mt: [3] }}
