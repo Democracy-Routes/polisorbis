@@ -113,8 +113,10 @@ module.exports = Handlebones.ModelView.extend({
     }
     ctx.social = socialCtx;
     ctx.noModSet = !ctx.spamOn && !ctx.otOn && !ctx.importantOn;
-    ctx.canSubscribe = !!preload.firstPtpt || this.votesByMe.size() > 0;
-    ctx.canSubscribe = ctx.canSubscribe && Utils.userCanSeeSubscribePrompt();
+	// EF: This was removed to ensure GDPR compatibility 
+    // ctx.canSubscribe = !!preload.firstPtpt || this.votesByMe.size() > 0;
+    // ctx.canSubscribe = ctx.canSubscribe && Utils.userCanSeeSubscribePrompt();
+	ctx.canSubscribe = false ;
     ctx.needSocial = this.model.get("needSocial");
 
     if (ctx.showTranslation && ctx.translations && ctx.translations.length) {
