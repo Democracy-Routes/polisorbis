@@ -1,4 +1,12 @@
+const pTosURL = process.env.P_TOS_URL;
+const pPrivacyPolicyURL = process.env.P_PRIVACY_POLICY_URL;
+const pLogoURL = process.env.P_LOGO_URL;
+const pLogoIcoURL = process.env.P_LOGO_ICO_URL;
+
 var s = {};
+
+s.logoURL = pLogoURL;
+s.logoIcoURL = pLogoIcoURL;
 
 s.disagree  = "Discorda";
 s.pass  = "Passa / Incerteza";
@@ -24,6 +32,8 @@ s.info  = "Informação";
 s.addPolisToYourSite  = "<img style='height: 20px; margin: 0px 4px;' src='{{URL}}'/>";
 s.privacy  = "Privacidade";
 s.TOS  = "Tipo de Serviço";
+s.privacyURL = pPrivacyPolicyURL;
+s.TOSURL = pTosURL;
 s.writePrompt  = "Compartilhe a sua perspetiva..";
 s.anonPerson  = "Anônimo";
 s.helpWhatAmISeeingTitle  = "O que é que eu estou a ver?";

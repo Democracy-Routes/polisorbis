@@ -14,7 +14,17 @@ const TerserPlugin = require("terser-webpack-plugin")
 const embedServiceHostname = process.env.EMBED_SERVICE_HOSTNAME || 'demo.polisorbis.eu';
 const fbAppId = process.env.FB_APP_ID;
 const gaTrackingId = process.env.GA_TRACKING_ID;
-const outputDirectory = 'dist'
+const outputDirectory = 'dist';
+
+const pLogoIcoUrl = process.env.P_LOGO_ICO_URL || "https://doc.polisorbis.copernicani.it/images/polisorbis-logo-square.png";
+const pLogoUrl = process.env.P_LOGO_URL || "https://doc.polisorbis.copernicani.it/images/polisorbis-logo.png";
+const pTitle = process.env.P_TITLE || "PolisOrbis";
+const pClaim = process.env.P_CLAIM || "Input Crowd, Output Meaning";
+const pDescription = process.env.P_DESCRIPTION || "PolisOrbis is a real-time system for gathering, analyzing and understanding what large groups of people think in their own words, enabled by advanced statistics and machine learning";
+const pDocURL = process.env.P_DOC_URL || "https://doc.polisorbis.copernicani.it";
+const pRepoURL = process.env.P_REPO_URL || "https://gitlab.com/copernicani/polisorbis/codebase";
+const pTosURL = process.env.P_TOS_URL;
+const pPrivacyPolicyURL = process.env.P_PRIVACY_POLICY_URL;
 
 /**
  * Generates .headersJson files alongside files served by the file-server. Reading these files instructs file-server
@@ -76,7 +86,6 @@ function writeHeadersJsonForOutputFiles(isDev) {
   writeHeadersJsonMisc()
 }
 
-
 module.exports = (env, options) => {
   var isDevBuild = options.mode === 'development'
   var isDevServer = process.env.WEBPACK_SERVE
@@ -107,6 +116,18 @@ module.exports = (env, options) => {
       // Define some globals
       new webpack.ProvidePlugin({
         process: 'process/browser'
+      }),
+      new webpack.DefinePlugin({
+        'process.env.FB_APP_ID': JSON.stringify(fbAppId),
+        'process.env.P_LOGO_ICO_URL': JSON.stringify(pLogoIcoUrl),
+        'process.env.P_LOGO_URL': JSON.stringify(pLogoUrl),
+        'process.env.P_TITLE': JSON.stringify(pTitle),
+        'process.env.P_DESCRIPTION': JSON.stringify(pDescription),
+        'process.env.P_CLAIM': JSON.stringify(pClaim),
+        'process.env.P_DOC_URL': JSON.stringify(pDocURL),
+        'process.env.P_REPO_URL': JSON.stringify(pRepoURL),
+        'process.env.P_TOS_URL': JSON.stringify(pTosURL),
+        'process.env.P_PRIVACY_POLICY_URL': JSON.stringify(pPrivacyPolicyURL)
       }),
       new CopyPlugin({
         patterns: [

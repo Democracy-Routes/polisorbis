@@ -1,4 +1,12 @@
+const pTosURL = process.env.P_TOS_URL;
+const pPrivacyPolicyURL = process.env.P_PRIVACY_POLICY_URL;
+const pLogoURL = process.env.P_LOGO_URL;
+const pLogoIcoURL = process.env.P_LOGO_ICO_URL;
+
 var s = {};
+
+s.logoURL = pLogoURL;
+s.logoIcoURL = pLogoIcoURL;
 
 s.disagree  = "La konkorda";
 s.pass  = "Hakat liu / La iha serteza";
@@ -24,6 +32,8 @@ s.info  = "Informasaun";
 s.addPolisToYourSite  = "<img style='height: 20px; margin: 0px 4px;' src='{{URL}}'/>";
 s.privacy  = "Privasidade";
 s.TOS  = "Tipu servisu";
+s.privacyURL = pPrivacyPolicyURL;
+s.TOSURL = pTosURL;
 s.writePrompt  = "Fahe o nia hanoin..";
 s.anonPerson  = "Naran-laek (anónimu)";
 s.helpWhatAmISeeingTitle  = "Saida mak ha'u haree?";

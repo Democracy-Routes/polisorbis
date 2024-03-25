@@ -2,7 +2,15 @@
 
 // Translation comment: Formal German "Sie" is used - alternative: informal "Du"
 
+const pTosURL = process.env.P_TOS_URL;
+const pPrivacyPolicyURL = process.env.P_PRIVACY_POLICY_URL;
+const pLogoURL = process.env.P_LOGO_URL;
+const pLogoIcoURL = process.env.P_LOGO_ICO_URL;
+
 var s = {};
+
+s.logoURL = pLogoURL;
+s.logoIcoURL = pLogoIcoURL;
 
 s.agree = "Ich stimme zu";
 s.disagree = "Ich stimme nicht zu";
@@ -32,6 +40,8 @@ s.info = "Information";
 s.addPolisToYourSite = "<img style='height: 20px; margin: 0px 4px;' src='{{URL}}'/>";
 s.privacy = "Privatsphäre";
 s.TOS = "Nutzungsbedingungen";
+s.privacyURL = pPrivacyPolicyURL;
+s.TOSURL = pTosURL;
 s.writePrompt = "Teilen Sie Ihre Meinung mit ...";
 s.anonPerson = "Anonym";
 s.helpWhatAmISeeingTitle = "Was wird hier angezeigt?";

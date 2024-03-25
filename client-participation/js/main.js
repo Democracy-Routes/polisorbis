@@ -257,11 +257,11 @@ Handlebars.registerHelper("ifNotAuthenticated", function(arg0) {
 });
 
 
-Handlebars.registerHelper('logo_href', function(arg0, options) {
-  // var shouldSeeInbox = PolisStorage.hasEmail();
-  // return shouldSeeInbox ? "/inbox" : "/about";
-  return "/about";
-});
+// Handlebars.registerHelper('logo_href', function(arg0, options) {
+//   // var shouldSeeInbox = PolisStorage.hasEmail();
+//   // return shouldSeeInbox ? "/inbox" : "/about";
+//   return "/about";
+// });
 
 Handlebars.registerHelper('settings_href', function(arg0, options) {
   return "/settings" + (encodedParams ? ("/" + encodedParams) : "");
