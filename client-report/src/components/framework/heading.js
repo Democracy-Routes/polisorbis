@@ -7,41 +7,43 @@ import Url from "../../util/url";
 const urlPrefix = Url.urlPrefix;
 
 const Content = ({conversation}) => {
-  return (
-    <div style={{
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "flex-end",
-        width: "100%",
-        paddingBottom: 5,
-        borderBottom: "1px solid rgb(130,130,130)",
-      }}>
-      <SmallLogo/>
-      <p style={{
-          fontSize: 36,
-          margin: 0,
+    return (
+        <div style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "flex-end",
+            width: "100%",
+            paddingBottom: 5,
+            borderBottom: "1px solid rgb(130,130,130)",
         }}>
-        Report
-      </p>
-      <p style={{
-          fontSize: 24,
-          margin: 0,
-        }}>
-        <a
-          style={{color: "#03A9F4", fontWeight: 700, textDecoration: "none"}}
-          href={`${urlPrefix + conversation.conversation_id}`}>{urlPrefix + conversation.conversation_id}
-        </a>
-      </p>
-    </div>
-  );
+            <SmallLogo/>
+            <p style={{
+                fontSize: 36,
+                margin: 0,
+                }}>
+                Report
+            </p>
+            <p style={{
+                fontSize: 24,
+                margin: 0,
+                marginTop: "auto",
+                marginBottom: "auto"
+                }}>
+                <a
+                style={{color: "#03A9F4", fontWeight: 700, textDecoration: "none"}}
+                href={`${urlPrefix + conversation.conversation_id}`}>{urlPrefix + conversation.conversation_id}
+                </a>
+            </p>
+        </div>
+    );
 }
 
 const Heading = ({conversation}) => {
- return (
-   <div>
-     {conversation ? <Content conversation={conversation}/> : "Loading..."}
-   </div>
- )
+    return (
+        <div>
+            {conversation ? <Content conversation={conversation}/> : "Loading..."}
+        </div>
+    )
 };
 
 export default Heading;
