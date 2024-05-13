@@ -4,6 +4,7 @@ const pTosURL = process.env.P_TOS_URL;
 const pPrivacyPolicyURL = process.env.P_PRIVACY_POLICY_URL;
 const pLogoURL = process.env.P_LOGO_URL;
 const pLogoIcoURL = process.env.P_LOGO_ICO_URL;
+const pOpenidProviderName = process.env.P_OPENID_PROVIDER_NAME;
 
 var s = {};
 
@@ -53,7 +54,9 @@ s.pctDisagreedOfGroup = "{{pct}}% del Gruppo {{group}} non la pensa così";
 s.commentSent = "Commento Inviato! Altri partecipanti vedranno il tuo commento e saranno d'accordo o meno.";
 s.connectFacebook = "Collegati tramite Facebook";
 s.connectTwitter = "Collegati tramite Twitter";
-s.connectToPostPrompt = "Collega un identità al commento. Non posteremo nulla sul tuo profilo.";
+s.connectOpenID = `Collegati tramite ${pOpenidProviderName}`;
+s.connectToPostPrompt = "Collega un'identità per commentare.";
+s.connectToVotePrompt = "Collega un'identità per votare.";
 s.tip = "Attenzione:";
 s.tipCommentsRandom = "I commenti vengono mostrati casualmente. Non stai rispondendo a nessuno.";
 s.tipOneIdea = "Spezza i commenti lunghi quando essi contengono più idee. Questo renderà più facile per gli altri votare sul tuo commento.";
@@ -61,12 +64,13 @@ s.tipNoQuestions = "I commenti dovrebbero contenere affermazioni ed evitare di a
 s.notSentSinceDemo = "(non davvero, questa è solo una demo)";
 s.submitComment = "Invia";
 s.tipStarred = "Segnato come importante.";
-s.participantHelpWelcomeText = "Benvenuti a un nuovo tipo di discussione - <span style='font-weight: 700;'>votate</span> sulle opinioni della gente o <span style='font-weight: 700;'>controbuite</span> alla vostra.";
+s.participantHelpWelcomeText = "Benvenuti a un nuovo tipo di discussione - <span style='font-weight: 700;'>votate</span> sulle opinioni della gente o <span style='font-weight: 700;'>contribuite</span> con la vostra.";
 s.participantHelpGroupsText = "Chi vota in modo simile <span style='font-weight: 700;'>viene aggregato.</span> Clicca su un gruppo per conoscere quali punti di vista vengono condivisi.<a style='font-weight: 700; cursor: pointer; text-decoration: underline' id='helpTextGroupsExpand'>...continua</a>";
 s.helpWhatAreGroupsDetail = "<p>Avrai visto le raccomandazioni di Amazon sui prodotti o di Netflix sui film o le serie. Ognuno di quei servizi usa le statistiche per unirti a gruppi che comprano o guardano cose simili per poi farti vedere quali cose quelle persone hanno guardato o ascoltato.</p> <p> Quando voti o commenti, vieni messo insieme alle persone che votano no come hai fatto tu! Puoi vedere quei gruppi qui sotto. Ognuno è fatto di persone che hanno opzioni simili. Ci sono alcuni insight molto interessanti da scoprire in ogni conversazione. Vai avanti! Clicca su un gruppo e scopri quali punti di vista sono condivisi e cosa hanno di unico! </p>";
 s.socialConnectPrompt = "Collegati per vedere le persone e gli amici che segui nella visualizzazione.";
 s.connectFbButton = "Collegati tramite Facebook";
 s.connectTwButton = "Collegati tramite Twitter";
+s.connectOpenIDButton = `Collegati tramite ${pOpenidProviderName}`;
 s.polis_err_reg_fb_verification_email_sent = "Per favore, controlla la mail e cerca il link di attivazione, poi continua da qui.";
 s.polis_err_reg_fb_verification_noemail_unverified = "Il tuo account Facebook non è verificato. Per favore verifica il tuo indirizzo mail di Facebook, poi torna qui per proseguire.";
 

@@ -4,6 +4,8 @@ import { Box, jsx } from 'theme-ui'
 import { Link } from 'react-router-dom'
 import Logomark from './framework/logomark'
 
+const pTitle = process.env.P_TITLE;
+
 class InteriorHeader extends React.Component {
   render() {
     return (
@@ -25,7 +27,7 @@ class InteriorHeader extends React.Component {
               style={{ marginRight: 10, position: 'relative', top: 6 }}
               fill={'white'}
             />
-            Polis
+            {pTitle}
           </Link>
           <Link id="signoutLink" sx={{ variant: 'links.header' }} to="/signout">
             sign out

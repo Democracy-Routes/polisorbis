@@ -6,6 +6,9 @@ const facebookVoteBtn = 'button#facebookButtonVoteView'
 const twitterAuthOpt = 'input[data-test-id="auth_opt_tw"]'
 const twitterCommentBtn = 'button#twitterButtonCommentForm'
 const twitterVoteBtn = 'button#twitterButtonVoteView'
+const openIDAuthOpt = 'input[data-test-id="auth_opt_openid"]'
+const openIDCommentBtn = 'button#openIDButtonCommentForm'
+const openIDVoteBtn = 'button#openIDButtonVoteView'
 
 describe('Social login buttons', function () {
   before(function () {
@@ -31,6 +34,7 @@ describe('Social login buttons', function () {
 
       cy.get(facebookAuthOpt).should('be.checked')
       cy.get(twitterAuthOpt).should('be.checked')
+      cy.get(openIDAuthOpt).should('be.checked')
       cy.get('input[data-test-id="auth_needed_to_vote"]').should('not.be.checked')
       cy.get('input[data-test-id="auth_needed_to_write"]').should('be.checked')
     })
@@ -45,11 +49,13 @@ describe('Social login buttons', function () {
 
       cy.get(voteView).find(facebookVoteBtn).should('not.exist')
       cy.get(voteView).find(twitterVoteBtn).should('not.exist')
+      cy.get(voteView).find(openIDVoteBtn).should('not.exist')
 
       cy.get(commentView).find('button#comment_button').click()
 
       cy.get(commentView).find(facebookCommentBtn).should('be.visible')
       cy.get(commentView).find(twitterCommentBtn).should('be.visible')
+      cy.get(commentView).find(openIDCommentBtn).should('be.visible')
     })
   })
 
@@ -72,11 +78,13 @@ describe('Social login buttons', function () {
 
       cy.get(voteView).find(facebookVoteBtn).should('be.visible')
       cy.get(voteView).find(twitterVoteBtn).should('be.visible')
+      cy.get(voteView).find(openIDVoteBtn).should('be.visible')
 
       cy.get(commentView).find('button#comment_button').click()
 
       cy.get(commentView).find(facebookCommentBtn).should('be.visible')
       cy.get(commentView).find(twitterCommentBtn).should('be.visible')
+      cy.get(commentView).find(openIDCommentBtn).should('be.visible')
     })
 
     it('allows Facebook to be disabled', function () {
@@ -84,6 +92,7 @@ describe('Social login buttons', function () {
       cy.visit(this.adminPath)
       cy.get(facebookAuthOpt).uncheck()
       cy.get(twitterAuthOpt).check()
+      cy.get(openIDAuthOpt).check()
 
       cy.ensureUser('participant3')
       cy.visit(this.convoPath)
@@ -94,11 +103,13 @@ describe('Social login buttons', function () {
 
       cy.get(voteView).find(facebookVoteBtn).should('not.exist')
       cy.get(voteView).find(twitterVoteBtn).should('be.visible')
+      cy.get(voteView).find(openIDVoteBtn).should('be.visible')
 
       cy.get(commentView).find('button#comment_button').click()
 
       cy.get(commentView).find(facebookCommentBtn).should('not.exist')
       cy.get(commentView).find(twitterCommentBtn).should('be.visible')
+      cy.get(commentView).find(openIDCommentBtn).should('be.visible')
     })
 
     it('allows Twitter to be disabled', function () {
@@ -106,6 +117,7 @@ describe('Social login buttons', function () {
       cy.visit(this.adminPath)
       cy.get(facebookAuthOpt).check()
       cy.get(twitterAuthOpt).uncheck()
+      cy.get(openIDAuthOpt).check()
 
       cy.ensureUser('participant4')
       cy.visit(this.convoPath)
@@ -116,11 +128,38 @@ describe('Social login buttons', function () {
 
       cy.get(voteView).find(facebookVoteBtn).should('be.visible')
       cy.get(voteView).find(twitterVoteBtn).should('not.exist')
+      cy.get(voteView).find(openIDVoteBtn).should('be.visible')
 
       cy.get(commentView).find('button#comment_button').click()
 
       cy.get(commentView).find(facebookCommentBtn).should('be.visible')
       cy.get(commentView).find(twitterCommentBtn).should('not.exist')
+      cy.get(commentView).find(openIDCommentBtn).should('be.visible')
+    })
+
+    it('allows OpenID to be disabled', function () {
+      cy.ensureUser('moderator')
+      cy.visit(this.adminPath)
+      cy.get(facebookAuthOpt).check()
+      cy.get(twitterAuthOpt).check()
+      cy.get(openIDAuthOpt).uncheck()
+  
+      cy.ensureUser('participant4')
+      cy.visit(this.convoPath)
+      cy.wait('@participationInit')
+      cy.wait('@getComments')
+  
+      cy.vote()
+  
+      cy.get(voteView).find(facebookVoteBtn).should('be.visible')
+      cy.get(voteView).find(twitterVoteBtn).should('be.visible')
+      cy.get(voteView).find(openIDVoteBtn).should('not.exist')
+  
+      cy.get(commentView).find('button#comment_button').click()
+  
+      cy.get(commentView).find(facebookCommentBtn).should('be.visible')
+      cy.get(commentView).find(twitterCommentBtn).should('be.visible')
+      cy.get(commentView).find(openIDCommentBtn).should('not.exist')
     })
 
     it('allows both providers to be disabled', function () {
@@ -128,6 +167,7 @@ describe('Social login buttons', function () {
       cy.visit(this.adminPath)
       cy.get(facebookAuthOpt).uncheck()
       cy.get(twitterAuthOpt).uncheck()
+      cy.get(openIDAuthOpt).uncheck()
 
       cy.ensureUser('participant5')
       cy.visit(this.convoPath)
@@ -138,11 +178,13 @@ describe('Social login buttons', function () {
 
       cy.get(voteView).find(facebookVoteBtn).should('not.exist')
       cy.get(voteView).find(twitterVoteBtn).should('not.exist')
+      cy.get(voteView).find(openIDVoteBtn).should('not.exist')
 
       cy.get(commentView).find('button#comment_button').click()
 
       cy.get(commentView).find(facebookCommentBtn).should('not.exist')
       cy.get(commentView).find(twitterCommentBtn).should('not.exist')
+      cy.get(commentView).find(openIDCommentBtn).should('not.exist')
     })
   })
 })

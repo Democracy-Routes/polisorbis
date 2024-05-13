@@ -7,6 +7,7 @@ import ReadPress from './press'
 const claim = process.env.P_CLAIM;
 const description = process.env.P_DESCRIPTION;
 const repoUrl = process.env.P_REPO_URL;
+const openidEnabled = process.env.P_OPENID_ENABLED;
 
 const Index = () => {
   return (
@@ -37,8 +38,8 @@ const Index = () => {
         Get Started
       </Heading>
       <Box sx={{ mb: [4, null, 5] }}>
-        <Link href="/createuser">Sign up</Link>
-        {' or '}
+        {!openidEnabled ? <Link href="/createuser">Sign up</Link> : <></>}
+        {!openidEnabled ? ' or ' : ''}
         <Link href="/signin">Sign in</Link>
       </Box>
       {/* 

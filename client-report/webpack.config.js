@@ -15,8 +15,11 @@ const pClaim = process.env.P_CLAIM || "Input Crowd, Output Meaning";
 const pDescription = process.env.P_DESCRIPTION || "PolisOrbis is a real-time system for gathering, analyzing and understanding what large groups of people think in their own words, enabled by advanced statistics and machine learning";
 const pDocURL = process.env.P_DOC_URL || "https://doc.polisorbis.copernicani.it";
 const pRepoURL = process.env.P_REPO_URL || "https://gitlab.com/copernicani/polisorbis/codebase";
-const pTosURL = process.env.P_TOS_URL || "http://deeznuts";
+const pTosURL = process.env.P_TOS_URL;
 const pPrivacyPolicyURL = process.env.P_PRIVACY_POLICY_URL;
+
+const pOpenidEnabled = process.env.P_OPENID_ENABLED === 'true';
+const pOpenidProviderName = process.env.P_OPENID_PROVIDER_NAME || "OpenID";
 
 module.exports = {
     ...common,
@@ -55,7 +58,9 @@ module.exports = {
             'process.env.P_DOC_URL': JSON.stringify(pDocURL),
             'process.env.P_REPO_URL': JSON.stringify(pRepoURL),
             'process.env.P_TOS_URL': JSON.stringify(pTosURL),
-            'process.env.P_PRIVACY_POLICY_URL': JSON.stringify(pPrivacyPolicyURL)
+            'process.env.P_PRIVACY_POLICY_URL': JSON.stringify(pPrivacyPolicyURL),
+            'process.env.P_OPENID_ENABLED': JSON.stringify(pOpenidEnabled),
+            'process.env.P_OPENID_PROVIDER_NAME': JSON.stringify(pOpenidProviderName)
         })
     ],
     performance: {

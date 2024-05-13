@@ -43,8 +43,10 @@ module.exports = Handlebones.ModelView.extend({
     ctx.shouldAutofocusOnTextarea = this.shouldAutofocusOnTextarea || Utils.shouldFocusOnTextareaWhenWritePaneShown();
     ctx.hasTwitter = userObject.hasTwitter;
     ctx.hasFacebook = userObject.hasFacebook && Constants.FB_APP_ID;
+    ctx.hasOpenID = userObject.hasOpenID;
     ctx.auth_opt_tw = preload.firstConv.auth_opt_tw;
     ctx.auth_opt_fb = preload.firstConv.auth_opt_fb;
+    ctx.auth_opt_openid = preload.firstConv.auth_opt_openid;
     ctx.s = Strings;
     ctx.desktop = !display.xs();
     ctx.hideHelp = !Utils.userCanSeeHelp() || preload.firstConv.help_type === 0;
@@ -191,6 +193,7 @@ module.exports = Handlebones.ModelView.extend({
     "paste #comment_form_textarea": "textChange",
     "click #facebookButtonCommentForm" : "facebookClicked",
     "click #twitterButtonCommentForm" : "twitterClicked",
+    "click #openIDButtonCommentForm" : "openIDClicked",
     "click #comment_button": "onSubmitClicked",
   },
   onSubmitClicked: function(e) {
@@ -235,7 +238,7 @@ module.exports = Handlebones.ModelView.extend({
       }
     }
     var xid = Utils.getXid();
-    var hasSocial = window.userObject.hasFacebook || window.userObject.hasTwitter || !_.isUndefined(xid);
+    var hasSocial = window.userObject.hasFacebook || window.userObject.hasTwitter || window.userObject.hasOpenID || !_.isUndefined(xid);
     var needsSocial = preload.firstConv.auth_needed_to_write;
     M.add(M.COMMENT_SUBMIT_CLICK);
     if (hasSocial || !needsSocial) {
@@ -286,6 +289,29 @@ module.exports = Handlebones.ModelView.extend({
     // that window will redirect back to a simple page that calls window.opener.twitterStatus("ok")
     var params = 'location=0,status=0,width=800,height=400';
     window.open(document.location.origin + "/api/v3/twitterBtn?owner=false&dest=/twitterAuthReturn/CommentForm", 'twitterWindow', params);
+  },
+  openIDClicked: function(e) {
+    var that = this;
+    e.preventDefault();
+
+    eb.on(eb.openIDConnectCommentForm, function() {
+      M.addAndSend(M.COMMENT_SUBMIT_OPENID_OK);
+      // wait a bit for new cookies to be ready, or something, then submit comment.
+      setTimeout(function() {
+        that.onAuthSuccess();
+        // CurrentUserModel.update();
+      }, 100);
+    });
+
+    M.addAndSend(M.COMMENT_SUBMIT_OPENID_INIT);
+
+    // open a new window where the twitter auth screen will show.
+    // that window will redirect back to a simple page that calls window.opener.twitterStatus("ok")
+    // var params = 'location=0,status=0,width=800,height=400';
+    // window.open(document.location.origin + "/api/v3/openidBtn?owner=false&dest=/openidAuthReturn/CommentForm", 'openIDWindow', params);
+
+    var dest = window.location.pathname + window.location.hash;
+    window.location = "/api/v3/openidBtn?dest=" + dest;
   },
   showSocialAuthChoices: function() {
     $("#comment_form_controls").hide();

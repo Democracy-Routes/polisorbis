@@ -90,8 +90,9 @@ module.exports = Handlebones.ModelView.extend({
     c.use_background_content_class = display.xs();
     c.hasFacebook = userObject.hasFacebook;
     c.hasTwitter = userObject.hasTwitter;
+    c.hasOpenID = userObject.hasOpenID;
     c.dropdownLabel = userObject.hname || "Login";
-    c.showLogout = userObject.hasTwitter || userObject.hasFacebook || userObject.email;
+    c.showLogout = userObject.hasTwitter || userObject.hasFacebook || userObject.hasOpenID || userObject.email;
     c.smallMenu = true; // don't show full name, etc as menu's button, just polis icon and caret
     c.showMajorityTab = this.showMajorityTab;
     c.selfUrl = null;
@@ -117,8 +118,10 @@ module.exports = Handlebones.ModelView.extend({
   events: {
     "click #fbConnectBtn": "fbConnectBtn",
     "click #twitterConnectBtn": "twitterConnectBtn",
+    "click #openIDConnectBtn": "openIDConnectBtn",
     "click #fbLoginBtn": "fbConnectBtn", // NOTE: may want a separate handler/API
     "click #twitterLoginBtn": "twitterConnectBtn", // NOTE: may want a separate handler/API
+    "click #openIDLoginBtn": "openIDConnectBtn", // NOTE: may want a separate handler/API
     "click #majorityTab": "onAnalyzeTabClick",
     "click #commentFormTab": "onWriteTabClick",
     "click #commentViewTab": "onVoteTabClick",
@@ -248,6 +251,21 @@ module.exports = Handlebones.ModelView.extend({
     // var dest = window.location.pathname + window.location.hash;
     // window.location = "/api/v3/twitterBtn?dest=" + dest;
   },
+
+  openIDConnectBtn: function() {
+    // window.top.postMessage("twitterConnectBegin", "*");
+
+
+    // open a new window where the twitter auth screen will show.
+    // that window will redirect back to a simple page that calls window.opener.twitterStatus("ok")
+    // var params = 'location=0,status=0,width=800,height=400';
+    // window.open(document.location.origin + "/api/v3/openidBtn?dest=/openidAuthReturn", 'openIDWindow', params);
+
+
+    var dest = window.location.pathname + window.location.hash;
+    window.location = "/api/v3/openidBtn?dest=" + dest;
+  },
+
   stopPulsingVoteTab: function() {
     this.$("#voteTab").removeClass("pulseEffect");
   },

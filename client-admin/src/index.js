@@ -38,7 +38,7 @@ var pageIcon = document.getElementById("page-icon");
 var pageShortcutIcon = document.getElementById("page-shortcut-icon");
 
 if (pageIcon)
-  pageIcon.href = process.env.P_LOGO_URL;
+  pageIcon.href = process.env.P_LOGO_ICO_URL;
 if (pageShortcutIcon)
-  pageShortcutIcon.href = process.env.P_LOGO_URL;
+  pageShortcutIcon.href = process.env.P_LOGO_ICO_URL;
 

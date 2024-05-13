@@ -53,6 +53,7 @@ describe('Integrated Conversations', function () {
           expect(conversation).to.have.property('subscribe_type', 1)
           expect(conversation).to.have.property('auth_opt_fb', null)
           expect(conversation).to.have.property('auth_opt_tw', null)
+          expect(conversation).to.have.property('auth_opt_openid', null)
           expect(conversation).to.have.property('strict_moderation', false)
           expect(conversation).to.have.property('auth_needed_to_write', null)
           expect(conversation).to.have.property('auth_needed_to_vote', null)

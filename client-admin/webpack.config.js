@@ -30,6 +30,9 @@ var pRepoURL = process.env.P_REPO_URL || "https://gitlab.com/copernicani/polisor
 var pTosURL = process.env.P_TOS_URL;
 var pPrivacyPolicyURL = process.env.P_PRIVACY_POLICY_URL;
 
+var pOpenidEnabled = process.env.P_OPENID_ENABLED === 'true';
+var pOpenidProviderName = process.env.P_OPENID_PROVIDER_NAME || "OpenID";
+
 module.exports = (env, options) => {
   var isDevBuild = options.mode === 'development';
   var isDevServer = process.env.WEBPACK_SERVE;
@@ -59,6 +62,9 @@ module.exports = (env, options) => {
       **/
     },
     plugins: [
+      new webpack.ProvidePlugin({
+        process: 'process/browser'
+      }),
       new CopyPlugin({
         patterns: [
           { from: 'public', globOptions: { ignore: ['**/index.ejs']}},
@@ -90,7 +96,9 @@ module.exports = (env, options) => {
         'process.env.P_DOC_URL': JSON.stringify(pDocURL),
         'process.env.P_REPO_URL': JSON.stringify(pRepoURL),
         'process.env.P_TOS_URL': JSON.stringify(pTosURL),
-        'process.env.P_PRIVACY_POLICY_URL': JSON.stringify(pPrivacyPolicyURL)
+        'process.env.P_PRIVACY_POLICY_URL': JSON.stringify(pPrivacyPolicyURL),
+        'process.env.P_OPENID_ENABLED': JSON.stringify(pOpenidEnabled),
+        'process.env.P_OPENID_PROVIDER_NAME': JSON.stringify(pOpenidProviderName)
       }),
       // Only run analyzer when specified in flag.
       ...(cliArgs.analyze ? [new BundleAnalyzerPlugin({ defaultSizes: 'gzip' })] : []),

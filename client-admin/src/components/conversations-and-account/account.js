@@ -29,6 +29,7 @@ class Account extends React.Component {
             <p>Social:</p>
             <p>{this.props.user.hasFacebook ? 'Facebook is connected' : ''} </p>
             <p>{this.props.user.hasTwitter ? 'Twitter is connected' : ''}</p>
+            <p>{this.props.user.hasOpenID ? 'OpenID is connected' : ''}</p>
           </Box>
         </Box>
       </>
@@ -49,7 +50,8 @@ Account.propTypes = {
     hname: PropTypes.string,
     email: PropTypes.string,
     hasFacebook: PropTypes.bool,
-    hasTwitter: PropTypes.bool
+    hasTwitter: PropTypes.bool,
+    hasOpenID: PropTypes.bool
   })
 }
 

@@ -43,6 +43,7 @@ module.exports = Handlebones.ModelView.extend({
 
     "click #facebookButtonVoteView" : "facebookClicked",
     "click #twitterButtonVoteView" : "twitterClicked",
+    "click #openIDButtonVoteView" : "openIDClicked",
     "click #showTranslationButtonVoteView" : "showTranslationClicked",
     "click #hideTranslationButtonVoteView" : "hideTranslationClicked",
 
@@ -77,6 +78,7 @@ module.exports = Handlebones.ModelView.extend({
 
     ctx.auth_opt_tw = preload.firstConv.auth_opt_tw;
     ctx.auth_opt_fb = preload.firstConv.auth_opt_fb;
+    ctx.auth_opt_openid = preload.firstConv.auth_opt_openid;
     var social = ctx.social;
     var socialCtx = {
       name: Strings.anonPerson,
@@ -84,9 +86,11 @@ module.exports = Handlebones.ModelView.extend({
       link: "",
       anon: true,
     };
+    console.log("Social:" + JSON.stringify(social));
     if (social) {
       var hasTwitter = social.screen_name;
       var hasFacebook = social.fb_name && Constants.FB_APP_ID;
+      var hasOpenID = social.preferred_username;
       var hasX = social.x_name;
       if (hasFacebook) {
         socialCtx = {
@@ -101,6 +105,14 @@ module.exports = Handlebones.ModelView.extend({
           img: social.profile_image_url_https,
           link: "https://twitter.com/" + social.screen_name,
           screen_name: social.screen_name,
+        };
+      }
+      if (hasOpenID) {
+        socialCtx = {
+          name: social.name,
+          img: "OPENID_PROFILE",
+          link: "OPENID_LINK",
+          preferred_username: social.preferred_username,
         };
       }
       if (hasX) {
@@ -228,6 +240,30 @@ module.exports = Handlebones.ModelView.extend({
     // that window will redirect back to a simple page that calls window.opener.twitterStatus("ok")
     var params = 'location=0,status=0,width=800,height=400';
     window.open(document.location.origin + "/api/v3/twitterBtn?owner=false&dest=/twitterAuthReturn/VoteView", 'twitterWindow', params);
+  },
+
+  openIDClicked: function(e) {
+    var that = this;
+    e.preventDefault();
+
+    eb.on(eb.twitterConnectedVoteView, function() {
+      M.addAndSend(M.VOTE_SUBMIT_OPENID_OK);
+      // wait a bit for new cookies to be ready, or something, then submit comment.
+      setTimeout(function() {
+        that.onAuthSuccess();
+        // CurrentUserModel.update();
+      }, 100);
+    });
+
+    M.addAndSend(M.VOTE_SUBMIT_OPENID_INIT);
+
+    // open a new window where the twitter auth screen will show.
+    // that window will redirect back to a simple page that calls window.opener.twitterStatus("ok")
+    // var params = 'location=0,status=0,width=800,height=400';
+    // window.open(document.location.origin + "/api/v3/openidBtn?owner=false&dest=/openidAuthReturn/VoteView", 'openIDWindow', params);
+
+    var dest = window.location.pathname + window.location.hash;
+    window.location = "/api/v3/openidBtn?dest=" + dest;
   },
 
   spamToggle: function() {

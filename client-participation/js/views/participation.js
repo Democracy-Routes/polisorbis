@@ -62,6 +62,7 @@ module.exports = ConversationView.extend({
   events: {
     "click #facebookButtonPtpt": "fbConnectBtn",
     "click #twitterButtonPtpt": "twitterConnectBtn",
+    "click #openIDButtonPtpt": "openIDConnectBtn",
     "click .twitterShareButton": "shareOnTwitter",
     "click .facebookShareButton": "shareOnFacebook",
     "click .hideOnClick": "hideOnClick",
@@ -134,10 +135,12 @@ module.exports = ConversationView.extend({
     ctx.showNewButton = true;
     ctx.hasFacebook = userObject.hasFacebook && Constants.FB_APP_ID;
     ctx.hasTwitter = userObject.hasTwitter;
+    ctx.hasOpenID = userObject.hasOpenID;
     ctx.hasFbAndTw = ctx.hasFacebook && ctx.hasTwitter;
     ctx.auth_opt_fb_computed = preload.firstConv.auth_opt_fb_computed;
     ctx.auth_opt_tw_computed = preload.firstConv.auth_opt_tw_computed;
-    ctx.auth_prompt_any_social = ctx.auth_opt_fb_computed || ctx.auth_opt_tw_computed;
+    ctx.auth_opt_openid_computed = preload.firstConv.auth_opt_openid_computed;
+    ctx.auth_prompt_any_social = ctx.auth_opt_fb_computed || ctx.auth_opt_tw_computed || ctx.auth_opt_openid_computed;
     ctx.twitterShareCount = preload.firstConv.twitterShareCount;
     ctx.fbShareCount = preload.firstConv.fbShareCount;
     ctx.s = Strings;
@@ -242,6 +245,23 @@ module.exports = ConversationView.extend({
 
     // var dest = window.location.pathname + window.location.hash;
     // window.location = "/api/v3/twitterBtn?dest=" + dest;
+  },
+
+  openIDConnectBtn: function() {
+    // window.top.postMessage("twitterConnectBegin", "*");
+
+
+    // open a new window where the twitter auth screen will show.
+    // that window will redirect back to a simple page that calls window.opener.twitterStatus("ok")
+    // var params = 'location=0,status=0,width=800,height=400';
+    // window.open(document.location.origin + "/api/v3/openidBtn?dest=/openidAuthReturn/ParticipationView", 'openIDWindow', params);
+
+    // eb.on(eb.openIDConnectedParticipationView, function() {
+    //   eb.trigger(eb.reload);
+    // });
+
+    var dest = window.location.pathname + window.location.hash;
+    window.location = "/api/v3/openidBtn?dest=" + dest;
   },
 
   convSub: function(params) {

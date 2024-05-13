@@ -19,3 +19,12 @@ class Root extends React.Component {
 }
 
 ReactDOM.render(<Root />, document.getElementById("root"));
+document.title = document.title.replace("{P_TITLE}", process.env.P_TITLE);
+
+var pageIcon = document.getElementById("page-icon");
+var pageShortcutIcon = document.getElementById("page-shortcut-icon");
+
+if (pageIcon)
+  pageIcon.href = process.env.P_LOGO_ICO_URL;
+if (pageShortcutIcon)
+  pageShortcutIcon.href = process.env.P_LOGO_ICO_URL;

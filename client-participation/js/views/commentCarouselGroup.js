@@ -88,6 +88,7 @@ module.exports = CommentCarousel.extend({
       var dotColor = repfullForAgree ? "#00b54d" : "#e74c3c";
 
       var social = c.get("social");
+      console.log("Social:" + JSON.stringify(social));
       var socialCtx = {
         name: Strings.anonPerson,
         img: Utils.getAnonPicUrl(),
@@ -97,6 +98,7 @@ module.exports = CommentCarousel.extend({
       if (social) {
         var hasTwitter = social.screen_name;
         var hasFacebook = social.fb_name;
+        var hasOpenID = social.preferred_username;
         if (hasFacebook) {
           socialCtx = {
             name: social.fb_name,
@@ -110,6 +112,14 @@ module.exports = CommentCarousel.extend({
             img: social.twitter_profile_image_url_https,
             link: "https://twitter.com/" + social.screen_name,
             screen_name: social.screen_name,
+          };
+        }
+        if (hasOpenID) {
+          socialCtx = {
+            name: social.name,
+            img: "OPENID_PROFILE",
+            link: "OPENID_LINK",
+            preferred_username: social.preferred_username,
           };
         }
       }

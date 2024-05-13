@@ -25,6 +25,7 @@ describe('Conversation: Configure', function () {
       cy.get('input[data-test-id="subscribe_type"]').should('be.checked')
       cy.get('input[data-test-id="auth_opt_fb"]').should('be.checked')
       cy.get('input[data-test-id="auth_opt_tw"]').should('be.checked')
+      cy.get('input[data-test-id="auth_opt_openid"]').should('be.checked')
 
       // Schemes section
       cy.get('input[data-test-id="is_active"]').should('be.checked')

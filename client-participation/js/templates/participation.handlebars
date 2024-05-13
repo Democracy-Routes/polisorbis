@@ -312,6 +312,16 @@
       </button>
     {{/unless}}
     {{/if}}
+
+    {{#if auth_opt_openid_computed}}
+    {{#unless hasOpenID}}
+      <button class="openIDButton" id="openIDButtonPtpt">
+      <span class="socialButtonText">
+        {{s.connectOpenIDButton}}
+      </span>
+      </button>
+    {{/unless}}
+    {{/if}}
   </div>
 </div>
 {{/unless}}  {{!-- hasFbAndTw --}}

@@ -119,6 +119,9 @@ helpersInitialized.then(
       handle_GET_twitter_oauth_callback,
       handle_GET_twitter_users,
       handle_GET_twitterBtn,
+      //OpenID Connect
+      handle_GET_openidBtn,
+      handle_GET_openid_callback,
       handle_GET_users,
       handle_GET_verification,
       handle_GET_votes,
@@ -1015,6 +1018,7 @@ helpersInitialized.then(
       want("auth_needed_to_write", getBool, assignToP),
       want("auth_opt_fb", getBool, assignToP),
       want("auth_opt_tw", getBool, assignToP),
+      want("auth_opt_openid", getBool, assignToP),
       want("auth_opt_allow_3rdparty", getBool, assignToP),
       want("verifyMeta", getBool, assignToP),
       want("send_created_email", getBool, assignToP), // ideally the email would be sent on the post, but we post before they click create to allow owner to prepopulate comments.
@@ -1310,6 +1314,27 @@ helpersInitialized.then(
       handle_GET_twitter_oauth_callback
     );
 
+    // ###### OpenID Connect ######
+
+    app.get(
+        "/api/v3/openidBtn",
+        moveToBody,
+        authOptional(assignToP),
+        want("dest", getStringLimitLength(9999), assignToP),
+        want("owner", getBool, assignToP, true),
+        handle_GET_openidBtn
+    );
+
+    app.get(
+        "/api/v3/openid_callback",
+        moveToBody,
+        authOptional(assignToP),
+        want("owner", getBool, assignToP, true),
+        handle_GET_openid_callback
+    );
+
+    // ###### OpenID Connect ######
+
     app.get(
       "/api/v3/locations",
       moveToBody,
@@ -1410,6 +1435,7 @@ helpersInitialized.then(
       want("auth_needed_to_write", getBool, assignToP),
       want("auth_opt_fb", getBool, assignToP),
       want("auth_opt_tw", getBool, assignToP),
+      want("auth_opt_openid", getBool, assignToP),
       want("auth_opt_allow_3rdparty", getBool, assignToP),
       want("show_vis", getBool, assignToP),
       want("show_share", getBool, assignToP),
@@ -1629,6 +1655,17 @@ helpersInitialized.then(
           "Content-Type": "text/html",
         }
       )
+    );
+    app.get(
+        /^\/openidAuthReturn(\/.*)?$/,
+        makeFileFetcher(
+            hostname,
+            staticFilesParticipationPort,
+            "/openidAuthReturn.html",
+            {
+                "Content-Type": "text/html",
+            }
+        )
     );
 
     app.get("/", handle_GET_conditionalIndexFetcher);

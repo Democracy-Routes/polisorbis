@@ -341,9 +341,9 @@ _.mixin({
   }
 });
 
-if (!window.location.hostname.match(/polis/)) {
-  window.document.title = window.location.port;
-}
+// if (!window.location.hostname.match(/polis/)) {
+//   window.document.title = window.location.port;
+// }
 
 // debug convenience function for deregistering.
 window.deregister = function(dest) {

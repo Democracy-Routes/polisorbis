@@ -117,6 +117,8 @@ services:
         P_REPO_URL: ${P_REPO_URL}
         P_TOS_URL: ${P_TOS_URL}
         P_PRIVACY_POLICY_URL: ${P_PRIVACY_POLICY_URL}
+        P_OPENID_ENABLED: ${P_OPENID_ENABLED}
+        P_OPENID_PROVIDER_NAME: ${P_OPENID_PROVIDER_NAME}
     environment:
       - PORT=${STATIC_FILES_PORT:-8080}
     networks:

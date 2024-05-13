@@ -26,6 +26,9 @@ const pRepoURL = process.env.P_REPO_URL || "https://gitlab.com/copernicani/polis
 const pTosURL = process.env.P_TOS_URL;
 const pPrivacyPolicyURL = process.env.P_PRIVACY_POLICY_URL;
 
+const pOpenidEnabled = process.env.P_OPENID_ENABLED === 'true';
+const pOpenidProviderName = process.env.P_OPENID_PROVIDER_NAME || "OpenID";
+
 /**
  * Generates .headersJson files alongside files served by the file-server. Reading these files instructs file-server
  * what HTML headers should be added to each file.
@@ -119,6 +122,7 @@ module.exports = (env, options) => {
       }),
       new webpack.DefinePlugin({
         'process.env.FB_APP_ID': JSON.stringify(fbAppId),
+        'process.env.GA_TRACKING_ID': JSON.stringify(gaTrackingId),
         'process.env.P_LOGO_ICO_URL': JSON.stringify(pLogoIcoUrl),
         'process.env.P_LOGO_URL': JSON.stringify(pLogoUrl),
         'process.env.P_TITLE': JSON.stringify(pTitle),
@@ -127,7 +131,9 @@ module.exports = (env, options) => {
         'process.env.P_DOC_URL': JSON.stringify(pDocURL),
         'process.env.P_REPO_URL': JSON.stringify(pRepoURL),
         'process.env.P_TOS_URL': JSON.stringify(pTosURL),
-        'process.env.P_PRIVACY_POLICY_URL': JSON.stringify(pPrivacyPolicyURL)
+        'process.env.P_PRIVACY_POLICY_URL': JSON.stringify(pPrivacyPolicyURL),
+        'process.env.P_OPENID_ENABLED': JSON.stringify(pOpenidEnabled),
+        'process.env.P_OPENID_PROVIDER_NAME': JSON.stringify(pOpenidProviderName)
       }),
       new CopyPlugin({
         patterns: [
@@ -157,10 +163,6 @@ module.exports = (env, options) => {
           console.log('Writing *.headersJson files...')
           writeHeadersJsonForOutputFiles(isDevBuild || isDevServer)
         }
-      }),
-      new webpack.DefinePlugin({
-        'process.env.FB_APP_ID': JSON.stringify(fbAppId),
-        'process.env.GA_TRACKING_ID': JSON.stringify(gaTrackingId)
       }),
       // Only compress files during production builds.
       ...((isDevBuild || isDevServer) ? [] : [

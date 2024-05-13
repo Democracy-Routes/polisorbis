@@ -666,7 +666,7 @@ svg {
     color: #3b5998;
   }
 
-.facebookButton, .twitterButton {
+.facebookButton, .twitterButton, .openIDButton {
   cursor: pointer;
   border: 0px;
   color: white;
@@ -682,6 +682,11 @@ svg {
     position: relative;
     top: 4px;
   }
+}
+
+.openIDButton {
+  top: 4px;
+  background-color: #0090ff;
 }
 
 .twitterButton {

@@ -5,6 +5,7 @@ const pTosURL = process.env.P_TOS_URL;
 const pPrivacyPolicyURL = process.env.P_PRIVACY_POLICY_URL;
 const pLogoURL = process.env.P_LOGO_URL;
 const pLogoIcoURL = process.env.P_LOGO_ICO_URL;
+const pOpenidProviderName = process.env.P_OPENID_PROVIDER_NAME;
 
 var s = {};
 

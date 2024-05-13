@@ -528,8 +528,10 @@ module.exports = function(params) {
       this.count = o.count;
       this.hasTwitter = o.hasTwitter;
       this.hasFacebook = o.hasFacebook;
+      this.hasOpenID = o.hasOpenID;
       this.twitter = o.twitter;
       this.facebook = o.facebook;
+      this.openID = o.openID;
       if (o.clusterCount) { // TODO stop with this pattern
         this.clusterCount = o.clusterCount; // TODO stop with this pattern
       }
@@ -625,8 +627,10 @@ module.exports = function(params) {
       gid: self.gid,
       hasTwitter: !!self.hasTwitter,
       hasFacebook: !!self.hasFacebook,
+      hasOpenID: !!self.hasOpenID,
       twitter: self.twitter || {},
       facebook: self.facebook || {},
+      openID: self.openID || {},
       proj: self.proj,
       count: 1,
       bid: selfDotBid,
@@ -654,8 +658,10 @@ module.exports = function(params) {
       gid: o.gid,
       hasTwitter: !!ptptoiData.hasTwitter,
       hasFacebook: !!ptptoiData.hasFacebook,
+      hasOpenID: !!ptptoiData.hasOpenID,
       twitter: ptptoiData.twitter || {},
       facebook: ptptoiData.facebook || {},
+      openID: ptptoiData.openID || {},
       ptptoi: true,
       proj: o.proj,
       count: 1,
@@ -1986,11 +1992,18 @@ module.exports = function(params) {
           ptpt.hasTwitter = true;
         }
 
+        if (ptpt.openID) {
+          ptpt.picture = "OPENID_PICTURE";
+          ptpt.picture_size = 48; // twitter's _normal.JPG size. _mini would be 24, and _bigger would be 73
+          ptpt.hasOpenID = true;
+        }
+
         if (ptpt.xInfo) {
           ptpt.picture = ptpt.xInfo.x_profile_image_url;
           ptpt.picture_size = 48;
           ptpt.hasTwitter = false;
           ptpt.hasFacebook = false;
+          ptpt.hasOpenID = false;
         }
 
         // override with custom polis picture if they have it

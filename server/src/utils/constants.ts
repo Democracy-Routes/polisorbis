@@ -4,6 +4,7 @@ const DEFAULTS = {
   auth_opt_allow_3rdparty: false,
   auth_opt_fb: false,
   auth_opt_tw: false,
+  auth_opt_openid: false,
 };
 
 export { DEFAULTS };

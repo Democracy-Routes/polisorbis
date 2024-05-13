@@ -141,6 +141,9 @@ function getComments(o: CommentType) {
               "twitter_user_id",
               "profile_image_url_https",
               "followers_count",
+              // openid
+              "preferred_username",
+              "sub",
               // xInfo
               "x_profile_image_url",
               "x_name",

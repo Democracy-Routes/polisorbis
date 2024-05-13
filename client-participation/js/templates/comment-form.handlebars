@@ -188,6 +188,12 @@
           {{s.connectTwitter}}</button>
       {{/unless}}
       {{/if}}
+      {{#if auth_opt_openid}}
+      {{#unless hasOpenID}}
+        <button id="openIDButtonCommentForm" class="openIDButton">
+          {{s.connectOpenID}}</button>
+      {{/unless}}
+      {{/if}}
     </div>
 
     {{!-- ================ LOWER CONTAINER ================ --}}

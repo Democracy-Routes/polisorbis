@@ -40,6 +40,12 @@
       {{s.connectTwitter}}</button>
   {{/unless}}
   {{/if}}
+  {{#if auth_opt_openid}}
+  {{#unless hasOpenID}}
+    <button id="openIDButtonVoteView" class="openIDButton" style="margin-bottom: 4px;">
+      {{s.connectOpenID}}</button>
+  {{/unless}}
+  {{/if}}
 </div>
 
 {{else}}  {{!-- !needSocial --}}

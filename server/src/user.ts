@@ -4,7 +4,6 @@ import LruCache from "lru-cache";
 import pg from "./db/pg-query";
 import { MPromise } from "./utils/metered";
 
-import Config from "./config";
 import Conversation from "./conversation";
 import LRUCache from "lru-cache";
 import logger from "./utils/logger";
@@ -85,14 +84,17 @@ async function getUser(
     getUserInfoForUid2(uid),
     getFacebookInfo([uid]),
     getTwitterInfo([uid]),
+    getOpenIDInfo([uid]),
     xidInfoPromise,
   ]);
   let info = o[0];
   let fbInfo = o[1];
   let twInfo = o[2];
-  let xInfo = o[3];
+  let openIDInfo = o[3];
+  let xInfo = o[4];
   let hasFacebook = fbInfo && fbInfo.length && fbInfo[0];
   let hasTwitter = twInfo && twInfo.length && twInfo[0];
+  let hasOpenID = openIDInfo && openIDInfo.length && openIDInfo[0];
   let hasXid = xInfo && xInfo.length && xInfo[0];
   if (hasFacebook) {
     let width = 40;
@@ -109,6 +111,9 @@ async function getUser(
   if (hasTwitter) {
     delete twInfo[0].response;
   }
+  if (hasOpenID) {
+    delete openIDInfo[0].response;
+  }
   if (hasXid) {
     delete xInfo[0].owner;
     delete xInfo[0].created;
@@ -122,12 +127,21 @@ async function getUser(
     facebook: fbInfo && fbInfo[0],
     twitter: twInfo && twInfo[0],
     hasTwitter: !!hasTwitter,
+    hasOpenID : !!hasOpenID,
+    openID: openIDInfo && openIDInfo[0],
     hasXid: !!hasXid,
     xInfo: xInfo && xInfo[0],
     finishedTutorial: !!info.tut,
     site_ids: [info.site_id],
     created: Number(info.created),
   };
+}
+
+function getOpenIDInfo(uids: any[]) {
+    return pg.queryP_readOnly(
+        "select * from openid_users where uid in ($1);",
+        uids
+    );
 }
 
 function getTwitterInfo(uids: any[]) {
@@ -294,8 +308,12 @@ function getSocialInfoForUsers(uids: any[], zid: any) {
       "tw as (select * from twitter_users where uid in (" +
       uidString +
       ")), " +
-      "foo as (select *, coalesce(fb.uid, tw.uid) as foouid from fb full outer join tw on tw.uid = fb.uid) " +
-      "select *, coalesce(foo.foouid, x.uid) as uid from foo full outer join x on x.uid = foo.foouid;",
+      "openid as (select * from openid_users where uid in (" +
+      uidString +
+      ")), " +
+      "foo as (select *, coalesce(fb.uid, tw.uid) as foouid from fb full outer join tw on tw.uid = fb.uid), " +
+      "bar as (select *, coalesce(foo.foouid, openid.uid) as baruid from foo full outer join openid on foo.foouid = openid.uid) " +
+      "select *, coalesce(bar.baruid, x.uid) as uid from bar full outer join x on x.uid = bar.baruid;",
     [zid]
   );
 }

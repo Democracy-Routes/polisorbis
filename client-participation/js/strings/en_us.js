@@ -4,6 +4,7 @@ const pTosURL = process.env.P_TOS_URL;
 const pPrivacyPolicyURL = process.env.P_PRIVACY_POLICY_URL;
 const pLogoURL = process.env.P_LOGO_URL;
 const pLogoIcoURL = process.env.P_LOGO_ICO_URL;
+const pOpenidProviderName = process.env.P_OPENID_PROVIDER_NAME;
 
 var s = {};
 
@@ -82,8 +83,9 @@ s.hereIsNextStatement = "Vote success. Navigate up to see the next statement.";
 
 s.connectFacebook = "Connect Facebook";
 s.connectTwitter = "Connect Twitter";
-s.connectToPostPrompt = "Connect an identity to submit a statement. We will not post to your timeline.";
-s.connectToVotePrompt = "Connect an identity to vote. We will not post to your timeline.";
+s.connectOpenID = `Connect ${pOpenidProviderName}`;
+s.connectToPostPrompt = "Connect an identity to submit a statement.";
+s.connectToVotePrompt = "Connect an identity to vote.";
 s.tip = "Tip:";
 s.commentWritingTipsHintsHeader = "Tips for writing statements";
 s.tipCharLimit = "Statements are limited to {{char_limit}} characters.";
@@ -101,6 +103,7 @@ s.helpWhatAreGroupsDetail = "<p>You've probably seen 'recommended products' on A
 s.socialConnectPrompt = "Optionally connect to see friends and people you follow in the visualization.";
 s.connectFbButton = "Connect with Facebook";
 s.connectTwButton = "Connect with Twitter";
+s.connectOpenIDButton = `Connect with ${pOpenidProviderName}`;
 s.polis_err_reg_fb_verification_email_sent = "Please check your email for a verification link, then return here to continue.";
 s.polis_err_reg_fb_verification_noemail_unverified = "Your Facebook account is unverified. Please verify your email address with Facebook, then return here to continue.";
 s.showTranslationButton = "Activate third-party translation";

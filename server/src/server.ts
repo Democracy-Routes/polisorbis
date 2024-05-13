@@ -17,6 +17,9 @@ import fs from "fs";
 import bcrypt from "bcryptjs";
 import crypto from "crypto";
 import OAuth from "oauth";
+
+import { Issuer, generators } from 'openid-client';
+
 // const Pushover = require('pushover-notifications');
 // const pushoverInstance = new Pushover({
 //   user: process.env.PUSHOVER_GROUP_POLIS_DEV,
@@ -149,6 +152,52 @@ function isPolisDev(uid?: any) {
 const polisFromAddress = Config.polisFromAddress;
 
 const serverUrl = Config.getServerUrl(); // typically https://pol.is or http://localhost:5000
+
+
+
+// ##### OpenID Connect routes #####
+
+const openID = Config.openID;
+
+let openidClient: any;
+
+if (openID.canDiscover) {
+    console.log("Can discover");
+    console.log(openID.issuerURL);
+    Issuer.discover(openID.issuerURL).then((openidIssuer: any) => {
+        //Client creation
+        openidClient = new openidIssuer.Client({
+            client_id: openID.clientID,
+            client_secret: openID.clientSecret,
+            redirect_uris: [ openID.callback ],
+            response_types: [ "code" ],
+            // id_token_signed_response_alg (default "RS256")
+            // token_endpoint_auth_method (default "client_secret_basic")
+        }); // => Client
+    });
+}
+else {
+    console.log("Can't discover");
+    const openidIssuer = new Issuer({
+        issuer: openID.issuerURL,
+        authorization_endpoint: openID.authURL,
+        token_endpoint: openID.tokenURL,
+        end_session_endpoint: openID.logoutURL,
+        jwks_uri: openID.jwksURL,
+    })
+    openidClient = new openidIssuer.Client({
+        client_id: openID.clientID,
+        client_secret: openID.clientSecret,
+        redirect_uris: [ openID.callback ],
+        response_types: [ "code" ],
+        // id_token_signed_response_alg (default "RS256")
+        // token_endpoint_auth_method (default "client_secret_basic")
+    }); // => Client
+}
+
+// ##### OpenID Connect routes #####
+
+
 
 let akismet = akismetLib.client({
   blog: serverUrl,
@@ -3302,8 +3351,7 @@ Feel free to reply to this email if you need help.`;
     // Overload 3 of 3, '(options: RequiredUriUrl & RequestPromiseOptions, callback?: RequestCallback | undefined): RequestPromise<any>', gave the following error.
     //   Argument of type 'string' is not assignable to parameter of type 'RequiredUriUrl & RequestPromiseOptions'.ts(2769)
     // @ts-ignore
-    return request
-      .get(url + ipAddress, {
+    return request.get(url + ipAddress, {
         method: "GET",
         contentType: contentType,
         headers: {
@@ -5759,6 +5807,7 @@ Email verified! You can close this tab or hit the back button.
       resolve: (arg0: any) => void,
       reject: (arg0: any) => void
     ) {
+      //@ts-ignore
       FB.setAccessToken(fb_access_token);
       FB.api(
         "/me/friends",
@@ -5788,6 +5837,7 @@ Email verified! You can close this tab or hit the back button.
   function getLocationInfo(fb_access_token: any, location: { id: string }) {
     return new Promise(function (resolve: (arg0: {}) => void, reject: any) {
       if (location && location.id) {
+        //@ts-ignore
         FB.setAccessToken(fb_access_token);
         FB.api("/" + location.id, function (locationResponse: any) {
           resolve(locationResponse);
@@ -5838,7 +5888,7 @@ Email verified! You can close this tab or hit the back button.
       "updated_time",
       "verified",
     ];
-
+    //@ts-ignore
     FB.setAccessToken(fb_access_token);
     FB.api(
       "me",
@@ -6679,6 +6729,7 @@ Email verified! You can close this tab or hit the back button.
             twitter_profile_image_url_https: string;
             fb_user_id: any;
             fb_picture: string;
+            sub: any;
           };
         }) {
           let hasTwitter = c.social && c.social.twitter_user_id;
@@ -8617,6 +8668,7 @@ Email verified! You can close this tab or hit the back button.
         ifDefinedSet("auth_needed_to_write", req.p, fields);
         ifDefinedSet("auth_opt_fb", req.p, fields);
         ifDefinedSet("auth_opt_tw", req.p, fields);
+        ifDefinedSet("auth_opt_openid", req.p, fields);
         ifDefinedSet("auth_opt_allow_3rdparty", req.p, fields);
 
         if (!_.isUndefined(req.p.owner_sees_participation_stats)) {
@@ -9334,6 +9386,9 @@ Email verified! You can close this tab or hit the back button.
       conv.auth_opt_tw_computed =
         conv.auth_opt_allow_3rdparty &&
         ifDefinedFirstElseSecond(conv.auth_opt_tw, true);
+      conv.auth_opt_openid_computed =
+        conv.auth_opt_allow_3rdparty &&
+        ifDefinedFirstElseSecond(conv.auth_opt_openid, true);
 
       conv.translations = translations;
 
@@ -10000,6 +10055,7 @@ Email verified! You can close this tab or hit the back button.
         auth_opt_allow_3rdparty: any;
         auth_opt_fb: any;
         auth_opt_tw: any;
+        auth_opt_openid: any;
         conversation_id: any;
       };
     },
@@ -10059,6 +10115,7 @@ Email verified! You can close this tab or hit the back button.
                   DEFAULTS.auth_opt_allow_3rdparty,
                 auth_opt_fb: req.p.auth_opt_fb || DEFAULTS.auth_opt_fb,
                 auth_opt_tw: req.p.auth_opt_tw || DEFAULTS.auth_opt_tw,
+                auth_opt_openid: req.p.auth_opt_openid || DEFAULTS.auth_opt_openid,
               })
               .returning("*")
               .toString();
@@ -11133,6 +11190,673 @@ Thanks for using Polis!
       });
   }
 
+    // ##### OpenID Connect routes #####
+
+    function handle_GET_openidBtn(
+        req: { p: { dest?: string; owner: string } },
+        res: { redirect: (arg0: string) => void, setHeader: (arg0: string, arg1: string) => void; }
+    ) {
+        let dest = req.p.dest || "/inbox";
+        dest = encodeURIComponent(getServerNameWithProtocol(req) + dest);
+
+        const nonce = generators.nonce();
+        const code_verifier = generators.codeVerifier();
+        // store the code_verifier in your framework's session mechanism, if it is a cookie based solution
+        // it should be httpOnly (not readable by javascript) and encrypted.
+        //Set code verifier and nonce cookies
+        //property cookie is missino in type ...
+        //@ts-ignore
+        setCookie(req, res, "nonce", nonce, { httpOnly: true, secure: true });
+        //property cookie is missino in type ...
+        //@ts-ignore
+        setCookie(req, res, "code_verifier", code_verifier, { httpOnly: true, secure: true });
+
+        const code_challenge = generators.codeChallenge(code_verifier);
+
+        const authURL = openidClient.authorizationUrl({
+            scope: "openid",
+            code_challenge,
+            code_challenge_method: "S256",
+            nonce,
+            state: JSON.stringify({
+                dest: dest,
+                owner: req.p.owner
+            })
+        });
+
+        res.redirect(authURL);
+    }
+
+    function handle_GET_openid_callback(
+        req: { p: { uid?: any; dest?: any; }, cookies: { [x: string]: any }; },
+        res: {
+            redirect: (arg0: any) => void,
+            json: (arg0: { uid?: any; hname: any; email: any }) => void;
+            status: (
+                arg0: number
+            ) => {
+                (): any;
+                new(): any;
+                json: {
+                    (arg0: { uid?: any; hname: any; email: any, dest?: any }): void;
+                    new(): any;
+                };
+                send: { (arg0: string): void; new(): any };
+            };
+        }
+    ) {
+        let dest = req.p.dest;
+
+        //Getting back and deleting cookies
+        const nonce = req.cookies["nonce"];
+        const code_verifier = req.cookies["code_verifier"];
+        clearCookie(req, res, "nonce");
+        clearCookie(req, res, "code_verifier");
+
+        const params = openidClient.callbackParams(req);
+
+        //Getting back the state and deleting it from params (causes troubles)
+        const state = JSON.parse(params.state);
+        dest = decodeURIComponent(state.dest);
+        console.log(dest);
+        delete params["state"];
+
+        openidClient.callback(openID.callback, params, { code_verifier, nonce })
+        .then(
+            function (tokenSet: any) {
+
+                //Get token claims
+                /*
+                Example from Mopso Identity
+                {
+                    exp: number,
+                    iat: number,
+                    auth_time: number,
+                    jti: string,
+                    iss: string,
+                    aud: string,
+                    sub: string,
+                    typ: string,
+                    azp: string,
+                    nonce: string,
+                    session_state: string,
+                    at_hash: string,
+                    acr: string,
+                    sid: string,
+                    email_verified: boolean,
+                    name: string,
+                    preferred_username: string,
+                    given_name: string,
+                    family_name: string,
+                    email: string
+                }
+                */
+                const tokenClaims: any = tokenSet.claims();
+
+                //Better compatibility with ex-Twitter code
+                const u: UserType = {
+                    sub: tokenClaims.sub,
+                    email: tokenClaims.email,
+                    email_verified: tokenClaims.email_verified,
+                    preferred_username: tokenClaims.preferred_username,
+                    name: tokenClaims.name, //Subsequently mapped to users.hname
+                    given_name: tokenClaims.given_name,
+                    family_name: tokenClaims.family_name
+                };
+
+                do_handle_openid_auth(req, res, u, dest);
+    
+                // TODO - if no auth, generate a new user.
+                /*
+                //Trying to insert user
+                return pgQueryP(
+                    "insert into openid_users (" +
+                    "uid," +
+                    "sub," +
+                    "email," +
+                    "email_verified," +
+                    "preferred_username," +
+                    "name," +
+                    "given_name," +
+                    "family_name," +
+                    ") VALUES ($1, $2, $3, $4, $5, $6, $7, $8);",
+                    [
+                        uid,
+                        u.sub,
+                        u.email,
+                        u.email_verified,
+                        u.preferred_username,
+                        u.name, //Subsequently mapped to users.hname
+                        u.given_name,
+                        u.family_name
+                    ]
+                ).then(
+                    function () {
+                        // SUCCESS
+                        // There was no existing record
+                        // set the user's hname, if not already set
+                        pgQueryP(
+                            "update users set hname = ($2) where uid = ($1) and hname is NULL;",
+                            [uid, u.name]
+                        )
+                        .then(
+                            function () {
+                                // OK, ready
+                                u.uid = uid;
+                                res.redirect(dest);
+                            },
+                            function (err: any) {
+                                fail(res, 500, "polis_err_openid_auth_update", err);
+                            }
+                        )
+                        .catch(function (err: any) {
+                            fail(
+                                res,
+                                500,
+                                "polis_err_openid_auth_update_misc",
+                                err
+                            );
+                        });
+                    },
+                    function (err: any) {
+                        if (isDuplicateKey(err)) {
+                            // we know the uid OR sub is filled
+                            // check if the uid is there with the same sub - if so, redirect and good!
+                            // determine which kind of duplicate
+                            Promise.all([
+                                pgQueryP(
+                                    "select * from openid_users where uid = ($1);",
+                                    [uid]
+                                ),
+                                pgQueryP(
+                                    "select * from openid_users where sub = ($1);",
+                                    [u.sub]
+                                ),
+                            ])
+                            //                       No overload matches this call.
+                            // Overload 1 of 2, '(onFulfill?: ((value: [unknown, unknown]) => Resolvable<void>) | undefined, onReject?: ((error: any) => Resolvable<void>) | undefined): Bluebird<void>', gave the following error.
+                            //   Argument of type '(promiseResults: any[][]) => void' is not assignable to parameter of type '(value: [unknown, unknown]) => Resolvable<void>'.
+                            //     Types of parameters 'promiseResults' and 'value' are incompatible.
+                            //       Type '[unknown, unknown]' is not assignable to type 'any[][]'.
+                            // Overload 2 of 2, '(onfulfilled?: ((value: [unknown, unknown]) => Resolvable<void>) | null | undefined, onrejected?: ((reason: any) => PromiseLike<never>) | null | undefined): Bluebird<void>', gave the following error.
+                            //   Argument of type '(promiseResults: any[][]) => void' is not assignable to parameter of type '(value: [unknown, unknown]) => Resolvable<void>'.
+                            //     Types of parameters 'promiseResults' and 'value' are incompatible.
+                            //                       Type '[unknown, unknown]' is not assignable to type 'any[][]'.ts(2769)
+                            // @ts-ignore
+                            .then(function (promiseResults: any[][]) {
+                                let recordForUid = promiseResults[0][0];
+                                let recordForSub = promiseResults[1][0];
+                                if (recordForUid && recordForSub) {
+                                    if (recordForUid.uid === recordForSub.uid) {
+                                        // match
+                                        res.redirect(dest);
+                                    } else {
+                                        // TODO_SECURITY_REVIEW
+                                        // both exist, but not same uid
+                                        switchToUser(req, res, recordForSub.uid)
+                                        .then(function () {
+                                            res.redirect(dest);
+                                        })
+                                        .catch(function (err: any) {
+                                            fail(res, 500, "polis_err_openid_auth_456", err);
+                                        });
+                                    }
+                                } else if (recordForUid) {
+                                    // currently signed in user has a OpenID account attached, but it's a different OpenID account, and they are now signing in with a different OpenID account.
+                                    // the newly supplied OpenID account is not attached to anything.
+                                    fail(res, 500, "polis_err_openid_already_attached", err);
+                                } else if (recordForSub) {
+                                    // currently signed in user has no OpenID account attached, but they just signed in with a OpenID account which is attached to another user.
+                                    // For now, let's just have it sign in as that user.
+                                    // TODO_SECURITY_REVIEW
+                                    switchToUser(req, res, recordForSub.uid)
+                                        .then(function () {
+                                            res.redirect(dest);
+                                        })
+                                        .catch(function (err: any) {
+                                            fail(res, 500, "polis_err_openid_auth_234", err);
+                                        }
+                                    );
+                                } else {
+                                    fail(res, 500, "polis_err_openid_auth_345");
+                                }
+                            });
+
+                            // else check if the uid is there and has some other screen_name - if so, ????????
+
+                            // else check if the screen_name is there, but for a different uid - if so, ??????
+                        } else {
+                            fail(res, 500, "polis_err_openid_auth_05", err);
+                        }
+                    }
+                );
+                */
+            },
+            function (err: any) {
+                fail(res, 500, "polis_err_openid_auth_gettoken", err);
+            }
+        )
+        .catch(
+            function (err: any) {
+                fail(res, 500, "polis_err_openid_auth_misc", err);
+            }
+        );
+    }
+
+    function do_handle_openid_auth(
+        req: {
+            p: {
+                password?: any;
+                uid?: any;
+            };
+            cookies?: { [x: string]: any };
+        },
+        res: {
+            redirect: (arg0: any) => void,
+            json: (arg0: { uid?: any; hname: any; email: any, dest?: any }) => void;
+            status: (
+                arg0: number
+            ) => {
+                (): any;
+                new(): any;
+                json: {
+                    (arg0: { uid?: any; hname: any; email: any, dest?: any }): void;
+                    new(): any;
+                };
+                send: { (arg0: string): void; new(): any };
+            };
+        },
+        userinfo: UserType,
+        dest: any
+    ) {
+        console.log(userinfo);
+        // If a pol.is user record exists, and someone logs in with an OpenID account that has the same email address, we should bind that OpenID account to the pol.is account, and let the user sign in.
+        let TRUST_OPENID_TO_VALIDATE_EMAIL = true;
+        let email = userinfo.email;
+        let hname = userinfo.name; //Maybe hname
+        let sub = userinfo.sub;
+        let email_verified = userinfo.email_verified;
+
+        let password = req.p.password;
+
+        let uid = req.p.uid;
+
+        let openidUserRecord = userinfo;
+        function doOpenIDUserHasAccountLinked(user: {
+            sub: any;
+            uid: string;
+            hname: any;
+            email: any;
+        },
+        dest: any) {
+            if (user.sub === sub) {
+                updateOpenIDUserRecord(
+                    Object.assign(
+                        {},
+                        {
+                            uid: user.uid,
+                        },
+                        openidUserRecord
+                    )
+                )
+                .then(
+                    //@ts-ignore
+                    startSessionAndAddCookies(req, res, user.uid)
+                    .then(function () {
+                        // res.json({
+                        //     uid: user.uid,
+                        //     hname: user.hname,
+                        //     email: user.email,
+                        //     dest: dest
+                        // });
+                        res.redirect(dest);
+                    })
+                    .catch(function (err: any) {
+                        fail(res, 500, "polis_err_reg_openid_start_session2", err);
+                    }),
+                    function (err: any) {
+                        fail(res, 500, "polis_err_updating_openid_info", err);
+                    }
+                )
+                .catch(function (err: any) {
+                    fail(res, 500, "polis_err_openid_auth_misc", err);
+                });
+            } else {
+                // the user with that email has a different OpenID account attached
+                // so clobber the old openid_users record and add the new one.
+                deleteOpenIDUserRecord(user).then(
+                    function () {
+                        doOpenIDNotLinkedButUserWithEmailExists(user, dest);
+                    },
+                    function (err: any) {
+                        emailBadProblemTime("opneid auth where user exists with different openid account " + user.uid);
+                        fail(res, 500, "polis_err_reg_openid_user_exists_with_different_account", err);
+                    }
+                );
+            }
+        } // doOpenIDUserHasAccountLinked
+
+        function doOpenIDNotLinkedButUserWithEmailExists(user: { uid?: any }, dest?: any) {
+            // user for this email exists, but does not have OpenID account linked.
+            // user will be prompted for their password, and client will repeat the call with password
+            // fail(res, 409, "polis_err_reg_user_exits_with_email_but_has_no_openid_linked")
+            if (!TRUST_OPENID_TO_VALIDATE_EMAIL && !password) {
+                fail(res, 403, "polis_err_user_with_this_email_exists " + email);
+            } else {
+                let pwPromise = TRUST_OPENID_TO_VALIDATE_EMAIL
+                    ? Promise.resolve(true)
+                    : checkPassword(user.uid, password || "");
+                pwPromise.then(
+                    function (ok: any) {
+                        if (ok) {
+                            createOpenIDUserRecord(
+                                Object.assign(
+                                    {},
+                                    {
+                                        uid: user.uid,
+                                    },
+                                    openidUserRecord
+                                )
+                            )
+                            .then(
+                                function () {
+                                    return startSessionAndAddCookies(
+                                        req,
+                                        res,
+                                        user.uid
+                                    ).then(function () {
+                                        return user;
+                                    });
+                                },
+                                function (err: any) {
+                                    fail(res, 500, "polis_err_linking_openid_to_existing_polis_account", err);
+                                }
+                            )
+                            .then(
+                                //                       Argument of type '(user: { uid?: any; hname: any; email: any; }) => void' is not assignable to parameter of type '(value: void | { uid?: any; }) => void | PromiseLike<void>'.
+                                // Types of parameters 'user' and 'value' are incompatible.
+                                //   Type 'void | { uid?: any; }' is not assignable to type '{ uid?: any; hname: any; email: any; }'.
+                                //                       Type 'void' is not assignable to type '{ uid?: any; hname: any; email: any; }'.ts(2345)
+                                // @ts-ignore
+                                function (user: { uid?: any; hname: any; email: any }) {
+                                    // res.status(200).json({
+                                    //     uid: user.uid,
+                                    //     hname: user.hname,
+                                    //     email: user.email,
+                                    //     dest: dest
+                                    // });
+                                    res.redirect(dest);
+                                },
+                                function (err: any) {
+                                    fail(res, 500, "polis_err_linking_openid_misc", err);
+                                }
+                            )
+                            .catch(function (err: any) {
+                                fail(res, 500, "polis_err_linking_openid_to_existing_polis_account_misc", err);
+                            });
+                        } else {
+                            fail(res, 403, "polis_err_password_mismatch");
+                        }
+                    },
+                    function (err: any) {
+                        fail(res, 500, "polis_err_password_check", err);
+                    }
+                );
+            }
+        } // end doOpenIDNotLinkedButUserWithEmailExists
+
+        function doOpenIDNoUserExistsYet(user: any, dest: any) {
+            let promise;
+            if (uid) {
+                // user record already exists, so populate that in case it has missing info
+                promise = Promise.all([
+                    pgQueryP("select * from users where uid = ($1);", [uid]),
+                    pgQueryP(
+                        "update users set hname = ($2) where uid = ($1) and hname is NULL;",
+                        [uid, hname]
+                    ),
+                    pgQueryP(
+                        "update users set email = ($2) where uid = ($1) and email is NULL;",
+                        [uid, email]
+                    ),
+                    //         No overload matches this call.
+                    // Overload 1 of 2, '(onFulfill?: ((value: [unknown, unknown, unknown]) => any) | undefined, onReject?: ((error: any) => any) | undefined): Bluebird<any>', gave the following error.
+                    //   Argument of type '(o: any[][]) => any' is not assignable to parameter of type '(value: [unknown, unknown, unknown]) => any'.
+                    //     Types of parameters 'o' and 'value' are incompatible.
+                    //       Type '[unknown, unknown, unknown]' is not assignable to type 'any[][]'.
+                    //         Type 'unknown' is not assignable to type 'any[]'.
+                    // Overload 2 of 2, '(onfulfilled?: ((value: [unknown, unknown, unknown]) => any) | null | undefined, onrejected?: ((reason: any) => PromiseLike<never>) | null | undefined): Bluebird<any>', gave the following error.
+                    //   Argument of type '(o: any[][]) => any' is not assignable to parameter of type '(value: [unknown, unknown, unknown]) => any'.
+                    //     Types of parameters 'o' and 'value' are incompatible.
+                    //           Type '[unknown, unknown, unknown]' is not assignable to type 'any[][]'.ts(2769)
+                    // @ts-ignore
+                ]).then(function (o: any[][]) {
+                    let user = o[0][0];
+                    return user;
+                });
+            } else {
+                let query =
+                    "insert into users " +
+                    "(email, hname) VALUES " +
+                    "($1, $2) " +
+                    "returning *;";
+                //       Argument of type '(rows: string | any[]) => any' is not assignable to parameter of type '(value: unknown) => any'.
+                // Types of parameters 'rows' and 'value' are incompatible.
+                //   Type 'unknown' is not assignable to type 'string | any[]'.
+                //         Type 'unknown' is not assignable to type 'any[]'.ts(2345)
+                // @ts-ignore
+                promise = pgQueryP(query, [email, hname]).then(function (
+                    rows: string | any[]
+                ) {
+                    let user = (rows && rows.length && rows[0]) || null;
+                    return user;
+                });
+            }
+            // Create user record
+            promise
+            .then(function (user: any) {
+                return createOpenIDUserRecord(
+                    Object.assign({}, user, openidUserRecord)
+                ).then(function () {
+                    return user;
+                });
+            })
+            .then(
+                //         Argument of type '(user: { uid?: any; }) => Bluebird<void | { uid?: any; }>' is not assignable to parameter of type '(value: void | { uid?: any; }) => void | { uid?: any; } | PromiseLike<void | { uid?: any; }>'.
+                // Types of parameters 'user' and 'value' are incompatible.
+                //   Type 'void | { uid?: any; }' is not assignable to type '{ uid?: any; }'.
+                //         Type 'void' is not assignable to type '{ uid?: any; }'.ts(2345)
+                // @ts-ignore
+                function (user: { uid?: any, hname?: any, email?: any }) {
+                    let uid = user.uid;
+                    return startSessionAndAddCookies(req, res, uid).then(
+                        function () {
+                            return user;
+                        },
+                        function (err: any) {
+                            fail(res, 500, "polis_err_reg_openid_user_creating_record2", err);
+                        }
+                    );
+                },
+                function (err: any) {
+                    fail(res, 500, "polis_err_reg_openid_user_creating_record", err);
+                }
+            )
+            .then(
+                //         Argument of type '(user: { uid?: any; hname: any; email: any; }) => void' is not assignable to parameter of type '(value: void | { uid?: any; }) => void | PromiseLike<void>'.
+                // Types of parameters 'user' and 'value' are incompatible.
+                //   Type 'void | { uid?: any; }' is not assignable to type '{ uid?: any; hname: any; email: any; }'.
+                //         Type 'void' is not assignable to type '{ uid?: any; hname: any; email: any; }'.ts(2345)
+                // @ts-ignore
+                function (user: { uid?: any; hname: any; email: any }) {
+                    // res.json({
+                    //     uid: user.uid,
+                    //     hname: user.hname,
+                    //     email: user.email,
+                    //     dest: dest
+                    // });
+                    res.redirect(dest);
+                },
+                function (err: any) {
+                    fail(res, 500, "polis_err_reg_openid_user_misc22", err);
+                }
+            )
+            .catch(function (err: any) {
+                fail(res, 500, "polis_err_reg_openid_user_misc2", err);
+            });
+        } // end doOpenIDNoUserExistsYet
+
+        let emailVerifiedPromise = Promise.resolve(true);
+        if (!email_verified) {
+            if (email) {
+                // Type 'Promise<unknown>' is missing the following properties from type 'Bluebird<boolean>': caught, error, lastly, bind, and 38 more.ts(2740)
+                // @ts-ignore
+                emailVerifiedPromise = isEmailVerified(email);
+            } else {
+                emailVerifiedPromise = Promise.resolve(false);
+            }
+        }
+
+        Promise.all([emailVerifiedPromise]).then(function (a: any[]) {
+            let isVerifiedByPolisOrOpenID = a[0];
+
+            if (!isVerifiedByPolisOrOpenID) {
+                if (email) {
+                    doSendVerification(req, email);
+                    res.status(403).send("polis_err_reg_openid_verification_email_sent");
+                    return;
+                } else {
+                    res
+                        .status(403)
+                        .send("polis_err_reg_openid_verification_noemail_unverified");
+                    return;
+                }
+            }
+
+            pgQueryP(
+                "select users.*, openid_users.sub from users left join openid_users on users.uid = openid_users.uid " +
+                "where users.email = ($1) " +
+                "   or openid_users.sub = ($2) " +
+                ";",
+                [email, sub]
+            )
+            .then(
+                //         Argument of type '(rows: string | any[]) => void' is not assignable to parameter of type '(value: unknown) => void | PromiseLike<void>'.
+                // Types of parameters 'rows' and 'value' are incompatible.
+                //   Type 'unknown' is not assignable to type 'string | any[]'.
+                //         Type 'unknown' is not assignable to type 'any[]'.ts(2345)
+                // @ts-ignore
+                function (rows: string | any[]) {
+                    let user = (rows && rows.length && rows[0]) || null;
+                    if (rows && rows.length > 1) {
+                        // the auth provided us with email and sub where the email is one polis user, and the sub is for another.
+                        // go with the one matching the sub in this case, and leave the email matching account alone.
+                        user = _.find(rows, function (row: { sub: any }) {
+                            return row.sub === sub;
+                        });
+                    }
+                    if (user) {
+                        if (user.sub) {
+                            doOpenIDUserHasAccountLinked(user, dest);
+                        } else {
+                            doOpenIDNotLinkedButUserWithEmailExists(user, dest);
+                        }
+                    } else {
+                        doOpenIDNoUserExistsYet(user, dest);
+                    }
+                },
+                function (err: any) {
+                    fail(res, 500, "polis_err_reg_openid_user_looking_up_email", err);
+                }
+            )
+            .catch(function (err: any) {
+                fail(res, 500, "polis_err_reg_openid_user_misc", err);
+            });
+        });
+    } // end do_handle_openid_auth
+
+    function deleteOpenIDUserRecord(user: { uid?: any }) {
+        if (!isPolisDev(user.uid)) {
+            // limit to test accounts for now
+            return Promise.reject("polis_err_not_implemented");
+        }
+        return pgQueryP("delete from openid_users where uid = ($1);", [user.uid]);
+    }
+
+    function createOpenIDUserRecord(
+        user: UserType
+    ) {
+        // Create OpenID user record
+        return pgQueryP(
+            "insert into openid_users (uid, sub, email_verified, preferred_username, name, given_name, family_name) VALUES ($1, $2, $3, $4, $5, $6, $7) returning *;",
+            [
+                user.uid,
+                user.sub,
+                user.email_verified,
+                user.preferred_username,
+                user.name,
+                user.given_name,
+                user.family_name
+            ]
+            /*
+            "insert into facebook_users (uid, fb_user_id, fb_name, fb_link, fb_public_profile, fb_login_status, fb_access_token, fb_granted_scopes, fb_location_id, location, fb_friends_response, response) values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12);",
+            [
+                user.uid,
+                user.fb_user_id,
+                profileInfo.name,
+                profileInfo.link,
+                JSON.stringify(user.fb_public_profile),
+                user.fb_login_status,
+                // o.fb_auth_response,
+                user.fb_access_token,
+                user.fb_granted_scopes,
+                profileInfo.locationInfo && profileInfo.locationInfo.id,
+                profileInfo.locationInfo && profileInfo.locationInfo.name,
+                user.fb_friends_response || "",
+                user.response,
+            ]
+            */
+        );
+    }
+
+    function updateOpenIDUserRecord(
+        user: UserType
+    ) {
+        // Update OpenID user record
+        return pgQueryP(
+            "update openid_users set modified=now_as_millis(), sub=($2), email_verified=($3), preferred_username=($4), name=($5), given_name=($6), family_name=($7) where uid = ($1);",
+            [
+                user.uid,
+                user.sub,
+                user.email_verified,
+                user.preferred_username,
+                user.name,
+                user.given_name,
+                user.family_name
+            ]
+            /*
+            "update facebook_users set modified=now_as_millis(), fb_user_id=($2), fb_name=($3), fb_link=($4), fb_public_profile=($5), fb_login_status=($6), fb_access_token=($7), fb_granted_scopes=($8), fb_location_id=($9), location=($10), fb_friends_response=($11), response=($12) where uid = ($1);",
+            [
+                user.uid,
+                user.fb_user_id,
+                profileInfo.name,
+                profileInfo.link,
+                fb_public_profile_string,
+                user.fb_login_status,
+                // o.fb_auth_response,
+                user.fb_access_token,
+                user.fb_granted_scopes,
+                profileInfo.locationInfo && profileInfo.locationInfo.id,
+                profileInfo.locationInfo && profileInfo.locationInfo.name,
+                user.fb_friends_response || "",
+                user.response,
+            ]
+            */
+        );
+    }
+
+    // ##### OpenID Connect routes ##### 
+
   function getSocialParticipantsForMod_timed(
     zid?: any,
     limit?: any,
@@ -11201,13 +11925,21 @@ Thanks for using Polis!
       "xids_subset.x_name as x_name, " +
       // "xids_subset.x_email as x_email, " +
 
+      "openid_users.sub as openid__sub, " +
+      "openid_users.preferred_username as openid__preferred_username, " +
+      "openid_users.name as openid__name, " +
+      "openid_users.given_name as openid__given_name, " +
+      "openid_users.family_name as openid__family_name, " +
+      "openid_users.email_verified as openid__email_verified, " +
+
       "final_set.pid " +
       "from final_set " +
       "left join twitter_users on final_set.uid = twitter_users.uid " +
       "left join facebook_users on final_set.uid = facebook_users.uid " +
+      "left join openid_users on final_set.uid = openid_users.uid " +
       "left join xids_subset on final_set.uid = xids_subset.uid " +
       ") " +
-      "select * from all_rows where (tw__twitter_user_id is not null) or (fb__fb_user_id is not null) or (xid is not null) " +
+      "select * from all_rows where (tw__twitter_user_id is not null) or (fb__fb_user_id is not null) or (xid is not null) or (openid__sub is not null)" +
       // "select * from all_rows " +
       ";";
     return pgQueryP(q, params);
@@ -13025,6 +13757,9 @@ Thanks for using Polis!
         let auth_opt_tw_computed =
           auth_opt_allow_3rdparty &&
           ifDefinedFirstElseSecond(conv.auth_opt_tw, DEFAULTS.auth_opt_tw);
+        let auth_opt_openid_computed =
+          auth_opt_allow_3rdparty &&
+          ifDefinedFirstElseSecond(conv.auth_opt_openid, DEFAULTS.auth_opt_openid);
 
         conv = {
           topic: conv.topic,
@@ -13051,6 +13786,7 @@ Thanks for using Polis!
           auth_opt_allow_3rdparty: auth_opt_allow_3rdparty,
           auth_opt_fb_computed: auth_opt_fb_computed,
           auth_opt_tw_computed: auth_opt_tw_computed,
+          auth_opt_openid_computed: auth_opt_openid_computed,
         };
         conv.conversation_id = conversation_id;
         // conv = Object.assign({}, optionalResults, conv);
@@ -13152,6 +13888,7 @@ Thanks for using Polis!
     ifDefinedSet("auth_needed_to_write", req.p, o);
     ifDefinedSet("auth_opt_fb", req.p, o);
     ifDefinedSet("auth_opt_tw", req.p, o);
+    ifDefinedSet("auth_opt_openid", req.p, o);
     ifDefinedSet("auth_opt_allow_3rdparty", req.p, o);
     ifDefinedSet("topic", req.p, o);
     if (!_.isUndefined(req.p.show_vis)) {
@@ -13994,6 +14731,8 @@ Thanks for using Polis!
     handle_PUT_reports,
     handle_PUT_users,
 
+    handle_GET_openid_callback,
+    handle_GET_openidBtn,
     // Debugging
     //getNextPrioritizedComment,
     //getPca
