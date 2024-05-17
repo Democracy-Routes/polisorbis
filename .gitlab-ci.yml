@@ -64,6 +64,9 @@ file-server:
     P_REPO_URL: "https://gitlab.com/copernicani/polisorbis"
     P_TOS_URL: "https://copernicani.it/privacy-policy/"
     P_PRIVACY_POLICY_URL: "https://copernicani.it/privacy-policy/"
+    P_OPENID_ENABLED: "true"
+    P_OPENID_PROVIDER_NAME: "Mopso" 
+
   script:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     - |-
@@ -77,6 +80,8 @@ file-server:
       --build-arg P_DOC_URL="$P_DOC_URL" \
       --build-arg P_REPO_URL="$P_REPO_URL" \
       --build-arg P_TOS_URL="$P_TOS_URL" \
+      --build-arg P_OPENID_ENABLED="$P_OPENID_ENABLED" \
+      --build-arg P_OPENID_PROVIDER_NAME="$P_OPENID_PROVIDER_NAME" \
       --build-arg P_PRIVACY_POLICY_URL="$P_PRIVACY_POLICY_URL" \
         .
 
