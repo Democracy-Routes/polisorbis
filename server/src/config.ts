@@ -8,7 +8,6 @@ const prodHostname = process.env.API_PROD_HOSTNAME || "pol.is";
 const serverPort = parseInt(process.env.API_SERVER_PORT || process.env.PORT || "5000", 10) as number;
 const shouldUseTranslationAPI = isTrue(process.env.SHOULD_USE_TRANSLATION_API) as boolean;
 
-const openidProviderName = process.env.P_OPENID_PROVIDER_NAME || "OpenID" as string;
 const openidIssuerURL = process.env.P_OPENID_ISSUER_URL || "" as string;
 const openidClientID = process.env.P_OPENID_CLIENT_ID || "" as string;
 const openidClientSecret = process.env.P_OPENID_CLIENT_SECRET as string | undefined;
@@ -23,7 +22,6 @@ const openidEnabled = isTrue(process.env.P_OPENID_ENABLED) as boolean;
 
 const openID = {
     enabled: openidEnabled,
-    providerName: openidProviderName,
     issuerURL: openidIssuerURL,
     clientID: openidClientID,
     clientSecret: openidClientSecret,
