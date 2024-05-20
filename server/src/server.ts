@@ -11788,7 +11788,28 @@ Thanks for using Polis!
     ) {
         // Create OpenID user record
         return pgQueryP(
-            "insert into openid_users (uid, sub, email_verified, preferred_username, name, given_name, family_name) VALUES ($1, $2, $3, $4, $5, $6, $7) returning *;",
+            "insert into openid_users (" +
+                "uid, " +
+                "sub, " +
+                "email_verified, " +
+                "preferred_username, " +
+                "name, " +
+                "given_name, " +
+                "family_name, " +
+                "middle_name, " +
+                "nickname, " +
+                "profile, " +
+                "picture, " +
+                "website, " +
+                "gender, " +
+                "birthdate, " +
+                "zoneinfo, " +
+                "locale, " +
+                "phone_number, " +
+                "phone_number_verified, " +
+                "address" +
+            ")" +
+            "VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19) returning *;",
             [
                 user.uid,
                 user.sub,
@@ -11796,7 +11817,19 @@ Thanks for using Polis!
                 user.preferred_username,
                 user.name,
                 user.given_name,
-                user.family_name
+                user.family_name,
+                user.middle_name,
+                user.nickname,
+                user.profile,
+                user.picture,
+                user.website,
+                user.gender,
+                user.birthdate,
+                user.zoneinfo,
+                user.locale,
+                user.phone_number,
+                user.phone_number_verified,
+                user.address
             ]
             /*
             "insert into facebook_users (uid, fb_user_id, fb_name, fb_link, fb_public_profile, fb_login_status, fb_access_token, fb_granted_scopes, fb_location_id, location, fb_friends_response, response) values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12);",
@@ -11824,7 +11857,27 @@ Thanks for using Polis!
     ) {
         // Update OpenID user record
         return pgQueryP(
-            "update openid_users set modified=now_as_millis(), sub=($2), email_verified=($3), preferred_username=($4), name=($5), given_name=($6), family_name=($7) where uid = ($1);",
+            "update openid_users set " +
+                "modified=now_as_millis(), " +
+                "sub=($2), " +
+                "email_verified=($3), " +
+                "preferred_username=($4), " +
+                "name=($5), " +
+                "given_name=($6), " +
+                "family_name=($7), " +
+                "middle_name=($8), " +
+                "nickname=($9), " +
+                "profile=($10), " +
+                "picture=($11), " +
+                "website=($12), " +
+                "gender=($13), " +
+                "birthdate=($14), " +
+                "zoneinfo=($15), " +
+                "locale=($16), " +
+                "phone_number=($17), " +
+                "phone_number_verified=($18), " +
+                "address=($19) " +
+            "where uid = ($1);",
             [
                 user.uid,
                 user.sub,
@@ -11832,7 +11885,19 @@ Thanks for using Polis!
                 user.preferred_username,
                 user.name,
                 user.given_name,
-                user.family_name
+                user.family_name,
+                user.middle_name,
+                user.nickname,
+                user.profile,
+                user.picture,
+                user.website,
+                user.gender,
+                user.birthdate,
+                user.zoneinfo,
+                user.locale,
+                user.phone_number,
+                user.phone_number_verified,
+                user.address
             ]
             /*
             "update facebook_users set modified=now_as_millis(), fb_user_id=($2), fb_name=($3), fb_link=($4), fb_public_profile=($5), fb_login_status=($6), fb_access_token=($7), fb_granted_scopes=($8), fb_location_id=($9), location=($10), fb_friends_response=($11), response=($12) where uid = ($1);",
@@ -11926,11 +11991,23 @@ Thanks for using Polis!
       // "xids_subset.x_email as x_email, " +
 
       "openid_users.sub as openid__sub, " +
+      // "openid_users.email_verified as openid__email_verified, " +
       "openid_users.preferred_username as openid__preferred_username, " +
       "openid_users.name as openid__name, " +
       "openid_users.given_name as openid__given_name, " +
       "openid_users.family_name as openid__family_name, " +
-      "openid_users.email_verified as openid__email_verified, " +
+      "openid_users.middle_name as openid__muddle_name, " +
+      "openid_users.nickname as openid__nickname, " +
+      // "openid_users.profile as openid__profile, " +
+      "openid_users.picture as openid__picture, " +
+      // "openid_users.website as openid__website, " +
+      // "openid_users.gender as openid__gender, " +
+      // "openid_users.birthdate as openid__birthdate, " +
+      // "openid_users.zoneinfo as openid__zoneinfo, " +
+      // "openid_users.locale as openid__locale, " +
+      // "openid_users.phone_number as openid__phone_number, " +
+      // "openid_users.phone_number_verified as openid__phone_number_verified, " +
+      // "openid_users.address as openid__address, " +
 
       "final_set.pid " +
       "from final_set " +

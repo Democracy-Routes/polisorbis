@@ -111,6 +111,18 @@ export type UserType = {
     family_name?: any;
     screen_name?: any;
     name?: any;
+    middle_name?: any;
+    nickname?: any;
+    profile?: any;
+    picture?: any;
+    website?: any;
+    gender?: any;
+    birthdate?: any;
+    zoneinfo?: any;
+    locale?: any;
+    phone_number?: any;
+    phone_number_verified?: any;
+    address?: any;
     followers_count?: number;
     friends_count?: number;
     verified?: any;
