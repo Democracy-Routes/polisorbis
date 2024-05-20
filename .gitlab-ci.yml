@@ -3,7 +3,11 @@ workflow:
     - if: "$CI_COMMIT_TAG"
       variables:
         TAG: $CI_COMMIT_TAG
-    - variables:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      variables:
+        TAG: $CI_COMMIT_SHA
+    - if: "$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH"
+      variables:
         TAG: $CI_COMMIT_SHA
 
 stages:
@@ -65,7 +69,7 @@ file-server:
     P_TOS_URL: "https://copernicani.it/privacy-policy/"
     P_PRIVACY_POLICY_URL: "https://copernicani.it/privacy-policy/"
     P_OPENID_ENABLED: "true"
-    P_OPENID_PROVIDER_NAME: "Mopso" 
+    P_OPENID_PROVIDER_NAME: "Mopso"
 
   script:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
