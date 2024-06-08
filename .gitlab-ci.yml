@@ -58,7 +58,7 @@ file-server-demo:
   services:
     - docker:24.0.5-dind
   variables:
-    FULL_IMAGE_TAG: $CI_REGISTRY_IMAGE/file-server:$TAG
+    FULL_IMAGE_TAG: $CI_REGISTRY_IMAGE/file-server:demo-$TAG
     P_LOGO_ICO_URL: "https://doc.polisorbis.copernicani.it/images/polisorbis-logo-square.png"
     P_LOGO_URL: "https://doc.polisorbis.copernicani.it/"
     P_TITLE: "PolisOrbis"
@@ -68,7 +68,7 @@ file-server-demo:
     P_REPO_URL: "https://gitlab.com/copernicani/polisorbis"
     P_TOS_URL: "https://copernicani.it/privacy-policy/"
     P_PRIVACY_POLICY_URL: "https://copernicani.it/privacy-policy/"
-    P_OPENID_ENABLED: "true"
+    P_OPENID_ENABLED: "false"
     P_OPENID_PROVIDER_NAME: "Mopso"
 
   script:
