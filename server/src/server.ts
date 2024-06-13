@@ -160,12 +160,31 @@ const serverUrl = Config.getServerUrl(); // typically https://pol.is or http://l
 const openID = Config.openID;
 
 let openidClient: any;
-
-if (openID.canDiscover) {
-    console.log("Can discover");
-    console.log(openID.issuerURL);
-    Issuer.discover(openID.issuerURL).then((openidIssuer: any) => {
-        //Client creation
+if (openID.enabled) {
+    if (openID.canDiscover) {
+        console.log("Can discover");
+        console.log(openID.issuerURL);
+        Issuer.discover(openID.issuerURL).then((openidIssuer: any) => {
+            //Client creation
+            openidClient = new openidIssuer.Client({
+                client_id: openID.clientID,
+                client_secret: openID.clientSecret,
+                redirect_uris: [ openID.callback ],
+                response_types: [ "code" ],
+                // id_token_signed_response_alg (default "RS256")
+                // token_endpoint_auth_method (default "client_secret_basic")
+            }); // => Client
+        });
+    }
+    else {
+        console.log("Can't discover");
+        const openidIssuer = new Issuer({
+            issuer: openID.issuerURL,
+            authorization_endpoint: openID.authURL,
+            token_endpoint: openID.tokenURL,
+            end_session_endpoint: openID.logoutURL,
+            jwks_uri: openID.jwksURL,
+        })
         openidClient = new openidIssuer.Client({
             client_id: openID.clientID,
             client_secret: openID.clientSecret,
@@ -174,25 +193,7 @@ if (openID.canDiscover) {
             // id_token_signed_response_alg (default "RS256")
             // token_endpoint_auth_method (default "client_secret_basic")
         }); // => Client
-    });
-}
-else {
-    console.log("Can't discover");
-    const openidIssuer = new Issuer({
-        issuer: openID.issuerURL,
-        authorization_endpoint: openID.authURL,
-        token_endpoint: openID.tokenURL,
-        end_session_endpoint: openID.logoutURL,
-        jwks_uri: openID.jwksURL,
-    })
-    openidClient = new openidIssuer.Client({
-        client_id: openID.clientID,
-        client_secret: openID.clientSecret,
-        redirect_uris: [ openID.callback ],
-        response_types: [ "code" ],
-        // id_token_signed_response_alg (default "RS256")
-        // token_endpoint_auth_method (default "client_secret_basic")
-    }); // => Client
+    }
 }
 
 // ##### OpenID Connect routes #####

@@ -17,6 +17,8 @@ import { CheckboxField } from './CheckboxField'
 import ModerateCommentsSeed from './seed-comment'
 // import ModerateCommentsSeedTweet from "./seed-tweet";
 
+const openidEnabled = process.env.P_OPENID_ENABLED;
+
 @connect((state) => state.user)
 @connect((state) => state.zid_metadata)
 class ConversationConfig extends React.Component {
@@ -218,37 +220,39 @@ class ConversationConfig extends React.Component {
                     Identification requirements
                 </Heading>
 
-                <CheckboxField
-                    id="openidAuthCheck"
-                    sx={{ mt: [3] }}
-                    field="auth_opt_openid"
-                    label="Auth with OpenID">
-                    OpenID
+                {openidEnabled ? 
+                    <CheckboxField
+                        id="openidAuthCheck"
+                        sx={{ mt: [3] }}
+                        field="auth_opt_openid"
+                        label="Auth with OpenID">
+                        OpenID
 
-                    {/*
-                    <Flex sx={{ gap: [3] }}>
-                        <Text>
-                        Identity provider
-                        </Text>
-                        <input
-                        ref={(c) => (this.identityProvider = c)}
-                        sx={{
-                            fontFamily: 'body',
-                            fontSize: [2],
-                            width: '9em',
-                            borderRadius: 2,
-                            border: '1px solid',
-                            borderColor: 'mediumGray'
-                        }}
-                        data-test-id="identityProvider"
-                        onBlur={this.handleStringValueChange('identityProvider').bind(this)}
-                        onChange={this.handleConfigInputTyping('identityProvider').bind(this)}
-                        defaultValue={this.props.zid_metadata.identityProvider}
-                        />
-                    </Flex>
-                    */}
+                        {/*
+                        <Flex sx={{ gap: [3] }}>
+                            <Text>
+                            Identity provider
+                            </Text>
+                            <input
+                            ref={(c) => (this.identityProvider = c)}
+                            sx={{
+                                fontFamily: 'body',
+                                fontSize: [2],
+                                width: '9em',
+                                borderRadius: 2,
+                                border: '1px solid',
+                                borderColor: 'mediumGray'
+                            }}
+                            data-test-id="identityProvider"
+                            onBlur={this.handleStringValueChange('identityProvider').bind(this)}
+                            onChange={this.handleConfigInputTyping('identityProvider').bind(this)}
+                            defaultValue={this.props.zid_metadata.identityProvider}
+                            />
+                        </Flex>
+                        */}
 
-                </CheckboxField>
+                    </CheckboxField> : <></>
+                }
 
                 <CheckboxField
                     id="idCertAuthCheck"

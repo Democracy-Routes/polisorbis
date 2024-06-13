@@ -16,6 +16,9 @@ import Config from "./src/config";
 import server from "./src/server";
 import logger from "./src/utils/logger";
 
+//Import OpenID variables to enable auth routes
+const openID = Config.openID;
+
 const app = express();
 
 // 'dev' format is
@@ -1316,22 +1319,24 @@ helpersInitialized.then(
 
     // ###### OpenID Connect ######
 
-    app.get(
-        "/api/v3/openidBtn",
-        moveToBody,
-        authOptional(assignToP),
-        want("dest", getStringLimitLength(9999), assignToP),
-        want("owner", getBool, assignToP, true),
-        handle_GET_openidBtn
-    );
-
-    app.get(
-        "/api/v3/openid_callback",
-        moveToBody,
-        authOptional(assignToP),
-        want("owner", getBool, assignToP, true),
-        handle_GET_openid_callback
-    );
+    if (openID.enabled) {
+        app.get(
+            "/api/v3/openidBtn",
+            moveToBody,
+            authOptional(assignToP),
+            want("dest", getStringLimitLength(9999), assignToP),
+            want("owner", getBool, assignToP, true),
+            handle_GET_openidBtn
+        );
+    
+        app.get(
+            "/api/v3/openid_callback",
+            moveToBody,
+            authOptional(assignToP),
+            want("owner", getBool, assignToP, true),
+            handle_GET_openid_callback
+        );
+    }
 
     // ###### OpenID Connect ######
 
