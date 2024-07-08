@@ -2,4 +2,4 @@
 
 ALTER TABLE math_main ADD COLUMN caching_tick BIGINT NOT NULL DEFAULT 0;
 
-ALTER TABLE conversations ALTER COLUMN vis_type SET DEFAULT 0; -- default to vis off
+ALTER TABLE conversations ALTER COLUMN vis_type SET DEFAULT 1; -- default to vis off
