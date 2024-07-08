@@ -58,7 +58,7 @@ class ShareAndEmbed extends React.Component {
           </p>
         </div>
         <div>
-          <p> Embed</p>
+          {/* <p> Embed</p>
           <div>
             <pre>
               {'<div'}
@@ -73,7 +73,7 @@ class ShareAndEmbed extends React.Component {
             <Link to="/integrate">
               I want to integrate pol.is on my entire site.
             </Link>
-          </p>
+          </p> */}
           <div>
             {this.props.zid_metadata.parent_url
               ? this.constructEmbeddedOnMarkup()
