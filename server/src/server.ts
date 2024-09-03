@@ -11295,6 +11295,8 @@ Thanks for using Polis!
                 const tokenClaims: any = tokenSet.claims();
 
                 //Better compatibility with ex-Twitter code
+                /*
+                //Uses real data
                 const u: UserType = {
                     sub: tokenClaims.sub,
                     email: tokenClaims.email,
@@ -11304,134 +11306,15 @@ Thanks for using Polis!
                     given_name: tokenClaims.given_name,
                     family_name: tokenClaims.family_name
                 };
+                */
+
+                //Generates dummy data for the user
+                const u: UserType = {
+                    sub: tokenClaims.sub,
+                    email: `${tokenClaims.sub}@dummy.net`
+                };
 
                 do_handle_openid_auth(req, res, u, dest);
-    
-                // TODO - if no auth, generate a new user.
-                /*
-                //Trying to insert user
-                return pgQueryP(
-                    "insert into openid_users (" +
-                    "uid," +
-                    "sub," +
-                    "email," +
-                    "email_verified," +
-                    "preferred_username," +
-                    "name," +
-                    "given_name," +
-                    "family_name," +
-                    ") VALUES ($1, $2, $3, $4, $5, $6, $7, $8);",
-                    [
-                        uid,
-                        u.sub,
-                        u.email,
-                        u.email_verified,
-                        u.preferred_username,
-                        u.name, //Subsequently mapped to users.hname
-                        u.given_name,
-                        u.family_name
-                    ]
-                ).then(
-                    function () {
-                        // SUCCESS
-                        // There was no existing record
-                        // set the user's hname, if not already set
-                        pgQueryP(
-                            "update users set hname = ($2) where uid = ($1) and hname is NULL;",
-                            [uid, u.name]
-                        )
-                        .then(
-                            function () {
-                                // OK, ready
-                                u.uid = uid;
-                                res.redirect(dest);
-                            },
-                            function (err: any) {
-                                fail(res, 500, "polis_err_openid_auth_update", err);
-                            }
-                        )
-                        .catch(function (err: any) {
-                            fail(
-                                res,
-                                500,
-                                "polis_err_openid_auth_update_misc",
-                                err
-                            );
-                        });
-                    },
-                    function (err: any) {
-                        if (isDuplicateKey(err)) {
-                            // we know the uid OR sub is filled
-                            // check if the uid is there with the same sub - if so, redirect and good!
-                            // determine which kind of duplicate
-                            Promise.all([
-                                pgQueryP(
-                                    "select * from openid_users where uid = ($1);",
-                                    [uid]
-                                ),
-                                pgQueryP(
-                                    "select * from openid_users where sub = ($1);",
-                                    [u.sub]
-                                ),
-                            ])
-                            //                       No overload matches this call.
-                            // Overload 1 of 2, '(onFulfill?: ((value: [unknown, unknown]) => Resolvable<void>) | undefined, onReject?: ((error: any) => Resolvable<void>) | undefined): Bluebird<void>', gave the following error.
-                            //   Argument of type '(promiseResults: any[][]) => void' is not assignable to parameter of type '(value: [unknown, unknown]) => Resolvable<void>'.
-                            //     Types of parameters 'promiseResults' and 'value' are incompatible.
-                            //       Type '[unknown, unknown]' is not assignable to type 'any[][]'.
-                            // Overload 2 of 2, '(onfulfilled?: ((value: [unknown, unknown]) => Resolvable<void>) | null | undefined, onrejected?: ((reason: any) => PromiseLike<never>) | null | undefined): Bluebird<void>', gave the following error.
-                            //   Argument of type '(promiseResults: any[][]) => void' is not assignable to parameter of type '(value: [unknown, unknown]) => Resolvable<void>'.
-                            //     Types of parameters 'promiseResults' and 'value' are incompatible.
-                            //                       Type '[unknown, unknown]' is not assignable to type 'any[][]'.ts(2769)
-                            // @ts-ignore
-                            .then(function (promiseResults: any[][]) {
-                                let recordForUid = promiseResults[0][0];
-                                let recordForSub = promiseResults[1][0];
-                                if (recordForUid && recordForSub) {
-                                    if (recordForUid.uid === recordForSub.uid) {
-                                        // match
-                                        res.redirect(dest);
-                                    } else {
-                                        // TODO_SECURITY_REVIEW
-                                        // both exist, but not same uid
-                                        switchToUser(req, res, recordForSub.uid)
-                                        .then(function () {
-                                            res.redirect(dest);
-                                        })
-                                        .catch(function (err: any) {
-                                            fail(res, 500, "polis_err_openid_auth_456", err);
-                                        });
-                                    }
-                                } else if (recordForUid) {
-                                    // currently signed in user has a OpenID account attached, but it's a different OpenID account, and they are now signing in with a different OpenID account.
-                                    // the newly supplied OpenID account is not attached to anything.
-                                    fail(res, 500, "polis_err_openid_already_attached", err);
-                                } else if (recordForSub) {
-                                    // currently signed in user has no OpenID account attached, but they just signed in with a OpenID account which is attached to another user.
-                                    // For now, let's just have it sign in as that user.
-                                    // TODO_SECURITY_REVIEW
-                                    switchToUser(req, res, recordForSub.uid)
-                                        .then(function () {
-                                            res.redirect(dest);
-                                        })
-                                        .catch(function (err: any) {
-                                            fail(res, 500, "polis_err_openid_auth_234", err);
-                                        }
-                                    );
-                                } else {
-                                    fail(res, 500, "polis_err_openid_auth_345");
-                                }
-                            });
-
-                            // else check if the uid is there and has some other screen_name - if so, ????????
-
-                            // else check if the screen_name is there, but for a different uid - if so, ??????
-                        } else {
-                            fail(res, 500, "polis_err_openid_auth_05", err);
-                        }
-                    }
-                );
-                */
             },
             function (err: any) {
                 fail(res, 500, "polis_err_openid_auth_gettoken", err);
@@ -11470,13 +11353,12 @@ Thanks for using Polis!
         userinfo: UserType,
         dest: any
     ) {
-        console.log(userinfo);
         // If a pol.is user record exists, and someone logs in with an OpenID account that has the same email address, we should bind that OpenID account to the pol.is account, and let the user sign in.
         let TRUST_OPENID_TO_VALIDATE_EMAIL = true;
         let email = userinfo.email;
-        let hname = userinfo.name; //Maybe hname
+        let hname = userinfo.name || "Anonymous"; //Maybe hname
         let sub = userinfo.sub;
-        let email_verified = userinfo.email_verified;
+        let email_verified = userinfo.email_verified || true;
 
         let password = req.p.password;
 
@@ -11814,9 +11696,9 @@ Thanks for using Polis!
             [
                 user.uid,
                 user.sub,
-                user.email_verified,
+                user.email_verified || true,
                 user.preferred_username,
-                user.name || "",
+                user.name || "Anonymous",
                 user.given_name,
                 user.family_name,
                 user.middle_name,

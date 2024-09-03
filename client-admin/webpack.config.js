@@ -47,6 +47,11 @@ module.exports = (env, options) => {
     },
     resolve: {
       extensions: [".js", ".css", ".png", ".svg"],
+      fallback: {
+        crypto: require.resolve('crypto-browserify'),
+        buffer: require.resolve('buffer'),
+        stream: require.resolve('stream-browserify')
+      }
     },
     devServer: {
       historyApiFallback: true,
