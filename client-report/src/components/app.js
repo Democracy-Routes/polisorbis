@@ -209,10 +209,12 @@ class App extends React.Component {
       assertExists(mathResult, "tids");
       assertExists(mathResult, "user-vote-counts");
       assertExists(mathResult, "votes-base");
-      assertExists(mathResult.pca, "center");
-      assertExists(mathResult.pca, "comment-extremity");
-      assertExists(mathResult.pca, "comment-projection");
-      assertExists(mathResult.pca, "comps");
+      if (mathResult && mathResult.pca) {
+        assertExists(mathResult.pca, "center");
+        assertExists(mathResult.pca, "comment-extremity");
+        assertExists(mathResult.pca, "comment-projection");
+        assertExists(mathResult.pca, "comps");
+      }
 
       let indexToTid = mathResult.tids;
 
@@ -315,9 +317,11 @@ class App extends React.Component {
       uncertainty = uncertainty.slice(0, 5);
 
       let extremity = {};
-      _.each(mathResult.pca["comment-extremity"], function(e, index) {
-        extremity[indexToTid[index]] = e;
-      });
+      if (mathResult && mathResult.pca) {
+        _.each(mathResult.pca["comment-extremity"], function(e, index) {
+          extremity[indexToTid[index]] = e;
+        });
+      }
 
       var uniqueCommenters = {};
       var voteTotals = DataUtils.getVoteTotals(mathResult);

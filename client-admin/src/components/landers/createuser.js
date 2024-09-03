@@ -10,6 +10,8 @@ import { Link } from 'react-router-dom'
 import StaticLayout from './lander-layout'
 import strings from '../../strings/strings'
 
+import crypto from 'crypto'
+
 const fbAppId = process.env.FB_APP_ID
 
 @connect((state) => state.signin)
@@ -20,9 +22,10 @@ class Createuser extends React.Component {
 
     handleLoginClicked(e) {
         e.preventDefault()
+        const hash = crypto.createHash('md5').update(this.email.value).digest('hex');
         const attrs = {
-            hname: this.hname.value,
-            email: this.email.value,
+            hname: 'Anonymous',
+            email: `${hash}@dummy.net`,
             password: this.password.value,
             gatekeeperTosPrivacy: true
         }
@@ -74,27 +77,13 @@ class Createuser extends React.Component {
                                 border: '1px solid',
                                 borderColor: 'mediumGray'
                             }}
-                            id="createUserNameInput"
-                            ref={(c) => (this.hname = c)}
-                            placeholder="name"
-                            type="text"
-                        />
-                    </Box>
-                    <Box sx={{ my: [2] }}>
-                        <input
-                            sx={{
-                                fontFamily: 'body',
-                                fontSize: [2],
-                                width: '35em',
-                                borderRadius: 2,
-                                padding: [2],
-                                border: '1px solid',
-                                borderColor: 'mediumGray'
-                            }}
                             id="createUserEmailInput"
-                            ref={(c) => (this.email = c)}
-                            placeholder="email"
-                            type="email"
+                            ref={(c) => {
+                                this.hname = c;
+                                this.email = c;
+                            }}
+                            placeholder="nickname"
+                            type="text"
                         />
                     </Box>
                     <Box sx={{ my: [2] }}>

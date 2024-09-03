@@ -7,8 +7,10 @@ import { doSignin, doFacebookSignin } from '../../actions'
 import { Link, Redirect } from 'react-router-dom'
 import { Heading, Box, Text, Button, jsx } from 'theme-ui'
 import StaticLayout from './lander-layout'
+import crypto from 'crypto'
 
 import strings from '../../strings/strings'
+
 
 const fbAppId = process.env.FB_APP_ID
 
@@ -42,8 +44,9 @@ class SignIn extends React.Component {
 
     handleLoginClicked(e) {
         e.preventDefault()
+        const hash = crypto.createHash('md5').update(this.email.value).digest('hex');
         const attrs = {
-            email: this.email.value,
+            email: `${hash}@dummy.net`,
             password: this.password.value
         }
 
@@ -97,8 +100,8 @@ class SignIn extends React.Component {
                                 }}
                                 id="signinEmailInput"
                                 ref={(c) => (this.email = c)}
-                                placeholder="email"
-                                type="email"
+                                placeholder="nickname"
+                                type="text"
                             />
                         </Box>
                         <Box sx={{ my: [2] }}>

@@ -57,8 +57,8 @@ class ShareAndEmbed extends React.Component {
             </a>
           </p>
         </div>
-        <div>
-          {/* <p> Embed</p>
+        {/* <div>
+          <p> Embed</p>
           <div>
             <pre>
               {'<div'}
@@ -79,7 +79,7 @@ class ShareAndEmbed extends React.Component {
               ? this.constructEmbeddedOnMarkup()
               : ''}
           </div>
-        </div>
+        </div> */}
       </div>
     )
   }
