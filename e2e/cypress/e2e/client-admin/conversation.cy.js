@@ -19,7 +19,7 @@ describe('Conversation: Configure', function () {
       cy.wait('@getConversations')
 
       // Customize section
-      cy.get('input[data-test-id="vis_type"]').should('not.be.checked')
+      cy.get('input[data-test-id="vis_type"]').should('be.checked')
       cy.get('input[data-test-id="write_type"]').should('be.checked')
       cy.get('input[data-test-id="help_type"]').should('be.checked')
       cy.get('input[data-test-id="subscribe_type"]').should('be.checked')

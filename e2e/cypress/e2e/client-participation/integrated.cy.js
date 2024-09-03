@@ -47,7 +47,7 @@ describe('Integrated Conversations', function () {
         .then((conversation) => {
           expect(conversation).to.have.property('topic', null)
           expect(conversation).to.have.property('description', null)
-          expect(conversation).to.have.property('vis_type', 0)
+          expect(conversation).to.have.property('vis_type', 1)
           expect(conversation).to.have.property('write_type', 1)
           expect(conversation).to.have.property('help_type', 1)
           expect(conversation).to.have.property('subscribe_type', 1)

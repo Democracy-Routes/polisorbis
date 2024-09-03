@@ -154,7 +154,7 @@ class ConversationConfig extends React.Component {
                     Participants can submit comments
                 </CheckboxField>
 
-                <CheckboxField field="help_type" label="Help text" isIntegerBool>
+                <CheckboxField field="help_type" label="Help text" isIntegerBool >
                     Show explanation text above voting and visualization
                 </CheckboxField>
 
@@ -210,6 +210,7 @@ class ConversationConfig extends React.Component {
                     </Flex>
                 </CheckboxField> */}
 
+                {/*
                 <Heading
                     as="h6"
                     sx={{
@@ -228,7 +229,6 @@ class ConversationConfig extends React.Component {
                         label="Auth with OpenID">
                         OpenID
 
-                        {/*
                         <Flex sx={{ gap: [3] }}>
                             <Text>
                             Identity provider
@@ -249,7 +249,6 @@ class ConversationConfig extends React.Component {
                             defaultValue={this.props.zid_metadata.identityProvider}
                             />
                         </Flex>
-                        */}
 
                     </CheckboxField> : <></>
                 }
@@ -277,6 +276,7 @@ class ConversationConfig extends React.Component {
                     label="No Auth">
                     Without authentication (not safe)
                 </CheckboxField>
+                /*}
 
                 {/* <CheckboxField field="auth_opt_fb" label="Facebook login prompt">
                     Show Facebook login prompt
@@ -300,17 +300,37 @@ class ConversationConfig extends React.Component {
                     No comments shown without moderator approval
                 </CheckboxField>
 
+                {/* 
                 <CheckboxField
                     field="auth_needed_to_write"
                     label="Require Auth to Comment">
                     Participants cannot submit comments without identification
                 </CheckboxField>
+                */}
 
-                <CheckboxField
-                    field="auth_needed_to_vote"
-                    label="Require Auth to Vote">
-                    Participants cannot vote without identification
-                </CheckboxField>
+                <Flex sx={{ gap: [1], flexDirection: "column" }}>
+                    <CheckboxField
+                        field="auth_needed_to_vote"
+                        label="Participants require to login">
+                        Participants require to login, with optional vote group: 
+                    </CheckboxField>
+                    <input
+                        sx={{
+                            fontFamily: 'body',
+                            fontSize: [2],
+                            width: '12em',
+                            borderRadius: 2,
+                            border: '1px solid',
+                            borderColor: 'mediumGray',
+                            marginLeft: '2em',
+                        }}
+                        data-test-id="optionalVoteGroup"
+                        onBlur={this.handleStringValueChange('optionalVoteGroup').bind(this)}
+                        onChange={this.handleConfigInputTyping('optionalVoteGroup').bind(this)}
+                        defaultValue={this.props.zid_metadata.optionalVoteGroup}
+                    />
+                </Flex>
+
             </Box>
         )
     }
