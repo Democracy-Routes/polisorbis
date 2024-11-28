@@ -9,83 +9,95 @@ const basePath = ''
 // var pid = "unknownpid";
 
 function polisAjax(api, data, type) {
-  if (!_.isString(api)) {
-    throw new Error('api param should be a string')
-  }
-
-  if (api && api.length && api[0] === '/') {
-    api = api.slice(1)
-  }
-
-  const url = urlPrefix + basePath + api
-
-  // Add the auth token if needed.
-  // if (_.contains(authenticatedCalls, api)) {
-  //     var token = tokenStore.get();
-  //     if (!token) {
-  //         needAuthCallbacks.fire();
-  //         console.error("auth needed");
-  //         return $.Deferred().reject("auth needed");
-  //     }
-  //     //data = $.extend({ token: token}, data); // moving to cookies
-  // }
-
-  let promise
-  const config = {
-    url: url,
-    contentType: 'application/json; charset=utf-8',
-    headers: {
-      // "Cache-Control": "no-cache"  // no-cache
-      'Cache-Control': 'max-age=0'
-    },
-    xhrFields: {
-      withCredentials: true
-    },
-    // crossDomain: true,
-    dataType: 'json'
-  }
-  if (type === 'GET') {
-    promise = $.ajax(
-      $.extend(config, {
-        type: 'GET',
-        data: data
-      })
-    )
-  } else if (type === 'POST') {
-    promise = $.ajax(
-      $.extend(config, {
-        type: 'POST',
-        data: JSON.stringify(data)
-      })
-    )
-  }
-
-  promise.fail(function (jqXHR, message, errorType) {
-    // sendEvent("Error", api, jqXHR.status);
-
-    // logger.error("SEND ERROR");
-    console.dir('polisAjax promise failed: ', arguments)
-    if (jqXHR.status === 403) {
-      // eb.trigger(eb.authNeeded);
+    if (!_.isString(api)) {
+        throw new Error('api param should be a string')
     }
-    // logger.dir(data);
-    // logger.dir(message);
-    // logger.dir(errorType);
-  })
-  return promise
+
+    if (api && api.length && api[0] === '/') {
+        api = api.slice(1)
+    }
+
+    const url = urlPrefix + basePath + api
+
+    // Add the auth token if needed.
+    // if (_.contains(authenticatedCalls, api)) {
+    //     var token = tokenStore.get();
+    //     if (!token) {
+    //         needAuthCallbacks.fire();
+    //         console.error("auth needed");
+    //         return $.Deferred().reject("auth needed");
+    //     }
+    //     //data = $.extend({ token: token}, data); // moving to cookies
+    // }
+
+    let promise
+    const config = {
+        url: url,
+        contentType: 'application/json; charset=utf-8',
+        headers: {
+            // "Cache-Control": "no-cache"  // no-cache
+            'Cache-Control': 'max-age=0'
+        },
+        xhrFields: {
+            withCredentials: true
+        },
+        // crossDomain: true,
+        dataType: 'json'
+    }
+    if (type === 'GET') {
+        promise = $.ajax(
+            $.extend(config, {
+                type: 'GET',
+                data: data
+            })
+        )
+    } else if (type === 'POST') {
+        promise = $.ajax(
+            $.extend(config, {
+                type: 'POST',
+                data: JSON.stringify(data)
+            })
+        )
+    } else if (type === 'DELETE') {
+        promise = $.ajax(
+            $.extend(config, {
+                type: 'DELETE',
+                data: JSON.stringify(data)
+            })
+        )
+    }
+
+    promise.fail(function (jqXHR, message, errorType) {
+        // sendEvent("Error", api, jqXHR.status);
+
+        // logger.error("SEND ERROR");
+        console.dir('polisAjax promise failed: ', arguments)
+        if (jqXHR.status === 403) {
+            // eb.trigger(eb.authNeeded);
+        }
+        // logger.dir(data);
+        // logger.dir(message);
+        // logger.dir(errorType);
+    })
+    return promise
+}
+
+function polisDelete(api, data) {
+    return polisAjax(api, data, 'DELETE')
 }
 
 function polisPost(api, data) {
-  return polisAjax(api, data, 'POST')
+    return polisAjax(api, data, 'POST')
 }
 
 function polisGet(api, data) {
-  return polisAjax(api, data, 'GET')
+    return polisAjax(api, data, 'GET')
 }
 
 const PolisNet = {
-  polisAjax: polisAjax,
-  polisPost: polisPost,
-  polisGet: polisGet
+    polisAjax: polisAjax,
+    polisDelete: polisDelete,
+    polisPost: polisPost,
+    polisGet: polisGet
 }
 export default PolisNet
