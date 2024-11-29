@@ -141,8 +141,8 @@ class ConversationAdminContainer extends React.Component {
                                         e.stopPropagation()
                                         this.onButtonClicked(false)
                                     }}>
-                                    <div style={{ display: "flex", flexDirection: "column", margin: "auto", width: "50%", backgroundColor: "white", borderRadius: "4px", padding: "8px 16px" }}>
-                                        <Text>Are you sure you want to delete this conversation?</Text>
+                                    <div style={{display: "flex", flexDirection: "column", margin: "auto", maxWidth: "50%", backgroundColor: "white", borderRadius: "4px", padding: "8px 16px"}}>
+                                        <Text sx={{ mb: "8px" }}>Are you sure you want to delete <b>{this.props.match.params.topic}</b>?</Text>
                                         <div style={{ display: "flex", marginTop: "auto", alignContent: "end", justifyContent: "end", gap: "8px" }}>
                                             <Button onClick={(e) => {
                                                 e.stopPropagation()
@@ -150,7 +150,7 @@ class ConversationAdminContainer extends React.Component {
                                             }}>
                                                 Back
                                             </Button>
-                                            <Button onClick={(e) => {
+                                            <Button sx={{ backgroundColor: "#e74c3c" }} onClick={(e) => {
                                                 e.stopPropagation()
                                                 this.deleteConversation()
                                             }}>

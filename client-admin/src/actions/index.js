@@ -967,7 +967,8 @@ const createConversationPostError = (err) => {
 const postCreateConversation = () => {
   return PolisNet.polisPost('/api/v3/conversations', {
     is_draft: true,
-    is_active: true
+    is_active: true,
+    auth_opt_openid: true
   })
 }
 

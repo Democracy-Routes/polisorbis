@@ -1283,6 +1283,7 @@ helpersInitialized.then(
             want("conversation_id", getStringLimitLength(6, 300), assignToP, ""),
             want("is_data_open", getBool, assignToP, false),
             want("ownerXid", getStringLimitLength(1, 999), assignToP),
+            want("auth_opt_openid", getBool, assignToP, true),
             handle_POST_conversations
         );
 

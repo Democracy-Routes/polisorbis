@@ -27,12 +27,12 @@ class Conversation extends React.Component {
                     {this.props.c.parent_url ? `Embedded on ${this.props.c.parent_url}` : null}
                 </Text>
                 <Text sx={{ mt: [2] }}>{this.props.c.participant_count} participants</Text>
-                <div>
-                    <Button sx={{ ml: "auto", mt: "8px" }} onClick={(e) => {
+                <div style={{display: "flex", justifyContent: "end"}}>
+                    <Button sx={{ mt: "8px", backgroundColor: "#e74c3c" }} onClick={(e) => {
                             e.stopPropagation()
                             this.onButtonClicked(true)
                         }}>
-                        Delete conversation
+                        Delete
                     </Button>
                 </div>
                 {this.state.openDelete && (
@@ -47,8 +47,8 @@ class Conversation extends React.Component {
                                     e.stopPropagation()
                                     this.onButtonClicked(false)
                                 }}>
-                            <div style={{display: "flex", flexDirection: "column", margin: "auto", width: "50%", backgroundColor: "white", borderRadius: "4px", padding: "8px 16px"}}>
-                                <Text sx={{ mb: "8px" }}>Are you sure you want to delete this conversation?</Text>
+                            <div style={{display: "flex", flexDirection: "column", margin: "auto", maxWidth: "50%", backgroundColor: "white", borderRadius: "4px", padding: "8px 16px"}}>
+                                <Text sx={{ mb: "8px" }}>Are you sure you want to delete <b>{this.props.c.topic}</b>?</Text>
                                 <div style={{display: "flex", marginTop: "auto", alignContent: "end", justifyContent: "end", gap: "8px"}}>
                                     <Button onClick={(e) => {
                                             e.stopPropagation()
@@ -56,7 +56,7 @@ class Conversation extends React.Component {
                                         }}>
                                         Back
                                     </Button>
-                                    <Button onClick={(e) => {
+                                    <Button sx={{ backgroundColor: "#e74c3c" }} onClick={(e) => {
                                             e.stopPropagation()
                                             this.props.deleteConversation(this.props.c.conversation_id)
                                         }}>
