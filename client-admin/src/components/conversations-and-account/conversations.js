@@ -4,139 +4,149 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import {
-  populateConversationsStore,
-  handleCreateConversationSubmit
+    populateConversationsStore,
+    handleCreateConversationSubmit
 } from '../../actions'
 
 import Url from '../../util/url'
 import { Box, Heading, Button, Text } from 'theme-ui'
 import Conversation from './conversation'
+import PolisNet from '../../util/net'
 
 @connect((state) => state.conversations)
 class Conversations extends React.Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      filterMinParticipantCount: 0,
-      sort: 'participant_count'
-    }
-  }
-
-  onNewClicked() {
-    this.props.dispatch(handleCreateConversationSubmit())
-  }
-
-  componentDidMount() {
-    this.props.dispatch(populateConversationsStore())
-    // loading true or just do that in constructor
-    // check your connectivity and try again
-  }
-
-  goToConversation = (conversation_id) => {
-    return () => {
-      if (this.props.history.pathname === 'other-conversations') {
-        window.open(`${Url.urlPrefix}${conversation_id}`, '_blank')
-        return
-      }
-      this.props.history.push(`/m/${conversation_id}`)
-    }
-  }
-
-  filterCheck(c) {
-    let include = true
-
-    if (c.participant_count < this.state.filterMinParticipantCount) {
-      include = false
+    constructor(props) {
+        super(props)
+        this.state = {
+            filterMinParticipantCount: 0,
+            sort: 'participant_count'
+        }
     }
 
-    if (this.props.history.pathname === 'other-conversations') {
-      // filter out conversations i do own
-      include = !c.is_owner
+    onNewClicked() {
+        this.props.dispatch(handleCreateConversationSubmit())
     }
 
-    if (this.props.history.pathname !== 'other-conversations' && !c.is_owner) {
-      // if it's not other convos and i'm not the owner, don't show it
-      // filter out convos i don't own
-      include = false
+    componentDidMount() {
+        this.props.dispatch(populateConversationsStore())
+        // loading true or just do that in constructor
+        // check your connectivity and try again
     }
 
-    return include
-  }
+    goToConversation = (conversation_id) => {
+        return () => {
+            if (this.props.history.pathname === 'other-conversations') {
+                window.open(`${Url.urlPrefix}${conversation_id}`, '_blank')
+                return
+            }
+            this.props.history.push(`/m/${conversation_id}`)
+        }
+    }
 
-  firePopulateInboxAction() {
-    this.props.dispatch(populateConversationsStore())
-  }
+    deleteConversation = (conversation_id) => {
+        PolisNet.polisDelete('/api/v3/conversation', {
+            conversation_id: conversation_id
+        }).then(() => {
+            window.location.reload()
+        })
+    }
 
-  onFilterChange() {
-    this.setState()
-  }
+    filterCheck(c) {
+        let include = true
 
-  render() {
-    const err = this.props.error
-    const { conversations } = this.props
+        if (c.participant_count < this.state.filterMinParticipantCount) {
+            include = false
+        }
 
-    return (
-      <Box>
-        <Heading
-          as="h3"
-          sx={{
-            fontSize: [3, null, 4],
-            lineHeight: 'body',
-            mb: [3, null, 4]
-          }}>
-          All Conversations
-        </Heading>
-        <Box sx={{ mb: [3, null, 4] }}>
-          <Button onClick={this.onNewClicked.bind(this)}>
-            Create new conversation
-          </Button>
-        </Box>
-        <Box>
-          <Box sx={{ mb: [3] }}>
-            {this.props.loading ? 'Loading conversations...' : null}
-          </Box>
-          {err ? (
-            <Text>
-              {'Error loading conversations: ' +
-                err.status +
-                ' ' +
-                err.statusText}
-            </Text>
-          ) : null}
-          {conversations
-            ? conversations.map((c, i) => {
-                return this.filterCheck(c) ? (
-                  <Conversation
-                    key={c.conversation_id}
-                    c={c}
-                    i={i}
-                    goToConversation={this.goToConversation(c.conversation_id)}
-                  />
-                ) : null
-              })
-            : null}
-        </Box>
-      </Box>
-    )
-  }
+        if (this.props.history.pathname === 'other-conversations') {
+            // filter out conversations i do own
+            include = !c.is_owner
+        }
+
+        if (this.props.history.pathname !== 'other-conversations' && !c.is_owner) {
+            // if it's not other convos and i'm not the owner, don't show it
+            // filter out convos i don't own
+            include = false
+        }
+
+        return include
+    }
+
+    firePopulateInboxAction() {
+        this.props.dispatch(populateConversationsStore())
+    }
+
+    onFilterChange() {
+        this.setState()
+    }
+
+    render() {
+        const err = this.props.error
+        const { conversations } = this.props
+
+        return (
+            <Box>
+                <Heading
+                    as="h3"
+                    sx={{
+                        fontSize: [3, null, 4],
+                        lineHeight: 'body',
+                        mb: [3, null, 4]
+                    }}>
+                    All Conversations
+                </Heading>
+                <Box sx={{ mb: [3, null, 4] }}>
+                    <Button onClick={this.onNewClicked.bind(this)}>
+                        Create new conversation
+                    </Button>
+                </Box>
+                <Box>
+                    <Box sx={{ mb: [3] }}>
+                        {this.props.loading ? 'Loading conversations...' : null}
+                    </Box>
+                    {err ? (
+                        <Text>
+                            {'Error loading conversations: ' +
+                                err.status +
+                                ' ' +
+                                err.statusText}
+                        </Text>
+                    ) : null}
+                    {conversations
+                        ? conversations.map((c, i) => {
+                            return this.filterCheck(c) ? (
+                                <Conversation
+                                    key={c.conversation_id}
+                                    c={c}
+                                    i={i}
+                                    goToConversation={this.goToConversation(c.conversation_id)}
+                                    deleteConversation={this.deleteConversation}
+                                />
+                            ) : null
+                        })
+                        : null}
+                </Box>
+            </Box>
+        )
+    }
 }
 
 Conversations.propTypes = {
-  dispatch: PropTypes.func,
-  error: PropTypes.shape({
-    status: PropTypes.number,
-    statusText: PropTypes.string
-  }),
-  loading: PropTypes.bool,
-  conversations: PropTypes.arrayOf(
-    PropTypes.shape({
-      conversation_id: PropTypes.string
+    dispatch: PropTypes.func,
+    error: PropTypes.shape({
+        status: PropTypes.number,
+        statusText: PropTypes.string
+    }),
+    loading: PropTypes.bool,
+    conversations: PropTypes.arrayOf(
+        PropTypes.shape({
+            conversation_id: PropTypes.string
+        })
+    ),
+    history: PropTypes.shape({
+        pathname: PropTypes.string,
+        push: PropTypes.func
     })
-  ),
-  history: PropTypes.shape({
-    pathname: PropTypes.string,
-    push: PropTypes.func
-  })
 }
 
 export default Conversations

@@ -300,36 +300,17 @@ class ConversationConfig extends React.Component {
                     No comments shown without moderator approval
                 </CheckboxField>
 
-                {/* 
+                <CheckboxField
+                    field="auth_needed_to_vote"
+                    label="Login required to vote">
+                    Login required to vote
+                </CheckboxField>
+
                 <CheckboxField
                     field="auth_needed_to_write"
-                    label="Require Auth to Comment">
-                    Participants cannot submit comments without identification
+                    label="Login required to comment">
+                    Login required to comment
                 </CheckboxField>
-                */}
-
-                <Flex sx={{ gap: [1], flexDirection: "column" }}>
-                    <CheckboxField
-                        field="auth_needed_to_vote"
-                        label="Participants require to login">
-                        Participants require to login, with optional vote group: 
-                    </CheckboxField>
-                    <input
-                        sx={{
-                            fontFamily: 'body',
-                            fontSize: [2],
-                            width: '12em',
-                            borderRadius: 2,
-                            border: '1px solid',
-                            borderColor: 'mediumGray',
-                            marginLeft: '2em',
-                        }}
-                        data-test-id="optionalVoteGroup"
-                        onBlur={this.handleStringValueChange('optionalVoteGroup').bind(this)}
-                        onChange={this.handleConfigInputTyping('optionalVoteGroup').bind(this)}
-                        defaultValue={this.props.zid_metadata.optionalVoteGroup}
-                    />
-                </Flex>
 
             </Box>
         )
