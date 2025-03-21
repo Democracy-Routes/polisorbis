@@ -25,6 +25,7 @@ var Utils = require("../util/utils");
 var VisView = require("../lib/VisView");
 var VoteMoreView = require("../views/voteMoreView");
 var WritingTipsView = require("../views/writingTips");
+var PolicyAnalysisView = require("../views/policy-analysis");
 var $ = require("jquery");
 
 
@@ -546,6 +547,12 @@ module.exports = ConversationView.extend({
         isSubscribed: function() {
           return that.isSubscribed.apply(that, arguments);
         },
+        conversation_id: conversation_id
+      }));
+
+      this.policyAnalysis = this.addChild(new PolicyAnalysisView({
+        model: new Backbone.Model({}),
+        conversationModel: this.model,
         conversation_id: conversation_id
       }));
 

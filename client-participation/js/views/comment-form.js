@@ -46,7 +46,7 @@ module.exports = Handlebones.ModelView.extend({
     ctx.hasOpenID = userObject.hasOpenID;
     ctx.auth_opt_tw = preload.firstConv.auth_opt_tw;
     ctx.auth_opt_fb = preload.firstConv.auth_opt_fb;
-    ctx.auth_opt_openid = preload.firstConv.auth_opt_openid;
+    ctx.auth_opt_openid_computed = preload.firstConv.auth_opt_openid_computed;
     ctx.s = Strings;
     ctx.desktop = !display.xs();
     ctx.hideHelp = !Utils.userCanSeeHelp() || preload.firstConv.help_type === 0;

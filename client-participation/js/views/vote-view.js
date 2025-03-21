@@ -78,7 +78,7 @@ module.exports = Handlebones.ModelView.extend({
 
     ctx.auth_opt_tw = preload.firstConv.auth_opt_tw;
     ctx.auth_opt_fb = preload.firstConv.auth_opt_fb;
-    ctx.auth_opt_openid = preload.firstConv.auth_opt_openid;
+    ctx.auth_opt_openid_computed = preload.firstConv.auth_opt_openid_computed;
     var social = ctx.social;
     var socialCtx = {
       name: Strings.anonPerson,

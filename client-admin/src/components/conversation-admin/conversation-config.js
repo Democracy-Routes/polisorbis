@@ -17,8 +17,6 @@ import { CheckboxField } from './CheckboxField'
 import ModerateCommentsSeed from './seed-comment'
 // import ModerateCommentsSeedTweet from "./seed-tweet";
 
-const openidEnabled = process.env.P_OPENID_ENABLED;
-
 @connect((state) => state.user)
 @connect((state) => state.zid_metadata)
 class ConversationConfig extends React.Component {
