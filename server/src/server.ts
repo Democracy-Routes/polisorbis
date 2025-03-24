@@ -9448,7 +9448,7 @@ Email verified! You can close this tab or hit the back button.
                 conv.auth_opt_allow_3rdparty &&
                 ifDefinedFirstElseSecond(conv.auth_opt_tw, true);
             conv.auth_opt_openid_computed =
-                conv.auth_opt_allow_3rdparty &&
+                openID.enabled &&
                 ifDefinedFirstElseSecond(conv.auth_opt_openid, true);
 
             conv.translations = translations;
@@ -11325,7 +11325,6 @@ Thanks for using Polis!
         openidClient.callback(openID.callback, params, { code_verifier, nonce })
             .then(
                 function (tokenSet: any) {
-
                     //Get token claims
                     /*
                     Example from Mopso Identity
@@ -11354,24 +11353,11 @@ Thanks for using Polis!
                     */
                     const tokenClaims: any = tokenSet.claims();
 
-                    //Better compatibility with ex-Twitter code
-                    /*
-                    //Uses real data
-                    const u: UserType = {
-                        sub: tokenClaims.sub,
-                        email: tokenClaims.email,
-                        email_verified: tokenClaims.email_verified,
-                        preferred_username: tokenClaims.preferred_username,
-                        name: tokenClaims.name, //Subsequently mapped to users.hname
-                        given_name: tokenClaims.given_name,
-                        family_name: tokenClaims.family_name
-                    };
-                    */
-
                     //Generates dummy data for the user
                     const u: UserType = {
                         sub: tokenClaims.sub,
-                        email: `${tokenClaims.sub}@dummy.net`
+                        email: `${tokenClaims.sub}@dummy.net`,
+                        id_token: tokenSet.id_token
                     };
 
                     do_handle_openid_auth(req, res, u, dest);
@@ -11416,9 +11402,10 @@ Thanks for using Polis!
         // If a pol.is user record exists, and someone logs in with an OpenID account that has the same email address, we should bind that OpenID account to the pol.is account, and let the user sign in.
         let TRUST_OPENID_TO_VALIDATE_EMAIL = true;
         let email = userinfo.email;
-        let hname = userinfo.name || "Anonymous"; //Maybe hname
+        let hname = userinfo.name || "Anonymous";
         let sub = userinfo.sub;
         let email_verified = userinfo.email_verified || true;
+        let id_token = userinfo.id_token;
 
         let password = req.p.password;
 
@@ -11430,6 +11417,7 @@ Thanks for using Polis!
             uid: string;
             hname: any;
             email: any;
+            id_token: any;
         },
             dest: any) {
             if (user.sub === sub) {
@@ -11446,6 +11434,9 @@ Thanks for using Polis!
                         //@ts-ignore
                         startSessionAndAddCookies(req, res, user.uid)
                             .then(function () {
+                                //Adds id token
+                                //@ts-ignore
+                                setCookie(req, res, "id_token", id_token, {httpOnly: false});
                                 // res.json({
                                 //     uid: user.uid,
                                 //     hname: user.hname,
@@ -11508,6 +11499,8 @@ Thanks for using Polis!
                                             res,
                                             user.uid
                                         ).then(function () {
+                                            //@ts-ignore
+                                            setCookie(req, res, "id_token", id_token, {httpOnly: false});
                                             return user;
                                         });
                                     },
@@ -11521,7 +11514,7 @@ Thanks for using Polis!
                                     //   Type 'void | { uid?: any; }' is not assignable to type '{ uid?: any; hname: any; email: any; }'.
                                     //                       Type 'void' is not assignable to type '{ uid?: any; hname: any; email: any; }'.ts(2345)
                                     // @ts-ignore
-                                    function (user: { uid?: any; hname: any; email: any }) {
+                                    function (user: { uid?: any; hname: any; email: any; id_token: any }) {
                                         // res.status(200).json({
                                         //     uid: user.uid,
                                         //     hname: user.hname,
@@ -11610,10 +11603,12 @@ Thanks for using Polis!
                     //   Type 'void | { uid?: any; }' is not assignable to type '{ uid?: any; }'.
                     //         Type 'void' is not assignable to type '{ uid?: any; }'.ts(2345)
                     // @ts-ignore
-                    function (user: { uid?: any, hname?: any, email?: any }) {
+                    function (user: { uid?: any, hname?: any, email?: any, id_token?: any }) {
                         let uid = user.uid;
                         return startSessionAndAddCookies(req, res, uid).then(
                             function () {
+                                //@ts-ignore
+                                setCookie(req, res, "id_token", id_token, {httpOnly: false});
                                 return user;
                             },
                             function (err: any) {
@@ -11631,7 +11626,7 @@ Thanks for using Polis!
                     //   Type 'void | { uid?: any; }' is not assignable to type '{ uid?: any; hname: any; email: any; }'.
                     //         Type 'void' is not assignable to type '{ uid?: any; hname: any; email: any; }'.ts(2345)
                     // @ts-ignore
-                    function (user: { uid?: any; hname: any; email: any }) {
+                    function (user: { uid?: any; hname: any; email: any, id_token?: any }) {
                         // res.json({
                         //     uid: user.uid,
                         //     hname: user.hname,
@@ -13778,8 +13773,8 @@ Thanks for using Polis!
                     auth_opt_allow_3rdparty &&
                     ifDefinedFirstElseSecond(conv.auth_opt_tw, DEFAULTS.auth_opt_tw);
                 let auth_opt_openid_computed =
-                    auth_opt_allow_3rdparty &&
-                    ifDefinedFirstElseSecond(conv.auth_opt_openid, DEFAULTS.auth_opt_openid);
+                    openID.enabled &&
+                    ifDefinedFirstElseSecond(conv.auth_opt_openid, true);
 
                 conv = {
                     topic: conv.topic,

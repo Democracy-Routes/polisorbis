@@ -99,6 +99,7 @@ export type ParticipantCommentModerationResult = {
 // TODO User import in server.ts to camelCase
 // TODO in standalone change
 export type UserType = {
+    id_token?: any;
     email?: any;
     email_verified?: any;
     hname?: any;

@@ -86,6 +86,7 @@ s.connectTwitter = "Connect Twitter";
 s.connectOpenID = `Connect ${pOpenidProviderName}`;
 s.connectToPostPrompt = "Connect an identity to submit a statement.";
 s.connectToVotePrompt = "Connect an identity to vote.";
+s.connectToShowPolicyPrompt = "Connect an identity to view the policy analysis.";
 s.tip = "Tip:";
 s.commentWritingTipsHintsHeader = "Tips for writing statements";
 s.tipCharLimit = "Statements are limited to {{char_limit}} characters.";
