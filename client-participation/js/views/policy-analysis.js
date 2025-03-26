@@ -47,7 +47,7 @@ module.exports = Handlebones.ModelView.extend({
             var convId = conversation_id;
 
             //Overwrite id_token and convId for testing
-
+            
             $.ajax({
                 url: `https://orbis.api.kubecore.eu-dev.novelcore.org/results?source=polis&topic_id=${convId}`,
                 type: "GET",
@@ -75,16 +75,16 @@ module.exports = Handlebones.ModelView.extend({
                             policyAnalysisResult[cluster_id]["summary"] = clusters[cluster_id][0].summary;
                         }
                     }
-                    var text = "# Policy Analysis\n";
+                    var text = "![](https://orbis-project.eu/wp-content/uploads/2024/11/ORBIS_logo_noclaim_C-2048x944-2-300x90.png)\n\n# Policy Analysis (powered by [Orbis Project](https://orbis-project.eu/))\n";
                     for (var cluster_id of Object.keys(policyAnalysisResult)) {
                         if (policyAnalysisResult[cluster_id].cluster_title) {
-                            text += `## ${policyAnalysisResult[cluster_id].cluster_title}\n${policyAnalysisResult[cluster_id].summary}\n### Recommendations: ${policyAnalysisResult[cluster_id].recommendations}\n`;
+                            text += `## ${policyAnalysisResult[cluster_id].cluster_title}\n${policyAnalysisResult[cluster_id].summary}\n### Recommendations:\n${policyAnalysisResult[cluster_id].recommendations}\n`;
                         }
                         else {
                             text += `## Unrecognized Cluster ${cluster_id}\n`;
                         }
                         text += "### PolisOrbis statements\n| statemet | agree | disagree | pass |\n|----------|-------|----------|------|\n";
-                        text += policyAnalysisResult[cluster_id].comments.map((c) => `| ${c.txt} | ${c.agree_count} (${Math.round(c.agree_count / c.count)}%) | ${c.disagree_count} (${Math.round(c.disagree_count / c.count)}%) | ${c.pass_count} (${Math.round(c.pass_count / c.count)}%) |\n`).join("");
+                        text += policyAnalysisResult[cluster_id].comments.map((c) => `| ${c.txt} | ${c.agree_count} (${Math.round(c.agree_count / c.count * 100)}%) | ${c.disagree_count} (${Math.round(c.disagree_count / c.count * 100)}%) | ${c.pass_count} (${Math.round(c.pass_count / c.count * 100)}%) |\n`).join("");
                     }
                     htmlText = markdown.toHTML(text, 'Maruku');
                     var newWindow = window.open();

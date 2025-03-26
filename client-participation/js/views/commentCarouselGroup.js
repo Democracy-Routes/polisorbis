@@ -88,7 +88,6 @@ module.exports = CommentCarousel.extend({
       var dotColor = repfullForAgree ? "#00b54d" : "#e74c3c";
 
       var social = c.get("social");
-      console.log("Social:" + JSON.stringify(social));
       var socialCtx = {
         name: Strings.anonPerson,
         img: Utils.getAnonPicUrl(),
