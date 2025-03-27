@@ -70,7 +70,6 @@ module.exports = CommentCarousel.extend({
       var backgroundColor = "white"; //forAgree ? "rgba(192, 228, 180, 1)" : "rgba(246, 208, 208, 1)";
       var dotColor = forAgree ? "#00b54d" : "#e74c3c";
       var social = c.get("social");
-      console.log("Social:" + JSON.stringify(social));
       var socialCtx = {
         name: Strings.anonPerson,
         img: Utils.getAnonPicUrl(),

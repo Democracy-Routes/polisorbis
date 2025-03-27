@@ -86,7 +86,6 @@ module.exports = Handlebones.ModelView.extend({
       link: "",
       anon: true,
     };
-    console.log("Social:" + JSON.stringify(social));
     if (social) {
       var hasTwitter = social.screen_name;
       var hasFacebook = social.fb_name && Constants.FB_APP_ID;
