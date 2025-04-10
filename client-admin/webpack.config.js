@@ -32,6 +32,7 @@ var pPrivacyPolicyURL = process.env.P_PRIVACY_POLICY_URL;
 
 var pOpenidEnabled = process.env.P_OPENID_ENABLED === 'true';
 var pOpenidProviderName = process.env.P_OPENID_PROVIDER_NAME || "OpenID";
+var pOpenidProfilePageURL = process.env.P_OPENID_PROFILE_PAGE_URL;
 
 module.exports = (env, options) => {
   var isDevBuild = options.mode === 'development';
@@ -103,7 +104,8 @@ module.exports = (env, options) => {
         'process.env.P_TOS_URL': JSON.stringify(pTosURL),
         'process.env.P_PRIVACY_POLICY_URL': JSON.stringify(pPrivacyPolicyURL),
         'process.env.P_OPENID_ENABLED': JSON.stringify(pOpenidEnabled),
-        'process.env.P_OPENID_PROVIDER_NAME': JSON.stringify(pOpenidProviderName)
+        'process.env.P_OPENID_PROVIDER_NAME': JSON.stringify(pOpenidProviderName),
+        'process.env.P_OPENID_PROFILE_PAGE_URL': JSON.stringify(pOpenidProfilePageURL)
       }),
       // Only run analyzer when specified in flag.
       ...(cliArgs.analyze ? [new BundleAnalyzerPlugin({ defaultSizes: 'gzip' })] : []),
