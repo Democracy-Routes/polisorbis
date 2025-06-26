@@ -226,3 +226,10 @@ export type Vote = {
     starred: any;
     parent_url: any;
 };
+
+export type PolicyAnalysisReview = {
+    uid?: any;
+    conversation_id: any;
+    question_id: number;
+    rating_value: number;
+}

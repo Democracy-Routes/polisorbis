@@ -133,6 +133,7 @@ helpersInitialized.then(
             handle_GET_votes_me,
             handle_GET_xids,
             handle_GET_zinvites,
+            handle_GET_policy_analysis_reviews,
 
             handle_POST_auth_deregister,
             handle_POST_auth_facebook,
@@ -171,6 +172,8 @@ helpersInitialized.then(
             handle_POST_votes,
             handle_POST_xidWhitelist,
             handle_POST_zinvites,
+            handle_POST_policy_analysis_review: handle_POST_policy_analysis_reviews,
+
             handle_PUT_comments,
             handle_PUT_conversations,
             handle_PUT_participants_extended,
@@ -963,6 +966,23 @@ helpersInitialized.then(
             need("tid", getInt, assignToP),
             need("include", getBool, assignToP),
             handle_POST_reportCommentSelections
+        );
+
+        app.post(
+            "/api/v3/policy-analysis/rewiews",
+            authOptional(assignToP),
+            need("conversation_id", getStringLimitLength(100), assignToP),
+            want("question_id", getIntInRange(1, 4), assignToP),
+            want("rating_value", getIntInRange(1, 5), assignToP),
+            handle_POST_policy_analysis_reviews
+        );
+
+        app.get(
+            "/api/v3/policy-analysis/rewiews",
+            moveToBody,
+            authOptional(assignToP),
+            need("conversation_id", getStringLimitLength(100), assignToP),
+            handle_GET_policy_analysis_reviews
         );
 
         app.post(
