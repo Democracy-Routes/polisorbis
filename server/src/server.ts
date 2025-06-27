@@ -8502,12 +8502,9 @@ Email verified! You can close this tab or hit the back button.
         console.log("Requested file " + filename);
         if (!fs.existsSync(policy_analysis_reviews_basedir)) {
             fs.mkdirSync(policy_analysis_reviews_basedir, { recursive: true });
-            console.log("Created directory");
         }
         if (!fs.existsSync(filename)) {
-            console.log("Creating file");
             fs.appendFileSync(filename, 'timestamp,question_id,rating_value,question_text,rating_label\n');
-            console.log("Appended header");
         }
         var now = Date.now();
         const csvLine = `${now},${req.p.question_id},${req.p.rating_value},${questions_texts[req.p.question_id - 1]},${rating_labels[req.p.question_id - 1][req.p.rating_value - 1]}\n`;
@@ -8535,18 +8532,22 @@ Email verified! You can close this tab or hit the back button.
         console.log("Called GET policy_analysis_reviews");
         const filename = policy_analysis_reviews_basedir + req.p.conversation_id + ".csv";
         console.log("Requested file " + filename);
+        if (!fs.existsSync(policy_analysis_reviews_basedir)) {
+            fs.mkdirSync(policy_analysis_reviews_basedir, { recursive: true });
+            console.log("Created directory");
+        }
         if (!fs.existsSync(filename)) {
-            res.sendStatus(404);
+            console.log("Creating file");
+            fs.appendFileSync(filename, 'timestamp,question_id,rating_value,question_text,rating_label\n');
+            console.log("Appended header");
         }
-        else {
-            res.setHeader('Content-Type', 'text/csv');
-            res.download(filename, 'policy_analysis_reviews.csv', (err) => {
-                if (err) {
-                    console.error('Error sending file:', err);
-                    res.sendStatus(500);
-                }
-            });
-        }
+        res.setHeader('Content-Type', 'text/csv');
+        res.download(filename, req.p.conversation_id + '.csv', (err) => {
+            if (err) {
+                console.error('Error sending file:', err);
+                res.sendStatus(500);
+            }
+        });
     }
 
     function handle_POST_conversation_close(

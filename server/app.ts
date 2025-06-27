@@ -970,7 +970,7 @@ helpersInitialized.then(
 
         app.post(
             "/api/v3/policy-analysis/rewiews",
-            authOptional(assignToP),
+            auth(assignToP),
             need("conversation_id", getStringLimitLength(100), assignToP),
             want("question_id", getIntInRange(1, 4), assignToP),
             want("rating_value", getIntInRange(1, 5), assignToP),
@@ -980,7 +980,7 @@ helpersInitialized.then(
         app.get(
             "/api/v3/policy-analysis/rewiews",
             moveToBody,
-            authOptional(assignToP),
+            auth(assignToP),
             need("conversation_id", getStringLimitLength(100), assignToP),
             handle_GET_policy_analysis_reviews
         );
