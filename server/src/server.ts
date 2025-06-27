@@ -66,6 +66,7 @@ import {
     DemographicEntry,
     Demo,
     Vote,
+    PolicyAnalysisReview,
 } from "./d";
 
 AWS.config.update({ region: Config.awsRegion });
@@ -197,6 +198,50 @@ if (openID.enabled) {
 }
 
 // ##### OpenID Connect routes #####
+
+
+
+// ##### Policy Analysis config #####
+
+const policy_analysis_reviews_basedir = 'policy_analysis_reviews/';
+const questions_texts = [
+    "How do you rate the clarity and quality of this output? (Scale 1-5)",
+    "How do you rate the easiness of use? (Scale 1-5)",
+    "How much do you think it can support the discussion (present and future)? (Scale 1-5)",
+    "How likely would you be to use it again? (Scale 1-5)"
+];
+const rating_labels = [
+    [
+        "Very Poor",
+        "Poor",
+        "Acceptable",
+        "Good",
+        "Excellent"
+    ],
+    [
+        "Very Poor",
+        "Poor",
+        "Acceptable",
+        "Good",
+        "Excellent"
+    ],
+    [
+        "Not at all",
+        "A little",
+        "Moderately",
+        "Quite a bit",
+        "Very much"
+    ],
+    [
+        "Not likely",
+        "Slightly unlikely",
+        "Moderately",
+        "Very likely",
+        "Extremely likely"
+    ]
+];
+
+// ##### Policy Analysis config #####
 
 
 
@@ -8444,6 +8489,66 @@ Email verified! You can close this tab or hit the back button.
         });
     }
 
+    function handle_POST_policy_analysis_reviews(
+        req: { p: PolicyAnalysisReview },
+        res: {
+            status: (
+                arg0: number
+            ) => { (): any; new(): any; json: { (arg0: {}): void; new(): any } };
+        }
+    ) {
+        console.log("Called POST policy_analysis_reviews");
+        const filename = policy_analysis_reviews_basedir + req.p.conversation_id + ".csv";
+        console.log("Requested file " + filename);
+        if (!fs.existsSync(policy_analysis_reviews_basedir)) {
+            fs.mkdirSync(policy_analysis_reviews_basedir, { recursive: true });
+            console.log("Created directory");
+        }
+        if (!fs.existsSync(filename)) {
+            console.log("Creating file");
+            fs.appendFileSync(filename, 'timestamp,question_id,rating_value,question_text,rating_label\n');
+            console.log("Appended header");
+        }
+        var now = Date.now();
+        const csvLine = `${now},${req.p.question_id},${req.p.rating_value},${questions_texts[req.p.question_id - 1]},${rating_labels[req.p.question_id - 1][req.p.rating_value - 1]}\n`;
+        fs.appendFileSync(filename, csvLine);
+        res.status(200).json({});
+    }
+
+    function handle_GET_policy_analysis_reviews(
+        req: { p: { uid?: any, conversation_id: any } },
+        res: {
+            setHeader: (
+                arg0: string,
+                arg1: string,
+            ) => void,
+            sendStatus: (
+                arg0: number,
+            ) => void,
+            download: (
+                arg0: string,
+                arg1: string,
+                arg2: (err: any) => any,
+            ) => { (): any; new(): any; json: { (arg0: {}): void; new(): any } };
+        }
+    ) {
+        console.log("Called GET policy_analysis_reviews");
+        const filename = policy_analysis_reviews_basedir + req.p.conversation_id + ".csv";
+        console.log("Requested file " + filename);
+        if (!fs.existsSync(filename)) {
+            res.sendStatus(404);
+        }
+        else {
+            res.setHeader('Content-Type', 'text/csv');
+            res.download(filename, 'policy_analysis_reviews.csv', (err) => {
+                if (err) {
+                    console.error('Error sending file:', err);
+                    res.sendStatus(500);
+                }
+            });
+        }
+    }
+
     function handle_POST_conversation_close(
         req: { p: { zid: any; uid?: any } },
         res: {
@@ -14703,6 +14808,7 @@ Thanks for using Polis!
         handle_GET_votes_me,
         handle_GET_xids,
         handle_GET_zinvites,
+        handle_GET_policy_analysis_reviews,
         handle_POST_auth_deregister,
         handle_POST_auth_facebook,
         handle_POST_auth_login,
@@ -14740,6 +14846,7 @@ Thanks for using Polis!
         handle_POST_votes,
         handle_POST_xidWhitelist,
         handle_POST_zinvites,
+        handle_POST_policy_analysis_review: handle_POST_policy_analysis_reviews,
         handle_PUT_comments,
         handle_PUT_conversations,
         handle_PUT_participants_extended,

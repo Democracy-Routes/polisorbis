@@ -552,6 +552,7 @@ module.exports = ConversationView.extend({
 
       this.policyAnalysis = this.addChild(new PolicyAnalysisView({
         model: new Backbone.Model({}),
+        serverClient: serverClient,
         conversationModel: this.model,
         conversation_id: conversation_id
       }));
