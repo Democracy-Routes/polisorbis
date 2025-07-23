@@ -2,6 +2,7 @@
 
 // Translation comment: Formal German "Sie" is used - alternative: informal "Du"
 
+const pHomeName = process.env.P_HOME_NAME;
 const pTosURL = process.env.P_TOS_URL;
 const pPrivacyPolicyURL = process.env.P_PRIVACY_POLICY_URL;
 const pLogoURL = process.env.P_LOGO_URL;

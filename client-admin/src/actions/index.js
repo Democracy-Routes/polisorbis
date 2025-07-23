@@ -619,11 +619,28 @@ const signoutPost = (dest) => {
   })
 }
 
+export const doSignout = () => {
+  return (dispatch) => {
+    dispatch(signoutInitiated());
+
+    try {
+      // Redirect to the backend logout route
+      // This will start the OpenID logout flow
+      window.location.href = '/api/v3/auth/deregister';
+    } catch (err) {
+      dispatch(signoutError(err));
+    }
+  };
+};
+
+// Old doSignout
+/*
 export const doSignout = (dest) => {
   return (dispatch) => {
     dispatch(signoutInitiated())
     return signoutPost().then(
       (res) => {
+        console.log(res);
         setTimeout(() => {
           // Force page to load so we can be sure the old user"s state is cleared from memory
           // delay a bit so the cookies have time to clear too.
@@ -634,6 +651,7 @@ export const doSignout = (dest) => {
     )
   }
 }
+*/
 
 /* Conversations */
 

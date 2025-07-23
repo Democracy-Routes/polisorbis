@@ -24,7 +24,6 @@ module.exports = Handlebones.ModelView.extend({
         ctx.s = Strings;
 
         ctx.auth_opt_openid_computed = preload.firstConv.auth_opt_openid_computed;
-        console.log(this.model);
 
         console.log(this.model.get("needSocial"));
         ctx.needSocial = this.model.get("needSocial");
@@ -45,54 +44,54 @@ module.exports = Handlebones.ModelView.extend({
             window.location = "/api/v3/openidBtn?dest=" + dest;
         },
 
-            this.policyAnalysisBtn = function () {
-                var id_token = Utils.getCookie("id_token");
-                var convId = conversation_id;
-                var baseUrl = that.baseUrl;
+        this.policyAnalysisBtn = function () {
+            var id_token = Utils.getCookie("id_token");
+            var convId = conversation_id;
+            var baseUrl = that.baseUrl;
 
-                //Overwrite id_token and convId for testing
+            //Overwrite id_token and convId for testing
 
-                $.ajax({
-                    url: `https://orbis.api.kubecore.eu-dev.novelcore.org/results?source=polis&topic_id=${convId}`,
-                    type: "GET",
-                    beforeSend: function (xhr) {
-                        xhr.setRequestHeader("Authorization", `Bearer ${id_token}`);
-                    },
-                    error: function (err) {
-                        console.error(err);
-                        that.model.set({
-                            needSocial: true
-                        });
-                    },
-                    success: function (data) {
-                        data.analysis_results = JSON.parse(data.analysis_results);
-                        data.policy_results = JSON.parse(data.policy_results);
-                        const clusters = Object.groupBy(data.analysis_results, ({ cluster_id }) => cluster_id);
-                        const policyAnalysisResult = data.policy_results;
-                        for (var cluster_id of Object.keys(clusters)) {
-                            if (!(cluster_id in policyAnalysisResult)) {
-                                policyAnalysisResult[cluster_id] = {};
-                            }
-                            policyAnalysisResult[cluster_id]["comments"] = clusters[cluster_id];
-                            if (clusters[cluster_id].length > 0) {
-                                policyAnalysisResult[cluster_id]["summary"] = clusters[cluster_id][0].summary;
-                            }
+            $.ajax({
+                url: `https://orbis.api.kubecore.eu-dev.novelcore.org/results?source=polis&topic_id=${convId}`,
+                type: "GET",
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader("Authorization", `Bearer ${id_token}`);
+                },
+                error: function (err) {
+                    console.error(err);
+                    that.model.set({
+                        needSocial: true
+                    });
+                },
+                success: function (data) {
+                    data.analysis_results = JSON.parse(data.analysis_results);
+                    data.policy_results = JSON.parse(data.policy_results);
+                    const clusters = Object.groupBy(data.analysis_results, ({ cluster_id }) => cluster_id);
+                    const policyAnalysisResult = data.policy_results;
+                    for (var cluster_id of Object.keys(clusters)) {
+                        if (!(cluster_id in policyAnalysisResult)) {
+                            policyAnalysisResult[cluster_id] = {};
                         }
-                        var text = "![](https://orbis-project.eu/wp-content/uploads/2024/11/ORBIS_logo_noclaim_C-2048x944-2-300x90.png)\n\n# Policy Analysis (powered by [Orbis Project](https://orbis-project.eu/))\n";
-                        for (var cluster_id of Object.keys(policyAnalysisResult)) {
-                            if (policyAnalysisResult[cluster_id].cluster_title) {
-                                text += `## ${policyAnalysisResult[cluster_id].cluster_title}\n${policyAnalysisResult[cluster_id].summary}\n### Recommendations:\n${policyAnalysisResult[cluster_id].recommendations}\n`;
-                            }
-                            else {
-                                text += `## Unrecognized Cluster ${cluster_id}\n`;
-                            }
-                            text += "### PolisOrbis statements\n| statemet | agree | disagree | pass |\n|----------|-------|----------|------|\n";
-                            text += policyAnalysisResult[cluster_id].comments.map((c) => `| ${c.txt} | ${c.agree_count} (${Math.round(c.agree_count / c.count * 100)}%) | ${c.disagree_count} (${Math.round(c.disagree_count / c.count * 100)}%) | ${c.pass_count} (${Math.round(c.pass_count / c.count * 100)}%) |\n`).join("");
+                        policyAnalysisResult[cluster_id]["comments"] = clusters[cluster_id];
+                        if (clusters[cluster_id].length > 0) {
+                            policyAnalysisResult[cluster_id]["summary"] = clusters[cluster_id][0].summary;
                         }
-                        htmlText = markdown.toHTML(text, "Maruku");
-                        var newWindow = window.open();
-                        var title = "Policy Analysis Result";
-                        var policyAnalysisPage = 
+                    }
+                    var text = "![](https://orbis-project.eu/wp-content/uploads/2024/11/ORBIS_logo_noclaim_C-2048x944-2-300x90.png)\n\n# Policy Analysis (powered by [Orbis Project](https://orbis-project.eu/))\n";
+                    for (var cluster_id of Object.keys(policyAnalysisResult)) {
+                        if (policyAnalysisResult[cluster_id].cluster_title) {
+                            text += `## ${policyAnalysisResult[cluster_id].cluster_title}\n${policyAnalysisResult[cluster_id].summary}\n### Recommendations:\n${policyAnalysisResult[cluster_id].recommendations}\n`;
+                        }
+                        else {
+                            text += `## Unrecognized Cluster ${cluster_id}\n`;
+                        }
+                        text += "### PolisOrbis statements\n| statemet | agree | disagree | pass |\n|----------|-------|----------|------|\n";
+                        text += policyAnalysisResult[cluster_id].comments.map((c) => `| ${c.txt} | ${c.agree_count} (${Math.round(c.agree_count / c.count * 100)}%) | ${c.disagree_count} (${Math.round(c.disagree_count / c.count * 100)}%) | ${c.pass_count} (${Math.round(c.pass_count / c.count * 100)}%) |\n`).join("");
+                    }
+                    htmlText = markdown.toHTML(text, "Maruku");
+                    var newWindow = window.open();
+                    var title = "Policy Analysis Result";
+                    var policyAnalysisPage = 
 `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -292,11 +291,11 @@ module.exports = Handlebones.ModelView.extend({
     </script>
 </body>
 </html>`;
-                        newWindow.document.open();
-                        newWindow.document.writeln(policyAnalysisPage);
-                        newWindow.document.close();
-                    }
-                });
-            }
+                    newWindow.document.open();
+                    newWindow.document.writeln(policyAnalysisPage);
+                    newWindow.document.close();
+                }
+            });
+        }
     }
 });

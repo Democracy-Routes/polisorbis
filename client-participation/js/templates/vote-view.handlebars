@@ -55,6 +55,29 @@
   {{#if subscribed}}
     <p class="HeadingF HeadingF--light "><i class="fa fa-bell-o"></i>&nbsp;<strong>{{txt1}}</strong></p>
     <p>{{txt2}}</p>
+      <button
+        class="
+          Btn
+          Btn-primary
+          unselectable
+          "
+        id="back_home_button"
+        
+        style="
+          text-transform: none;
+          font-size: 16px;
+          font-weight: 500;
+          cursor: pointer;
+          border: none;
+          border-radius: 4px;
+          background-color: #0090ff;
+          color: white;
+          letter-spacing: 0.07em;
+          min-width: 110px;
+          height: 40px;
+          ">
+        {{returnHome}}
+      </button>
     <p>
       {{#ifNotIE8}}
         <i class="fa fa-check-square-o" style="font-size: 20px; color: #2ecc71; position: relative; top: 1px"></i>
@@ -97,6 +120,30 @@
     {{else}} {{!-- !canSubscribe --}}
       <div><strong>{{txt1}}</strong></div>
       <div>{{txt2}}</div>
+      <button
+        class="
+          Btn
+          Btn-primary
+          unselectable
+          "
+        id="back_home_button"
+
+        type="submit"
+        style="
+          text-transform: none;
+          font-size: 16px;
+          font-weight: 500;
+          cursor: pointer;
+          border: none;
+          border-radius: 4px;
+          background-color: #0090ff;
+          color: white;
+          letter-spacing: 0.07em;
+          min-width: 110px;
+          height: 40px;
+          ">
+        {{returnHome}}
+      </button>
     {{/if}} {{!-- /canSubscribe --}}
   {{/if}} {{!-- /subscribed --}}
   </div> {{!-- /empty scenario div --}}

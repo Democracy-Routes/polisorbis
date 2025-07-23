@@ -36,6 +36,8 @@ module.exports = Handlebones.ModelView.extend({
   // needed to prevent double submissions, which are annoying because they trigger a duplicate alert
   buttonActive: true,
 
+  showCommentsDropdown: false,
+
   context: function() {
     var ctx = Handlebones.ModelView.prototype.context.apply(this, arguments);
     ctx = _.extend(ctx, this, this.model&&this.model.attributes);
@@ -195,6 +197,7 @@ module.exports = Handlebones.ModelView.extend({
     "click #twitterButtonCommentForm" : "twitterClicked",
     "click #openIDButtonCommentForm" : "openIDClicked",
     "click #comment_button": "onSubmitClicked",
+    "click #comment_dropdown": "commentDropdownClicked"
   },
   onSubmitClicked: function(e) {
     e.preventDefault();
@@ -312,6 +315,10 @@ module.exports = Handlebones.ModelView.extend({
 
     var dest = window.location.pathname + window.location.hash;
     window.location = "/api/v3/openidBtn?dest=" + dest;
+  },
+  commentDropdownClicked: function() {
+    this.showCommentsDropdown = true;
+    this.render();
   },
   showSocialAuthChoices: function() {
     $("#comment_form_controls").hide();

@@ -108,6 +108,7 @@ services:
         GIT_HASH: "${GIT_HASH:-placeholder}"
         NODE_ENV: production
         SERVICE_URL: ${SERVICE_URL}
+        P_HOME_NAME: ${P_HOME_NAME}
         P_LOGO_ICO_URL: ${P_LOGO_ICO_URL}
         P_LOGO_URL: ${P_LOGO_URL}
         P_TITLE: ${P_TITLE}

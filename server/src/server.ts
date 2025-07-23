@@ -171,6 +171,7 @@ if (openID.enabled) {
                 client_id: openID.clientID,
                 client_secret: openID.clientSecret,
                 redirect_uris: [openID.callback],
+                post_logout_redirect_uris: [ openID.postLogout ],
                 response_types: ["code"],
                 // id_token_signed_response_alg (default "RS256")
                 // token_endpoint_auth_method (default "client_secret_basic")
@@ -190,6 +191,7 @@ if (openID.enabled) {
             client_id: openID.clientID,
             client_secret: openID.clientSecret,
             redirect_uris: [openID.callback],
+            post_logout_redirect_uris: [ openID.postLogout ],
             response_types: ["code"],
             // id_token_signed_response_alg (default "RS256")
             // token_endpoint_auth_method (default "client_secret_basic")
@@ -267,8 +269,10 @@ function isSpam(o: {
     user_agent: any;
     referrer: any;
 }) {
+    // Old spamming check
     // 'new' expression, whose target lacks a construct signature, implicitly has an 'any' type.ts(7009)
     // @ts-ignore
+    /*
     return new MPromise(
         "isSpam",
         function (resolve: (arg0: any) => void, reject: (arg0: any) => void) {
@@ -279,6 +283,15 @@ function isSpam(o: {
                     resolve(spam);
                 }
             });
+        }
+    );
+    */
+    // Marks everything as non-spam
+    // @ts-ignore
+    return new MPromise(
+        "isSpam",
+        function (resolve: (arg0: any) => void, reject: (arg0: any) => void) {
+            resolve(false);
         }
     );
 }
@@ -2599,6 +2612,7 @@ Feel free to reply to this email if you need help.`;
             next();
         });
     }
+
     function handle_POST_auth_deregister(
         req: { p: { showPage?: any }; cookies: { [x: string]: any } },
         res: {
@@ -2615,7 +2629,7 @@ Feel free to reply to this email if you need help.`;
     ) {
         req.p = req.p || {};
         let token = req.cookies[COOKIES.TOKEN];
-
+        
         // clear cookies regardless of auth status
         clearCookies(req, res);
 
@@ -2623,6 +2637,67 @@ Feel free to reply to this email if you need help.`;
             if (!req.p.showPage) {
                 res.status(200).end();
             }
+        }
+        if (!token) {
+            // nothing to do
+            return finish();
+        }
+        endSession(token, function (err: any, data: any) {
+            if (err) {
+                fail(res, 500, "couldn't end session", err);
+                return;
+            }
+            finish();
+        });
+    }
+
+    function handle_GET_auth_deregister(
+        req: { p: { showPage?: any }; cookies: { [x: string]: any } },
+        res: {
+            redirect: (arg0: any) => void;
+            status: (
+                arg0: number
+            ) => {
+                (): any;
+                new(): any;
+                end: { (): void; new(): any };
+                send: { (arg0: string): void; new(): any };
+            };
+            set: (arg0: { "Content-Type": string }) => void;
+        }
+    ) {
+        if (openID.enabled) {
+            const url = openidClient.endSessionUrl({});
+            res.redirect(url);
+        }
+        else {
+            handle_GET_signout_callback(req, res);
+        }
+    }
+
+    function handle_GET_signout_callback(
+        req: { p: {  }; cookies: { [x: string]: any } },
+        res: {
+            redirect: (arg0: any) => void;
+            status: (
+                arg0: number
+            ) => {
+                (): any;
+                new(): any;
+                end: { (): void; new(): any };
+                send: { (arg0: string): void; new(): any };
+            };
+            set: (arg0: { "Content-Type": string }) => void;
+        }
+    ) {
+        req.p = req.p || {};
+        let token = req.cookies[COOKIES.TOKEN];
+        
+        // clear cookies regardless of auth status
+        clearCookies(req, res);
+
+        function finish() {
+            res.redirect("/");
         }
         if (!token) {
             // nothing to do
@@ -14810,6 +14885,7 @@ Thanks for using Polis!
         handle_GET_xids,
         handle_GET_zinvites,
         handle_GET_policy_analysis_reviews,
+        handle_GET_auth_deregister,
         handle_POST_auth_deregister,
         handle_POST_auth_facebook,
         handle_POST_auth_login,
@@ -14847,7 +14923,7 @@ Thanks for using Polis!
         handle_POST_votes,
         handle_POST_xidWhitelist,
         handle_POST_zinvites,
-        handle_POST_policy_analysis_review: handle_POST_policy_analysis_reviews,
+        handle_POST_policy_analysis_reviews,
         handle_PUT_comments,
         handle_PUT_conversations,
         handle_PUT_participants_extended,
@@ -14857,6 +14933,7 @@ Thanks for using Polis!
 
         handle_GET_openid_callback,
         handle_GET_openidBtn,
+        handle_GET_signout_callback,
         // Debugging
         //getNextPrioritizedComment,
         //getPca

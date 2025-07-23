@@ -1,5 +1,6 @@
 // Copyright (C) 2012-present, The Authors. This program is free software: you can redistribute it and/or  modify it under the terms of the GNU Affero General Public License, version 3, as published by the Free Software Foundation. This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more details. You should have received a copy of the GNU Affero General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+const pHomeName = process.env.P_HOME_NAME;
 const pTosURL = process.env.P_TOS_URL;
 const pPrivacyPolicyURL = process.env.P_PRIVACY_POLICY_URL;
 const pLogoURL = process.env.P_LOGO_URL;
@@ -124,6 +125,7 @@ s.noCommentsYouVotedOnAll = "You've voted on all the statements.";
 s.noCommentsTryWritingOne = "If you have something to add, try writing your own statement.";
 s.convIsClosed = "This conversation is closed.";
 s.noMoreVotingAllowed = "No further voting is allowed.";
+s.returnHome = `Return to ${pHomeName}`;
 
 
 s.topic_good_01 = "What should we do about the pingpong room?";
