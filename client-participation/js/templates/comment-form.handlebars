@@ -19,92 +19,101 @@
     "
     dir={{direction}}> {{! protips column }}
 
-  <p
+  <style>
+    .comment_dropdown {
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    .comment_dropdown:hover {
+      text-decoration: underline;
+    }
+  </style>
+
+  <a
+    id="comment_dropdown"
+    class="comment_dropdown"
     style="{{#unless desktop}}font-size:12px;{{/unless}}"
     >
-      {{!-- present all hints to screen reader --}}
+    {{{s.writeCommentHelpText}}}
+  </a>
+  {{#if showCommentsDropdown}}
+    <p
+        style="{{#unless desktop}}font-size:12px;{{/unless}}"
+        >
+        {{!-- present all hints to screen reader --}}
 
-      {{#if hideHelp}}
-        {{!-- even if help text is hidden, still screen read the main comment box label/prompt --}}
-        <label for="comment_form_textarea"
-               style="display:none;">
-          {{{s.writeCommentHelpText}}}
-        </label>
-      {{else}}
-        <label for="comment_form_textarea"
-               style="display:block;">
-          {{{s.writeCommentHelpText}}}
-        </label>
-        <p>
-          {{{s.helpWriteListIntro}}}
-        </p>
-        <ul>
-          <li>{{{s.helpWriteListStandalone}}}</li>
-          <li>{{{s.helpWriteListRaisNew}}}</li>
-          <li>{{{s.helpWriteListShort}}}</li>
-        </ul>
-        <label for="comment_form_textarea" style="display:block">
-          {{{s.tipCommentsRandom}}}
-        </label>
-      {{/if}}
+        {{#unless hideHelp}}
+            <p>
+                {{{s.helpWriteListIntro}}}
+            </p>
+            <ul>
+                <li>{{{s.helpWriteListStandalone}}}</li>
+                <li>{{{s.helpWriteListRaisNew}}}</li>
+                <li>{{{s.helpWriteListShort}}}</li>
+            </ul>
+            <label for="comment_form_textarea" style="display:block">
+            {{{s.tipCommentsRandom}}}
+            </label>
+        {{/unless}}
 
-      {{!-- end screen-reader-text --}}
-  </p>
+        {{!-- end screen-reader-text --}}
+    </p>
 
-  {{!-- present all hints to screen reader --}}
-  <div class="screen-reader-text">
-    <h2>{{s.commentWritingTipsHintsHeader}}</h2>
-    <label for="comment_form_textarea" style="display:block">{{charLimitString}}</label>
-    <label for="comment_form_textarea" style="display:block">{{s.tipNoQuestions}}</label>
-    <label for="comment_form_textarea" style="display:block">{{s.tipOneIdea}}</label>
-  </div> {{!-- end screen-reader-text --}}
+    {{!-- present all hints to screen reader --}}
+    <div class="screen-reader-text">
+        <h2>{{s.commentWritingTipsHintsHeader}}</h2>
+        <label for="comment_form_textarea" style="display:block">{{charLimitString}}</label>
+        <label for="comment_form_textarea" style="display:block">{{s.tipNoQuestions}}</label>
+        <label for="comment_form_textarea" style="display:block">{{s.tipOneIdea}}</label>
+    </div> {{!-- end screen-reader-text --}}
 
-
-  <p
-    id="char_limit_exceeded_message"
-    class="protip"
-    aria-hidden="true"
-    style="display:none; {{#unless desktop}}font-size:12px{{/unless}}"
-    >
-      <span aria-invalid="true" role="alert">
-        {{charLimitString}}
-      </span>
-  </p>
-
-
-  <p
-    id="one_idea_per_comment_message"
-    class="protip"
-    aria-hidden="true"
-    style="
-      display: none;
-      {{#unless desktop}}font-size:12px{{/unless}}
-      ">
-      <span>
-        {{s.tipOneIdea}}
-      </span>
-  </p>
-
-  <p
-    id="commentNotQuestionAlert"
-    class="protip"
-    aria-hidden="true"
-    role="alert"
-    style="
-      display:none;
-      {{#unless desktop}}font-size:12px{{/unless}}
-      ">
+    <p
+        id="char_limit_exceeded_message"
+        class="protip"
+        aria-hidden="true"
+        style="display:none; {{#unless desktop}}font-size:12px{{/unless}}"
+        >
         <span aria-invalid="true" role="alert">
-          {{s.tipNoQuestions}}
+            {{charLimitString}}
         </span>
-  </p>
+    </p>
 
+    <p
+        id="one_idea_per_comment_message"
+        class="protip"
+        aria-hidden="true"
+        style="
+        display: none;
+        {{#unless desktop}}font-size:12px{{/unless}}
+        ">
+        <span>
+            {{s.tipOneIdea}}
+        </span>
+    </p>
+
+    <p
+        id="commentNotQuestionAlert"
+        class="protip"
+        aria-hidden="true"
+        role="alert"
+        style="
+        display:none;
+        {{#unless desktop}}font-size:12px{{/unless}}
+        ">
+            <span aria-invalid="true" role="alert">
+            {{s.tipNoQuestions}}
+            </span>
+    </p>
+
+  {{/if}}
 </div> {{! end protips column}}
 
 
 
 
 
+{{#if showCommentsDropdown}}
   <form
     role="form"
     style="padding-bottom: 1px; {{! no stripe of background_content color mobile }}
@@ -342,3 +351,5 @@
     </div>
 
   </form>
+
+{{/if}}

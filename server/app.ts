@@ -134,6 +134,7 @@ helpersInitialized.then(
             handle_GET_xids,
             handle_GET_zinvites,
             handle_GET_policy_analysis_reviews,
+            handle_GET_auth_deregister,
 
             handle_POST_auth_deregister,
             handle_POST_auth_facebook,
@@ -172,7 +173,7 @@ helpersInitialized.then(
             handle_POST_votes,
             handle_POST_xidWhitelist,
             handle_POST_zinvites,
-            handle_POST_policy_analysis_review: handle_POST_policy_analysis_reviews,
+            handle_POST_policy_analysis_reviews,
 
             handle_PUT_comments,
             handle_PUT_conversations,
@@ -180,6 +181,8 @@ helpersInitialized.then(
             handle_PUT_ptptois,
             handle_PUT_reports,
             handle_PUT_users,
+
+            handle_GET_signout_callback,
         } = o;
 
         const {
@@ -381,6 +384,19 @@ helpersInitialized.then(
             "/api/v3/auth/deregister",
             want("showPage", getStringLimitLength(1, 99), assignToP),
             handle_POST_auth_deregister
+        );
+
+        app.get(
+            "/api/v3/auth/deregister",
+            want("showPage", getStringLimitLength(1, 99), assignToP),
+            handle_GET_auth_deregister
+        );
+
+        app.get(
+            "/api/v3/signout_callback",
+            moveToBody,
+            authOptional(assignToP),
+            handle_GET_signout_callback
         );
 
         app.get(

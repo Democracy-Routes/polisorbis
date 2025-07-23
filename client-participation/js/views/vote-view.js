@@ -47,6 +47,7 @@ module.exports = Handlebones.ModelView.extend({
     "click #showTranslationButtonVoteView" : "showTranslationClicked",
     "click #hideTranslationButtonVoteView" : "hideTranslationClicked",
 
+    "click #back_home_button": "backHomeClicked",
   },
   context: function() {
     var ctx = Handlebones.ModelView.prototype.context.apply(this, arguments);
@@ -263,6 +264,10 @@ module.exports = Handlebones.ModelView.extend({
 
     var dest = window.location.pathname + window.location.hash;
     window.location = "/api/v3/openidBtn?dest=" + dest;
+  },
+
+  backHomeClicked: function(e) {
+    window.location = Strings.logoURL;
   },
 
   spamToggle: function() {
@@ -482,7 +487,9 @@ module.exports = Handlebones.ModelView.extend({
         that.model.set({
           empty: true,
           txt1: message1,
-          txt2: message2
+          txt2: message2,
+          returnHome: Strings.returnHome,
+          logoURL: Strings.logoURL
         });
         that.render();
       }));

@@ -20,6 +20,7 @@ var cliArgs = mri(argv)
 var enableTwitterWidgets = process.env.ENABLE_TWITTER_WIDGETS === 'true';
 var fbAppId = process.env.FB_APP_ID;
 
+var pHomeName = process.env.P_HOME_NAME || "Home";
 var pLogoIcoUrl = process.env.P_LOGO_ICO_URL || "https://doc.polisorbis.copernicani.it/images/polisorbis-logo-square.png";
 var pLogoUrl = process.env.P_LOGO_URL || "https://doc.polisorbis.copernicani.it/images/polisorbis-logo.png";
 var pTitle = process.env.P_TITLE || "PolisOrbis";
@@ -94,6 +95,7 @@ module.exports = (env, options) => {
       }),
       new webpack.DefinePlugin({
         'process.env.FB_APP_ID': JSON.stringify(fbAppId),
+        'process.env.P_HOME_NAME': JSON.stringify(pHomeName),
         'process.env.P_LOGO_ICO_URL': JSON.stringify(pLogoIcoUrl),
         'process.env.P_LOGO_URL': JSON.stringify(pLogoUrl),
         'process.env.P_TITLE': JSON.stringify(pTitle),

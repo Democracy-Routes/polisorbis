@@ -8,6 +8,7 @@ const EventHooksPlugin = require('event-hooks-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const writeHeadersJsonTask = require('./writeHeadersJsonTask');
 
+const pHomeName = process.env.P_HOME_NAME || "Home";
 const pLogoIcoUrl = process.env.P_LOGO_ICO_URL || "https://doc.polisorbis.copernicani.it/images/polisorbis-logo-square.png";
 const pLogoUrl = process.env.P_LOGO_URL || "https://doc.polisorbis.copernicani.it/images/polisorbis-logo.png";
 const pTitle = process.env.P_TITLE || "PolisOrbis";
@@ -50,6 +51,7 @@ module.exports = {
         new webpack.DefinePlugin({
             'process.env.NODE_ENV': JSON.stringify('production'),
             'process.env.SERVICE_URL': null,
+            'process.env.P_HOME_NAME': JSON.stringify(pHomeName),
             'process.env.P_LOGO_ICO_URL': JSON.stringify(pLogoIcoUrl),
             'process.env.P_LOGO_URL': JSON.stringify(pLogoUrl),
             'process.env.P_TITLE': JSON.stringify(pTitle),

@@ -16,6 +16,7 @@ const fbAppId = process.env.FB_APP_ID;
 const gaTrackingId = process.env.GA_TRACKING_ID;
 const outputDirectory = 'dist';
 
+const pHomeName = process.env.P_HOME_NAME || "Home";
 const pLogoIcoUrl = process.env.P_LOGO_ICO_URL || "https://doc.polisorbis.copernicani.it/images/polisorbis-logo-square.png";
 const pLogoUrl = process.env.P_LOGO_URL || "https://doc.polisorbis.copernicani.it/images/polisorbis-logo.png";
 const pTitle = process.env.P_TITLE || "PolisOrbis";
@@ -123,6 +124,7 @@ module.exports = (env, options) => {
       new webpack.DefinePlugin({
         'process.env.FB_APP_ID': JSON.stringify(fbAppId),
         'process.env.GA_TRACKING_ID': JSON.stringify(gaTrackingId),
+        'process.env.P_HOME_NAME': JSON.stringify(pHomeName),
         'process.env.P_LOGO_ICO_URL': JSON.stringify(pLogoIcoUrl),
         'process.env.P_LOGO_URL': JSON.stringify(pLogoUrl),
         'process.env.P_TITLE': JSON.stringify(pTitle),

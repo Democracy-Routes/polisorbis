@@ -17,6 +17,7 @@ const openidTokenURL = process.env.P_OPENID_TOKEN_ENDPOINT as string | undefined
 const openidLogoutURL = process.env.P_OPENID_END_SESSION_ENDPOINT as string | undefined;
 const openidjwksURL = process.env.P_OPENID_JWKS_URI as string | undefined;
 const openidCallback = `${devMode ? `http://${devHostname}` : `https://${prodHostname}`}/api/v3/openid_callback`;
+const openidPostLogout = `${devMode ? `http://${devHostname}` : `https://${prodHostname}`}/api/v3/signout_callback`;
 
 const openidEnabled = isTrue(process.env.P_OPENID_ENABLED) as boolean;
 
@@ -31,6 +32,7 @@ const openID = {
     logoutURL: openidLogoutURL,
     jwksURL: openidjwksURL,
     callback: openidCallback,
+    postLogout: openidPostLogout
 };
 
 import('source-map-support').then((sourceMapSupport) => {
