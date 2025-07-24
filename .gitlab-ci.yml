@@ -60,7 +60,7 @@ file-server-demo:
   variables:
     FULL_IMAGE_TAG: $CI_REGISTRY_IMAGE/file-server:demo-$TAG
     P_LOGO_ICO_URL: "https://doc.polisorbis.copernicani.it/images/polisorbis-logo-square.png"
-    P_LOGO_URL: "https://doc.polisorbis.copernicani.it/"
+    P_LOGO_URL: "https://demo.polisorbis.eu/home"
     P_TITLE: "PolisOrbis"
     P_CLAIM: "Welcome to PolisOrbis sandbox"
     P_DESCRIPTION: "You can use this service to test PolisOrbis. The service is reset every Saturday: do not use for production pools."
@@ -71,6 +71,7 @@ file-server-demo:
     P_OPENID_ENABLED: "false"
     P_OPENID_PROVIDER_NAME: "Orbis"
     P_OPENID_PROFILE_PAGE_URL: "https://identity.mopso.io/realms/Mopso/account/"
+    P_HOME_NAME: Orbis
 
   script:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
@@ -89,6 +90,7 @@ file-server-demo:
       --build-arg P_OPENID_PROVIDER_NAME="$P_OPENID_PROVIDER_NAME" \
       --build-arg P_PRIVACY_POLICY_URL="$P_PRIVACY_POLICY_URL" \
       --build-arg P_OPENID_PROFILE_PAGE_URL="$P_OPENID_PROFILE_PAGE_URL" \
+      --build-arg P_HOME_NAME="$P_HOME_NAME" \
         .
 
     - docker push $FULL_IMAGE_TAG
@@ -101,7 +103,7 @@ file-server-prod:
   variables:
     FULL_IMAGE_TAG: $CI_REGISTRY_IMAGE/file-server:prod-$TAG # <-- TAG is differente from demo
     P_LOGO_ICO_URL: "https://doc.polisorbis.copernicani.it/images/polisorbis-logo-square.png"
-    P_LOGO_URL: "https://doc.polisorbis.copernicani.it/images/polisorbis-logo.png"
+    P_LOGO_URL: "https://orbis-project.eu"
     P_TITLE: "PolisOrbis"
     P_CLAIM: "Input Crowd, Output Meaning"
     P_DESCRIPTION: "PolisOrbis is a real-time system for gathering, analyzing and understanding what large groups of people think in their own words, enabled by advanced statistics and machine learning"
@@ -112,6 +114,7 @@ file-server-prod:
     P_OPENID_ENABLED: "true"
     P_OPENID_PROVIDER_NAME: "Orbis"
     P_OPENID_PROFILE_PAGE_URL: "https://zitadel.orbis.euresearchcenter.com/ui/console/users/me"
+    P_HOME_NAME: Orbis
 
   script:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
@@ -130,6 +133,7 @@ file-server-prod:
       --build-arg P_OPENID_PROVIDER_NAME="$P_OPENID_PROVIDER_NAME" \
       --build-arg P_PRIVACY_POLICY_URL="$P_PRIVACY_POLICY_URL" \
       --build-arg P_OPENID_PROFILE_PAGE_URL="$P_OPENID_PROFILE_PAGE_URL" \
+      --build-arg P_HOME_NAME="$P_HOME_NAME" \
         .
 
     - docker push $FULL_IMAGE_TAG
