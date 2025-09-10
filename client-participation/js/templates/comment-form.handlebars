@@ -19,6 +19,7 @@
     "
     dir={{direction}}> {{! protips column }}
 
+{{!--
   <style>
     .comment_dropdown {
       cursor: pointer;
@@ -29,14 +30,15 @@
       text-decoration: underline;
     }
   </style>
+--}}
 
-  <a
+  <p
     id="comment_dropdown"
-    class="comment_dropdown"
+    {{!--class="comment_dropdown"--}}
     style="{{#unless desktop}}font-size:12px;{{/unless}}"
     >
     {{{s.writeCommentHelpText}}}
-  </a>
+  </p>
   {{#if showCommentsDropdown}}
     <p
         style="{{#unless desktop}}font-size:12px;{{/unless}}"

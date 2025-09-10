@@ -36,7 +36,7 @@ module.exports = Handlebones.ModelView.extend({
   // needed to prevent double submissions, which are annoying because they trigger a duplicate alert
   buttonActive: true,
 
-  showCommentsDropdown: false,
+  showCommentsDropdown: true,
 
   context: function() {
     var ctx = Handlebones.ModelView.prototype.context.apply(this, arguments);
