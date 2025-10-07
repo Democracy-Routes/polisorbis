@@ -188,11 +188,11 @@ module.exports = Handlebones.ModelView.extend({
                             class="label-text">Very Poor</span></td>
                     <td class="rating-cell"><input type="radio" name="1" value="2" /><span
                             class="label-text">Poor</span></td>
-                    <td class="rating-cell"><input type="radio" name="1" value="3" checked /><span
+                    <td class="rating-cell"><input type="radio" name="1" value="3" /><span
                             class="label-text">Average</span></td>
                     <td class="rating-cell"><input type="radio" name="1" value="4" /><span
                             class="label-text">Good</span></td>
-                    <td class="rating-cell"><input type="radio" name="1" value="5" /><span
+                    <td class="rating-cell"><input type="radio" name="1" value="5" checked /><span
                             class="label-text">Excellent</span></td>
                 </tr>
                 <tr>
@@ -201,11 +201,11 @@ module.exports = Handlebones.ModelView.extend({
                             class="label-text">Very Poor</span></td>
                     <td class="rating-cell"><input type="radio" name="2" value="2" /><span
                             class="label-text">Poor</span></td>
-                    <td class="rating-cell"><input type="radio" name="2" value="3" checked /><span
+                    <td class="rating-cell"><input type="radio" name="2" value="3" /><span
                             class="label-text">Average</span></td>
                     <td class="rating-cell"><input type="radio" name="2" value="4" /><span
                             class="label-text">Good</span> </td>
-                    <td class="rating-cell"><input type="radio" name="2" value="5" /><span
+                    <td class="rating-cell"><input type="radio" name="2" value="5" checked /><span
                             class="label-text">Excellent</span></td>
                 </tr>
                 <tr>
@@ -215,11 +215,11 @@ module.exports = Handlebones.ModelView.extend({
                             class="label-text">Not at all</span></td>
                     <td class="rating-cell"><input type="radio" name="3" value="2" /><span class="label-text">A
                             little</span></td>
-                    <td class="rating-cell"><input type="radio" name="3" value="3" checked /><span
+                    <td class="rating-cell"><input type="radio" name="3" value="3"/><span
                             class="label-text">Moderately</span></td>
                     <td class="rating-cell"><input type="radio" name="3" value="4" /><span class="label-text">Quite a
                             bit</span></td>
-                    <td class="rating-cell"><input type="radio" name="3" value="5" /><span class="label-text">Very
+                    <td class="rating-cell"><input type="radio" name="3" value="5" checked  /><span class="label-text">Very
                             much</span></td>
                 </tr>
                 <tr>
@@ -228,11 +228,11 @@ module.exports = Handlebones.ModelView.extend({
                             class="label-text">Not Likely</span></td>
                     <td class="rating-cell"><input type="radio" name="4" value="2" /><span class="label-text">Slightly
                             unlikely</span></td>
-                    <td class="rating-cell"><input type="radio" name="4" value="3" checked /><span
+                    <td class="rating-cell"><input type="radio" name="4" value="3" /><span
                             class="label-text">Moderately</span></td>
                     <td class="rating-cell"><input type="radio" name="4" value="4" /><span class="label-text">Very
                             likely</span></td>
-                    <td class="rating-cell"><input type="radio" name="4" value="5" /><span class="label-text">Extremely
+                    <td class="rating-cell"><input type="radio" name="4" value="5" checked /><span class="label-text">Extremely
                             likely</span></td>
                 </tr>
             </tbody>
@@ -254,7 +254,7 @@ module.exports = Handlebones.ModelView.extend({
                     question_id: parseInt(key),
                     rating_value: parseInt(value)
                 };
-                fetch("${baseUrl}api/v3/policy-analysis/rewiews", {
+                fetch("${baseUrl}api/v3/policy-analysis/reviews", {
                     method: "POST",
                     headers: {
                         "Accept": "application/json",
@@ -269,7 +269,7 @@ module.exports = Handlebones.ModelView.extend({
 
         async function downloadReviews(event) {
             event.preventDefault()
-            const response = await fetch("${baseUrl}api/v3/policy-analysis/rewiews?conversation_id=${convId}", {
+            const response = await fetch("${baseUrl}api/v3/policy-analysis/reviews?conversation_id=${convId}", {
                 method: "GET"
             });
 

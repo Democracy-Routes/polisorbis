@@ -985,7 +985,7 @@ helpersInitialized.then(
         );
 
         app.post(
-            "/api/v3/policy-analysis/rewiews",
+            "/api/v3/policy-analysis/reviews",
             auth(assignToP),
             need("conversation_id", getStringLimitLength(100), assignToP),
             want("question_id", getIntInRange(1, 4), assignToP),
@@ -994,7 +994,7 @@ helpersInitialized.then(
         );
 
         app.get(
-            "/api/v3/policy-analysis/rewiews",
+            "/api/v3/policy-analysis/reviews",
             moveToBody,
             auth(assignToP),
             need("conversation_id", getStringLimitLength(100), assignToP),
