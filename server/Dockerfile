@@ -7,17 +7,16 @@
 # For a dev build, use `--target dev`.
 # Should default to prod build, but you can also explicitly use `--target prod`
 
-FROM docker.io/node:18-alpine as base
+FROM docker.io/node:18-slim AS base
 
 ARG NODE_ENV
 
 WORKDIR /app
 
 # This package is needed at runtime
-RUN apk add libpq-dev
+RUN apt-get update && apt-get install -y --no-install-recommends libpq-dev && rm -rf /var/lib/apt/lists/*
 
-RUN apk add --no-cache --virtual .build \
-  g++ make python3
+RUN apt-get update && apt-get install -y --no-install-recommends g++ make python3 && rm -rf /var/lib/apt/lists/*
 
 COPY package*.json ./
 
@@ -26,7 +25,7 @@ EXPOSE 5000
 
 # Define the development build
 
-FROM base as dev
+FROM base AS dev
 
 # Set default NODE_ENV to development unless overridden at build time with --build-arg NODE_ENV=production
 ENV NODE_ENV ${NODE_ENV:-development}
@@ -39,15 +38,15 @@ CMD npm run dev
 
 # Define the production build
 
-FROM base as prod
+FROM base AS prod
 
 # Set default NODE_ENV to production unless overridden at build time with --build-arg NODE_ENV=development
 ENV NODE_ENV ${NODE_ENV:-production}
 
 RUN npm ci --production=false
 
-# For prod builds, to minimize the image size, remove the dependencies tagged with `--virtual .build` above.
-RUN apk del .build
+# For prod builds, to minimize the image size, remove build dependencies.
+RUN apt-get update && apt-get purge -y --auto-remove g++ make python3 && rm -rf /var/lib/apt/lists/*
 
 COPY . .
 
