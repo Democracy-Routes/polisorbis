@@ -24,42 +24,6 @@ const Index = () => {
         }}>
         {description}
       </Heading>
-      {/*
-      <Box sx={{ mb: [4, null, 5] }}>
-        <Text>
-          Polis has been used all over the world by governments, academics,
-          independent media and citizens, and is completely open source.
-        </Text>
-      </Box>
-       */}
-      <Heading
-        as="h3"
-        sx={{ fontSize: [4], lineHeight: 'body', mb: [2, null, 3] }}>
-        Get Started
-      </Heading>
-      <Box sx={{ mb: [4, null, 5] }}>
-        {!openidEnabled ? <Link href="/createuser">Sign up</Link> : <></>}
-        {!openidEnabled ? ' or ' : ''}
-        <Link href="/signin">Sign in</Link>
-      </Box>
-      {/* 
-      <ReadPress />
-      <ExploreKnowledgeBase />
-       */}
-      <Heading
-        as="h3"
-        sx={{ fontSize: [4], lineHeight: 'body', my: [2, null, 3] }}>
-        Contribute
-      </Heading>
-      <Box sx={{ mb: [4, null, 5] }}>
-        <Link href="https://doc.polisorbis.copernicani.it/">Know more about the PolisOrbis Project</Link>
-      </Box>
-      <Box sx={{ mb: [4, null, 5] }}>
-        Explore the code and join the developer community{' '}
-        <Link target="_blank" href={repoUrl}>
-          on Gitlab
-        </Link>
-      </Box>
     </Layout>
   )
 }

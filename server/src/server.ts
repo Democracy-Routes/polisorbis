@@ -8860,6 +8860,9 @@ Email verified! You can close this tab or hit the back button.
                 if (!_.isUndefined(req.p.link_url)) {
                     fields.link_url = req.p.link_url;
                 }
+                if (!_.isUndefined(req.p.context)) {
+                    fields.context = req.p.context;
+                }
 
                 ifDefinedSet("subscribe_type", req.p, fields);
 
