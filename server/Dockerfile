@@ -7,7 +7,7 @@
 # For a dev build, use `--target dev`.
 # Should default to prod build, but you can also explicitly use `--target prod`
 
-FROM docker.io/node:18-alpine as base
+FROM docker.io/node:18-alpine AS base
 
 ARG NODE_ENV
 
@@ -26,7 +26,7 @@ EXPOSE 5000
 
 # Define the development build
 
-FROM base as dev
+FROM base AS dev
 
 # Set default NODE_ENV to development unless overridden at build time with --build-arg NODE_ENV=production
 ENV NODE_ENV ${NODE_ENV:-development}
@@ -39,7 +39,7 @@ CMD npm run dev
 
 # Define the production build
 
-FROM base as prod
+FROM base AS prod
 
 # Set default NODE_ENV to production unless overridden at build time with --build-arg NODE_ENV=development
 ENV NODE_ENV ${NODE_ENV:-production}

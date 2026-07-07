@@ -127,6 +127,7 @@ s.convIsClosed = "This conversation is closed.";
 s.noMoreVotingAllowed = "No further voting is allowed.";
 s.returnHome = `Return to ${pHomeName}`;
 
+s.rateOrbis = "Rate your Orbis experience";
 
 s.topic_good_01 = "What should we do about the pingpong room?";
 s.topic_good_01_reason = "open ended, anyone can have an opinion on answers to this question";

@@ -158,6 +158,7 @@ helpersInitialized.then(
             handle_POST_metrics,
             handle_POST_notifyTeam,
             handle_POST_participants,
+            handle_POST_prune,
             handle_POST_ptptCommentMod,
             handle_POST_query_participants_by_metadata,
             handle_POST_reportCommentSelections,
@@ -458,6 +459,13 @@ helpersInitialized.then(
             moveToBody,
             want("sinceUnixTimestamp", getStringLimitLength(99), assignToP),
             handle_GET_conversationsRecentlyStarted
+        );
+
+        app.post(
+            "/api/v3/prune",
+            moveToBody,
+            want("max-age", getInt, assignToP, 172800),
+            handle_POST_prune
         );
 
         app.get(
@@ -985,7 +993,7 @@ helpersInitialized.then(
         );
 
         app.post(
-            "/api/v3/policy-analysis/rewiews",
+            "/api/v3/policy-analysis/reviews",
             auth(assignToP),
             need("conversation_id", getStringLimitLength(100), assignToP),
             want("question_id", getIntInRange(1, 4), assignToP),
@@ -994,7 +1002,7 @@ helpersInitialized.then(
         );
 
         app.get(
-            "/api/v3/policy-analysis/rewiews",
+            "/api/v3/policy-analysis/reviews",
             moveToBody,
             auth(assignToP),
             need("conversation_id", getStringLimitLength(100), assignToP),

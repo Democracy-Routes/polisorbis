@@ -171,7 +171,7 @@ if (openID.enabled) {
                 client_id: openID.clientID,
                 client_secret: openID.clientSecret,
                 redirect_uris: [openID.callback],
-                post_logout_redirect_uris: [ openID.postLogout ],
+                post_logout_redirect_uris: [openID.postLogout],
                 response_types: ["code"],
                 // id_token_signed_response_alg (default "RS256")
                 // token_endpoint_auth_method (default "client_secret_basic")
@@ -191,7 +191,7 @@ if (openID.enabled) {
             client_id: openID.clientID,
             client_secret: openID.clientSecret,
             redirect_uris: [openID.callback],
-            post_logout_redirect_uris: [ openID.postLogout ],
+            post_logout_redirect_uris: [openID.postLogout],
             response_types: ["code"],
             // id_token_signed_response_alg (default "RS256")
             // token_endpoint_auth_method (default "client_secret_basic")
@@ -2629,7 +2629,7 @@ Feel free to reply to this email if you need help.`;
     ) {
         req.p = req.p || {};
         let token = req.cookies[COOKIES.TOKEN];
-        
+
         // clear cookies regardless of auth status
         clearCookies(req, res);
 
@@ -2676,7 +2676,7 @@ Feel free to reply to this email if you need help.`;
     }
 
     function handle_GET_signout_callback(
-        req: { p: {  }; cookies: { [x: string]: any } },
+        req: { p: {}; cookies: { [x: string]: any } },
         res: {
             redirect: (arg0: any) => void;
             status: (
@@ -2692,7 +2692,7 @@ Feel free to reply to this email if you need help.`;
     ) {
         req.p = req.p || {};
         let token = req.cookies[COOKIES.TOKEN];
-        
+
         // clear cookies regardless of auth status
         clearCookies(req, res);
 
@@ -8993,7 +8993,7 @@ Email verified! You can close this tab or hit the back button.
                 let q = sql_conversations
                     .delete()
                     .where(sql_conversations.zid.equals(req.p.zid));
-                    // .and( sql_conversations.owner.equals(req.p.uid) )
+                // .and( sql_conversations.owner.equals(req.p.uid) )
                 pgQuery(q.toString(), function (err: any) {
                     if (err) {
                         fail(res, 500, "polis_err_delete_conversation", err);
@@ -11620,7 +11620,7 @@ Thanks for using Polis!
                             .then(function () {
                                 //Adds id token
                                 //@ts-ignore
-                                setCookie(req, res, "id_token", id_token, {httpOnly: false});
+                                setCookie(req, res, "id_token", id_token, { httpOnly: false });
                                 // res.json({
                                 //     uid: user.uid,
                                 //     hname: user.hname,
@@ -11684,7 +11684,7 @@ Thanks for using Polis!
                                             user.uid
                                         ).then(function () {
                                             //@ts-ignore
-                                            setCookie(req, res, "id_token", id_token, {httpOnly: false});
+                                            setCookie(req, res, "id_token", id_token, { httpOnly: false });
                                             return user;
                                         });
                                     },
@@ -11792,7 +11792,7 @@ Thanks for using Polis!
                         return startSessionAndAddCookies(req, res, uid).then(
                             function () {
                                 //@ts-ignore
-                                setCookie(req, res, "id_token", id_token, {httpOnly: false});
+                                setCookie(req, res, "id_token", id_token, { httpOnly: false });
                                 return user;
                             },
                             function (err: any) {
@@ -14793,6 +14793,45 @@ Thanks for using Polis!
     });
     logger.debug("end initializePolisHelpers");
 
+    function handle_POST_prune(req: any, res: any) {
+        const maxAge = req.body["max-age"];
+        const now = Date.now();
+        const cutoff = now - (maxAge * 1000);
+
+        logger.info(`Pruning conversations and users older than ${maxAge} seconds (cutoff: ${cutoff})`);
+
+        // 1. Delete conversations not modified since cutoff
+        pgQueryP(
+            "DELETE FROM conversations WHERE modified < $1 RETURNING zid;",
+            [cutoff]
+        ).then((convDeleted: any) => {
+            // 2. Delete users created before cutoff who:
+            //    - are NOT owners of any conversation (even a recent one)
+            //    - are NOT participants in any conversation (even a recent one)
+            //    - are NOT in xids table as owner of some mapping
+            // We run this AFTER conversations are deleted so that users whose only
+            // conversations were just pruned are now eligible for deletion.
+            return pgQueryP(
+                `DELETE FROM users 
+                 WHERE created < $1 
+                 AND NOT EXISTS (SELECT 1 FROM conversations WHERE owner = users.uid OR org_id = users.uid)
+                 AND NOT EXISTS (SELECT 1 FROM participants WHERE uid = users.uid)
+                 AND NOT EXISTS (SELECT 1 FROM xids WHERE owner = users.uid)
+                 RETURNING uid;`,
+                [cutoff]
+            ).then((usersDeleted: any) => {
+                logger.info(`Pruning complete. Deleted ${convDeleted.length} conversations and ${usersDeleted.length} users.`);
+                res.status(200).send({
+                    conversations_deleted: convDeleted.length,
+                    users_deleted: usersDeleted.length
+                });
+            });
+        }).catch((err: any) => {
+            logger.error("Error during pruning", err);
+            res.status(500).send("polis_err_prune_failed");
+        });
+    }
+
     const returnObject: any = {
         addCorsHeader,
         auth,
@@ -14829,6 +14868,7 @@ Thanks for using Polis!
         middleware_log_request_body,
         middleware_responseTime_start,
         // handlers
+        handle_POST_prune,
         handle_DELETE_conversation,
         handle_DELETE_metadata_answers,
         handle_DELETE_metadata_questions,
