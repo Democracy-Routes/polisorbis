@@ -1,14 +1,24 @@
 # ![PolisOrbis](docs/polisorbis-logo.png)
-This repo is maintained by the Copernicani association and it is a research effort built on a fork of the Polis project developed by Computational Democracy Project.
+This repo is maintained by the Copernicani association and is a research effort built on a fork of the Polis project developed by the Computational Democracy Project.
 
-To achieve the [PolisOrbis objectives](https://doc.polisorbis.copernicani.it/overview/#why-polisorbis), we have rewritten a substantial portion of the code for two key components of Polis: 
+Please note that PolisOrbis now evolves as the **Voxit** project (https://www.voxit.org/). This repository is still maintained for legacy purposes.
+
+To achieve the PolisOrbis objectives (https://doc.polisorbis.copernicani.it/overview/#why-polisorbis), we have rewritten a substantial portion of the code for three key components of Polis: 
 
 - client-admin
 - client-participation
+- server
+
+Besides PolisOrbis objectives, starting from v1.3.0 a new route was added to the server to automatically clean up all conversations older than two days by default. Starting from v 1.4.0 the purge script is scheduled as a cron job, by defaults it runs every day a 3 AM removing all conversations older than 48 hours and purging users without conversations. This behaviour is for the sandbox implementation. You can change it by defining two variables:
+- PRUNE_SCHEDULE (defaults to 0 3 * * * according to cron syntax)
+- PRUNE_OLDER_THAN (defaults to 172800, i.e. 48 hours in seconds)
+Production configuratio may need a longer data retention.
+
 
 Furthermore, minor adjustments have been made to other components throughout the Polis system.
 
-PolisOrbis tries to remain as much as possible aligned with the original Polis project methods, architecture and developments.
+PolisOrbis tries to remain as aligned as possible with the original Polis project methods, architecture and developments.
+
 
 ## 🎈 🪁 Start here! 🪁 🎈
 
@@ -38,7 +48,7 @@ If you aren't able to use Docker for some reason, the various Dockerfiles found 
 
 ```sh
 cp example.env .env
-make start
+make start-rebuild 
 ```
 
 That should run docker compose with the development overlay (see below) and default configuration values.

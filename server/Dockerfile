@@ -13,10 +13,18 @@ ARG NODE_ENV
 
 WORKDIR /app
 
-# This package is needed at runtime
-RUN apt-get update && apt-get install -y --no-install-recommends libpq-dev && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    cron \
+    curl \
+    g++ \
+    libpq-dev \
+    make \
+    python3 \
+    && rm -rf /var/lib/apt/lists/*
 
-RUN apt-get update && apt-get install -y --no-install-recommends g++ make python3 && rm -rf /var/lib/apt/lists/*
+COPY prune.sh /usr/local/bin/
+COPY startup.sh /usr/local/bin/startup
+RUN chmod +x /usr/local/bin/prune.sh /usr/local/bin/startup
 
 COPY package*.json ./
 
@@ -32,7 +40,7 @@ ENV NODE_ENV ${NODE_ENV:-development}
 
 COPY . .
 
-CMD npm run dev
+CMD ["/usr/local/bin/startup", "npm", "run", "dev"]
 
 
 
@@ -52,6 +60,6 @@ COPY . .
 
 RUN npm run build
 
-CMD npm run serve
+CMD ["/usr/local/bin/startup", "npm", "run", "serve"]
 
 
