@@ -23,14 +23,15 @@ function sendTextEmailWithBackup(
   subject: any,
   text: any
 ) {
-  const transportTypes = Config.emailTransportTypes
-    ? Config.emailTransportTypes.split(",")
-    : ["aws-ses", "mailgun"];
+  if (!Config.emailTransportTypes) {
+    return Promise.resolve();
+  }
+  const transportTypes = Config.emailTransportTypes.split(",");
   if (transportTypes.length < 2) {
     logger.warn("No backup email transport available.");
   }
   const backupTransport = transportTypes[1];
-  sendTextEmail(sender, recipient, subject, text, backupTransport);
+  return sendTextEmail(sender, recipient, subject, text, backupTransport);
 }
 
 function isDocker() {
@@ -81,7 +82,7 @@ function sendTextEmail(
 ) {
   // Exit if empty string passed.
   if (!transportTypes) {
-    return;
+    return Promise.resolve();
   }
 
   const transportTypesArray = transportTypes.split(",");

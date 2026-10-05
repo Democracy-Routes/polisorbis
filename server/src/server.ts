@@ -252,13 +252,15 @@ let akismet = akismetLib.client({
     apiKey: Config.akismetAntispamApiKey,
 });
 
-akismet.verifyKey(function (err: any, verified: any) {
-    if (verified) {
-        logger.debug("Akismet: API key successfully verified.");
-    } else {
-        logger.debug("Akismet: Unable to verify API key.");
-    }
-});
+if (Config.akismetAntispamApiKey) {
+    akismet.verifyKey(function (err: any, verified: any) {
+        if (verified) {
+            logger.debug("Akismet: API key successfully verified.");
+        } else {
+            logger.debug("Akismet: Unable to verify API key.");
+        }
+    });
+}
 // let SELF_HOSTNAME = Config.getServerHostname();
 
 function isSpam(o: {
@@ -3393,6 +3395,9 @@ Feel free to reply to this email if you need help.`;
         uid?: any,
         pid?: any
     ) {
+        if (!process.env.GOOGLE_API_KEY) {
+            return;
+        }
         getUsersLocationName(uid)
             //     No overload matches this call.
             // Overload 1 of 2, '(onFulfill?: ((value: unknown) => Resolvable<void>) | undefined, onReject?: ((error: any) => Resolvable<void>) | undefined): Bluebird<void>', gave the following error.
@@ -3448,6 +3453,10 @@ Feel free to reply to this email if you need help.`;
     function populateGeoIpInfo(zid: any, uid?: any, ipAddress?: string | null) {
         var userId = Config.maxmindUserID;
         var licenseKey = Config.maxmindLicenseKey;
+
+        if (!userId || !licenseKey) {
+            return Promise.resolve();
+        }
 
         var url = "https://geoip.maxmind.com/geoip/v2.1/city/";
         var contentType =
@@ -5980,6 +5989,9 @@ Email verified! You can close this tab or hit the back button.
         },
         res: any
     ) {
+        if (!Config.fbAppId) {
+            return fail(res, 500, "polis_err_facebook_not_configured");
+        }
         let response = JSON.parse(req?.p?.response || "");
         let fb_access_token =
             response && response.authResponse && response.authResponse.accessToken;
@@ -10607,7 +10619,14 @@ Thanks for using Polis!
             });
     }
 
+    function isTwitterConfigured() {
+        return !!(Config.twitterConsumerKey && Config.twitterConsumerSecret);
+    }
+
     function getTwitterRequestToken(returnUrl: string) {
+        if (!isTwitterConfigured()) {
+            return Promise.reject("polis_err_twitter_not_configured");
+        }
         let oauth = new OAuth.OAuth(
             "https://api.twitter.com/oauth/request_token", // null
             "https://api.twitter.com/oauth/access_token", // null
@@ -10674,6 +10693,9 @@ Thanks for using Polis!
         oauth_verifier: any;
         oauth_token: any;
     }) {
+        if (!isTwitterConfigured()) {
+            return Promise.reject("polis_err_twitter_not_configured");
+        }
         let oauth = new OAuth.OAuth(
             "https://api.twitter.com/oauth/request_token", // null
             "https://api.twitter.com/oauth/access_token", // null
@@ -10718,6 +10740,9 @@ Thanks for using Polis!
         o: { twitter_user_id: any; twitter_screen_name?: any },
         useCache: boolean
     ) {
+        if (!isTwitterConfigured()) {
+            return Promise.reject("polis_err_twitter_not_configured");
+        }
         let twitter_user_id = o.twitter_user_id;
         let twitter_screen_name = o.twitter_screen_name;
         let params: TwitterParameters = {
@@ -10790,6 +10815,9 @@ Thanks for using Polis!
     }
 
     function getTwitterTweetById(twitter_tweet_id: string) {
+        if (!isTwitterConfigured()) {
+            return Promise.reject("polis_err_twitter_not_configured");
+        }
         let oauth = new OAuth.OAuth(
             "https://api.twitter.com/oauth/request_token", // null
             "https://api.twitter.com/oauth/access_token", // null
@@ -10864,6 +10892,9 @@ Thanks for using Polis!
     // This is probably not optimal, but is pretty easy.
     let suspendedOrPotentiallyProblematicTwitterIds: any[] = [];
     function getTwitterUserInfoBulk(list_of_twitter_user_id: any[]) {
+        if (!isTwitterConfigured()) {
+            return Promise.reject("polis_err_twitter_not_configured");
+        }
         list_of_twitter_user_id = list_of_twitter_user_id || [];
         let oauth = new OAuth.OAuth(
             "https://api.twitter.com/oauth/request_token", // null
@@ -11239,6 +11270,9 @@ Thanks for using Polis!
         req: { p: { uid?: any; dest: any; oauth_verifier: any; oauth_token: any } },
         res: { redirect: (arg0: any) => void }
     ) {
+        if (!isTwitterConfigured()) {
+            return fail(res, 500, "polis_err_twitter_not_configured");
+        }
         let uid = req.p.uid;
 
         // TODO "Upon a successful authentication, your callback_url would receive a request containing the oauth_token and oauth_verifier parameters. Your application should verify that the token matches the request token received in step 1."

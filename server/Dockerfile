@@ -30,6 +30,29 @@ COPY package*.json ./
 
 EXPOSE 5000
 
+# Egress lock-down defaults: with these defaults the server does not send data to
+# third-party services (email, MaxMind, Google, Akismet, Twitter, Facebook).
+# OpenID (P_OPENID_*) is intentionally left untouched.
+# These are declarative defaults only: runtime values from .env / docker compose
+# override them, and the code enforces the same behavior when values are empty.
+ENV SHOULD_USE_TRANSLATION_API=false \
+    EMAIL_TRANSPORT_TYPES= \
+    MAILGUN_API_KEY= \
+    MAILGUN_DOMAIN= \
+    AWS_REGION= \
+    AWS_ACCESS_KEY_ID= \
+    AWS_SECRET_ACCESS_KEY= \
+    MAXMIND_USER_ID= \
+    MAXMIND_LICENSE_KEY= \
+    GOOGLE_API_KEY= \
+    GOOGLE_CREDENTIALS_BASE64= \
+    GOOGLE_CREDS_STRINGIFIED= \
+    GOOGLE_APPLICATION_CREDENTIALS= \
+    AKISMET_ANTISPAM_API_KEY= \
+    TWITTER_CONSUMER_KEY= \
+    TWITTER_CONSUMER_SECRET= \
+    FB_APP_ID=
+
 
 # Define the development build
 
