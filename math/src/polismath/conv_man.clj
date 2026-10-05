@@ -294,11 +294,12 @@
         zid-str (str "zid=" zid)
         retry-chan (:retry-chan conv-actor)
         notify-message (str "Failed conversation update on " (-> conv-man :config :math-env) " for message-type " message-type " and " zid-str)]
-    (try
-      (let [stack-trace (notify/error-message-body update-error)]
-        (notify/notify-team (:config conv-man) (str "Polismath conv-man error: " message-type) zid notify-message stack-trace))
-      (catch Exception e
-        (log/error e "Unable to notify team")))
+    ; DISABLED: Team notification
+    ; (try
+    ;   (let [stack-trace (notify/error-message-body update-error)]
+    ;     (notify/notify-team (:config conv-man) (str "Polismath conv-man error: " message-type) zid notify-message stack-trace))
+    ;   (catch Exception e
+    ;     (log/error e "Unable to notify team")))
     (log/error update-error notify-message)
     (.printStackTrace update-error)
     ; Try requeing the votes that failed so that if we get more, they'll get replayed

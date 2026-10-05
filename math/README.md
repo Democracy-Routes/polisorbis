@@ -15,7 +15,7 @@ This allows you to connect to and evaluate code from within the running math wor
 To use this infrastructure, run the following from the root of this repository:
 
 ```sh
-docker compose -f docker-compose.yml -f docker-compose.dev.yml up
+docker compose -f docker-compose.yml -f docker-compose.dev.yml --profile postgres up
 ```
 
 The first time you run this (or if you've edited any of the docker files, or certain other parts of the system), you may need to run this command with the `--build` flag.
@@ -35,6 +35,7 @@ If you're not familiar with Clojure and want a fun crash course, I highly recomm
 If you're not using the docker compose infrastructure, you can run `clj -M:dev` to get nREPL going, but this will not start math worker's processing queue (or obviously any other parts of the system).
 This may be preferable if you don't need the whole system running for whatever task you're working on.
 You can always manually start the polling system by manually running `(runner/run!)`, as described below, as long as you have the `DATABASE_URL` environment variable pointing to a database (see [`doc/configuration.md`](doc/configuration.md))
+
 ## Starting and stopping the system
 
 This application uses Stuart Sierra's Component library for REPL-reloadability.
@@ -59,7 +60,7 @@ There are also a number of commands which can be run, either locally or with `do
 * `clojure -M:run full` - run a full system (poller plus auxiliary task processing)
 * etc.
 
-If you are exporting data, you will need to run `docker compose` here with the same `-f docker-compose.yml -f docker-compose.dev.yml` options as described above, so that the directory (volume) mounting in the dev configuration file will mirror the generated files over onto your local filesystem.
+If you are exporting data, you will need to run `docker compose` here with the same `-f docker-compose.yml -f docker-compose.dev.yml --profile postgres` options as described above, so that the directory (volume) mounting in the dev configuration file will mirror the generated files over onto your local filesystem.
 
 ## Tests
 
@@ -80,11 +81,33 @@ We need to have a way of queueing up vote and moderation data updates, so that t
 
 You can see the conversation manager implementation at [`src/polismath/conv_man.clj`](src/polismath/conv_man.clj).
 
+## Logging Configuration
+
+The system's logging level defaults to `:warn` but can be configured in several ways:
+
+1. Set the `LOGGING_LEVEL` environment variable to change from the default `:warn` level:
+
+   ```bash
+   MATH_LOG_LEVEL=info docker compose -f docker-compose.yml -f docker-compose.dev.yml --profile postgres up
+   ```
+
+2. Modify the logging level in `resources/config.edn`
+3. Set the level at runtime via the REPL:
+
+   ```clojure
+   (require '[taoensso.timbre :as timbre])
+   (timbre/set-level! :info)  ; Example of setting to a more verbose level
+   ```
+
+Available log levels (from lowest to highest): `:trace`, `:debug`, `:info`, `:warn`, `:error`, `:fatal`, `:report`
+
 ## Production setup
 
-The [`docker-compose.yml`](../docker-compose.yml) file in the root of this directory, while not yet production ready, and still containing some development time artifacts, is provided as a basis for production deployment.
+The [`docker-compose.yml`](../docker-compose.yml) file in the root of this directory is provided as a basis for production deployment.
 Outstanding issues which need to be resolved before it would be ready include ensuring only necessary ports are exposed, etc.
 The individual `Dockerfile`s that make up this infrastructure can currently be used by themselves, separate from `docker compose`, for deployment.
+
+## Requirements
 
 Nonetheless, if you wish to run this part of the system directly on a machine (outside of docker), the only requirements are that you:
 

@@ -37,8 +37,10 @@ services:
       labels:
         polis_tag: ${TAG:-dev}
     depends_on:
-      - "postgres"
-      - "file-server"
+      postgres:
+        condition: service_healthy
+      file-server:
+        condition: service_started
     networks:
       - "polis-net"
     # Scale the server container to a given number of instances.
@@ -49,11 +51,13 @@ services:
 
   math:
     image: registry.gitlab.com/copernicani/polisorbis/codebase/math:dev
-      - "postgres"
     build:
       context: ./math
       labels:
         polis_tag: ${TAG:-dev}
+    depends_on:
+      postgres:
+        condition: service_healthy
     environment:
       - DATABASE_URL=${DATABASE_URL:?error}
       - MATH_ENV=${MATH_ENV:-prod}
@@ -74,11 +78,16 @@ services:
       - POSTGRES_DB=${POSTGRES_DB:?error}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:?error}
       - POSTGRES_USER=${POSTGRES_USER:?error}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:?error} -d ${POSTGRES_DB:?error}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
     networks:
       - "polis-net"
     volumes:
       - "backups:/backups"
-      - "postgres:/var/lib/postgresql/data"
+      - "postgres:/var/lib/postgresql"
 
   nginx-proxy:
     image: docker.io/compdem/polis-nginx-proxy:${TAG:-dev}

@@ -1,11 +1,9 @@
-FROM docker.io/clojure:tools-deps-bullseye
+FROM docker.io/clojure:temurin-17-tools-deps
 
 WORKDIR /app
 COPY . .
 
 # Install clojure and fetch dependencies
 RUN clojure -A:dev -P
-
-RUN chmod +x ./bin/run
 
 CMD ["./bin/run"]
