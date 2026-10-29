@@ -15,6 +15,7 @@ import emoji from 'react-easy-emoji'
 
 import { CheckboxField } from './CheckboxField'
 import ModerateCommentsSeed from './seed-comment'
+import SeedCommentsCsv from './seed-comment-csv'
 // import ModerateCommentsSeedTweet from "./seed-tweet";
 
 @connect((state) => state.user)
@@ -127,6 +128,9 @@ class ConversationConfig extends React.Component {
                     Seed Comments
                 </Heading>
                 <ModerateCommentsSeed
+                    params={{ conversation_id: this.props.zid_metadata.conversation_id }}
+                />
+                <SeedCommentsCsv
                     params={{ conversation_id: this.props.zid_metadata.conversation_id }}
                 />
 

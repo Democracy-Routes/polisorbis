@@ -143,6 +143,7 @@ helpersInitialized.then(
             handle_POST_auth_password,
             handle_POST_auth_pwresettoken,
             handle_POST_comments,
+            handle_POST_comments_bulk,
             handle_POST_contexts,
             handle_POST_contributors,
             handle_POST_conversation_close,
@@ -765,6 +766,19 @@ helpersInitialized.then(
             want("xid", getStringLimitLength(1, 999), assignToP),
             resolve_pidThing("pid", assignToP, "post:comments"),
             handle_POST_comments
+        );
+
+        // Seed statements from an uploaded CSV (ported from Polis 2.42.2).
+        app.post(
+            "/api/v3/comments-bulk",
+            auth(assignToP),
+            need(
+                "conversation_id",
+                getConversationIdFetchZid,
+                assignToPCustom("zid")
+            ),
+            resolve_pidThing("pid", assignToP, "post:comments-bulk"),
+            handle_POST_comments_bulk
         );
 
         app.get(

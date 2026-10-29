@@ -108,6 +108,7 @@ import Utils from "./utils/common";
 import SQL from "./db/sql";
 // End of re-import
 import logger from "./utils/logger";
+import { makeHandlePostCommentsBulk } from "./routes/commentsBulk";
 
 // # notifications
 import emailSenders from "./email/senders";
@@ -7158,6 +7159,18 @@ Email verified! You can close this tab or hit the back button.
             return rows && rows.length;
         });
     }
+
+    // Seed statements from a CSV (routes/commentsBulk.ts).
+    const handle_POST_comments_bulk = makeHandlePostCommentsBulk({
+        isModerator,
+        getPidPromise,
+        addParticipant,
+        commentExists,
+        detectLanguage,
+        pgQueryP,
+        updateLastInteractionTimeForConversation,
+        modOk: polisTypes.mod.ok,
+    });
 
     function handle_POST_comments(
         req: {
@@ -14970,6 +14983,7 @@ Thanks for using Polis!
         handle_POST_auth_password,
         handle_POST_auth_pwresettoken,
         handle_POST_comments,
+        handle_POST_comments_bulk,
         handle_POST_contexts,
         handle_POST_contributors,
         handle_POST_conversation_close,
