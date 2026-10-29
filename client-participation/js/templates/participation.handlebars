@@ -19,7 +19,7 @@ should have received a copy of the GNU Affero General Public License along with 
     {{#if use_background_content_class}}
     background_content
     {{/if}}
-    " dir={{direction}} style="
+    " dir={{direction}} data-pane="vote" style="
         max-width: 768px; {{!-- check pixel ratio? --}}
         margin: auto; {{!-- use flexbox rather than auto, or add a container for this container? --}}
         background-color: {{polis_bgcolor}};
@@ -147,14 +147,14 @@ should have received a copy of the GNU Affero General Public License along with 
 
             {{#unless no_description}}
             {{#ifDefined description}}
-            <p class="conversationDescription" dir="auto">
+            <p class="conversationDescription" dir="auto" data-app-pane="info">
                 {{{description}}}
             </p>
             {{/ifDefined}}
             {{/unless}}
 
             {{#if link_url}}
-            <p class="conversationDescription" dir="auto">
+            <p class="conversationDescription" dir="auto" data-app-pane="info">
                 {{linkExternal link_url link_url}}
             </p>
             {{/if}}
@@ -165,7 +165,7 @@ should have received a copy of the GNU Affero General Public License along with 
 
     {{! ------------ HELP TEXT --------------- }}
 
-    <div id="helpTextWelcome" style="
+    <div id="helpTextWelcome" data-app-pane="info" style="
             {{!-- background-color: {{help_bgcolor}}; --}}
             {{!-- border: 1px solid rgb(85, 172, 238); --}}
             {{!-- color: rgb(68, 136, 189); --}}
@@ -192,13 +192,13 @@ should have received a copy of the GNU Affero General Public License along with 
 
 
     {{! ------------ VOTING PANEL --------------- }}
-    <span class="{{#if no_voting}}displayNone{{/if}}">
+    <span class="{{#if no_voting}}displayNone{{/if}}" data-app-pane="vote">
         {{view readReactView}}
     </span>
 
     {{#if auth_prompt_any_social}}
     {{#unless hasFbAndTw}}
-    <div id="socialButtonsUnderReadReact" class="" style="
+    <div id="socialButtonsUnderReadReact" data-app-pane="vote" class="" style="
             margin-inline-start: 8px;
             margin-bottom: 20px;
             display: none; {{! waiting to be shown }}
@@ -260,7 +260,7 @@ should have received a copy of the GNU Affero General Public License along with 
 
 
     {{! ------------ SUBMIT COMMENT FORM --------------- }}
-    <div id="commentFormParent" class="POLIS_COMMENT_FORM {{#if no_write}}displayNone{{/if}}">
+    <div id="commentFormParent" class="POLIS_COMMENT_FORM {{#if no_write}}displayNone{{/if}}" data-app-pane="write">
         {{view commentForm}}
     </div>
 
@@ -270,7 +270,7 @@ should have received a copy of the GNU Affero General Public License along with 
         {{/unless}}
     </div>
 
-    <span class="{{#if no_vis}}displayNone{{/if}}"> {{!-- no_vis toggle wrapper --}}
+    <span class="{{#if no_vis}}displayNone{{/if}}" data-app-pane="groups"> {{!-- no_vis toggle wrapper --}}
 
         {{#if show_pca_vis}}
         <div class="HeadingC" style="text-transform:none; cursor: default; white-space: nowrap; border-bottom: none;">
@@ -364,10 +364,11 @@ should have received a copy of the GNU Affero General Public License along with 
     {{! ------------ RATE ORBIS --------------- }}
 
 
+
     {{! ------------ BEGIN FOOTER --------------- }}
     {{#unless no_footer}}
 
-    <div style="margin-top: 40px; margin-bottom: 20px;" data-test-footer>
+    <div style="margin-top: 40px; margin-bottom: 20px;" data-test-footer data-app-pane="info">
         {{!--
         {{!FOOTER_LOGO}}
         <a href="https://pol.is" target="_blank" dir="auto">
@@ -404,5 +405,14 @@ should have received a copy of the GNU Affero General Public License along with 
     {{/unless}}
     {{! END FOOTER}}
     {{! ------------ END FOOTER --------------- }}
+
+    {{! ------------ APP MODE TAB BAR (phones, not embedded; see participation.js updateAppMode) --------------- }}
+    <nav class="appTabbar clickDoesNotDeselectHull" aria-label="{{s.tabVote}}">
+        <button type="button" class="appTab active" data-pane="vote">{{s.tabVote}}</button>
+        {{#unless no_write}}<button type="button" class="appTab" data-pane="write">{{s.tabWrite}}</button>{{/unless}}
+        {{#unless no_vis}}<button type="button" class="appTab" data-pane="groups">{{s.tabGroups}}</button>{{/unless}}
+        <button type="button" class="appTab" data-pane="info">{{s.tabInfo}}</button>
+    </nav>
+
 
 </div> {{! END PARTICIPATION VIEW DIV }}

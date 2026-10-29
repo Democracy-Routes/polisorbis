@@ -1190,3 +1190,135 @@ svg {
   text-decoration: none;
   &:hover { color: $brand-color; text-decoration: underline; }
 }
+
+
+/* ---------------- App mode (2026-10-30): phones, not embedded ----------------
+   body.appMode is set by participation.js (updateAppMode) when the page is
+   not in an iframe and the body is at most 600px wide. The page becomes four
+   panes selected by data-pane on .conversationViewRoot; the markup is the
+   same, elements carry data-app-pane to say which pane they belong to. */
+
+.appTabbar { display: none; }
+.appBack { display: none; }
+
+body.appMode {
+  height: 100%;
+  overflow: hidden;
+
+  .participationView {
+    height: 100vh;
+    height: 100dvh;
+    display: flex;
+    flex-direction: column;
+  }
+  #header_root { flex: 0 0 auto; }
+  .conversationViewRoot {
+    flex: 1 1 auto;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 0 12px !important;
+    border-radius: 0;
+    box-shadow: none;
+  }
+
+  /* top bar: the topic on one line */
+  .conversationViewHeadline { flex: 0 0 auto; }
+  .HeadingA, h2.HeadingA {
+    font-size: 17px;
+    line-height: 1.3;
+    margin: 6px 0 4px !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* panes */
+  [data-app-pane] { display: none; }
+  .conversationViewRoot[data-pane="vote"] [data-app-pane="vote"]:not(.displayNone),
+  .conversationViewRoot[data-pane="write"] [data-app-pane="write"]:not(.displayNone),
+  .conversationViewRoot[data-pane="groups"] [data-app-pane="groups"]:not(.displayNone),
+  .conversationViewRoot[data-pane="info"] [data-app-pane="info"]:not(.displayNone) {
+    display: block;
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  /* the info pane holds several elements: let them flow, not each fill the pane */
+  .conversationViewRoot[data-pane="info"] [data-app-pane="info"]:not(.displayNone) { flex: 0 0 auto; overflow: visible; }
+  .conversationViewRoot[data-pane="info"] { overflow-y: auto; }
+  .conversationViewRoot[data-pane="info"] [data-test-footer] { margin-top: 24px !important; }
+
+  /* vote pane: the card fills the space, text scrolls inside, buttons at the bottom */
+  .conversationViewRoot[data-pane="vote"] [data-app-pane="vote"]:not(.displayNone) { display: flex; flex-direction: column; overflow: hidden; }
+  /* the Backbone view wrapper between the pane and #readReactView */
+  .conversationViewRoot[data-pane="vote"] [data-app-pane="vote"] > div { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; }
+  #readReactView { margin-bottom: 0 !important; flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; }
+  #readReactView > .lightPanel:not(.custom_gutter) { display: none; }
+  #readReactView > .custom_gutter.lightPanel { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; top: 0 !important; }
+  /* the vote view's own wrapper sits between the panel and #comment_shower */
+  #readReactView > .custom_gutter.lightPanel > div { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; }
+  #comment_shower {
+    flex: 1 1 auto;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    padding: 14px 16px calc(12px + env(safe-area-inset-bottom, 0px));
+    margin: 4px 0 8px;
+    > div:first-child { flex: 1 1 auto; min-height: 0; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+    p.voteText { font-size: 22px; line-height: 1.4; min-height: 0; margin-top: 14px; }
+    .reactionButtons { flex: 0 0 auto; margin-top: auto; padding-top: 10px; }
+    .Notification { margin: auto 0; }
+  }
+  #socialButtonsUnderReadReact { flex: 0 0 auto; }
+
+  /* write pane: short help, the box, the result; the hint list is hidden */
+  #commentFormParent .helpText > *:not(#comment_dropdown):not(.protip) { display: none; }
+  #comment_form_textarea { min-height: 7em; }
+  #comment_button { width: 100%; }
+  .appBack {
+    display: inline-block;
+    margin-inline-start: 8px;
+    padding: 6px 12px;
+    border: 1px solid $brand-color;
+    border-radius: 999px;
+    background: transparent;
+    color: $brand-color;
+    font: inherit;
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  /* groups pane */
+  .conversationViewRoot[data-pane="groups"] .HeadingC { margin-top: 8px; }
+
+  /* bottom tab bar */
+  .appTabbar {
+    display: flex;
+    flex: 0 0 auto;
+    margin: auto -12px 0;
+    position: sticky;
+    bottom: 0;
+    z-index: 2;
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    border-top: 1px solid $border;
+    background: $surface;
+  }
+  .appTab {
+    flex: 1 1 0;
+    min-height: 52px;
+    border: 0;
+    border-top: 2px solid transparent;
+    background: transparent;
+    color: $muted;
+    font: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    &.active { color: $brand-color; border-top-color: $brand-color; }
+    &:focus-visible { outline: 2px solid $accent; outline-offset: -3px; }
+  }
+}

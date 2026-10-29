@@ -70,8 +70,32 @@ module.exports = ConversationView.extend({
     // "click #helpTextGroups": "hideHelpTextGroups",
     // "click #helpTextWelcome": "hideHelpTextWelcome",
     "click #helpTextGroupsExpand": "expandHelpTextGroups",
+    "click .appTab": "onAppTab",
     // "click #fbLoginBtn": "fbConnectBtn", // NOTE: may want a separate handler/API
     // "click #twitterLoginBtn": "twitterConnectBtn", // NOTE: may want a separate handler/API
+  },
+  // App mode: on a phone, outside an iframe, the page becomes four panes
+  // (vote, write, groups, info) with a bottom tab bar and no page scrolling.
+  // Pure CSS on body.appMode + data-pane; nothing moves in the DOM.
+  updateAppMode: function() {
+    var app = !window.isEmbedded() && display.xs();
+    document.body.classList.toggle("appMode", app);
+    var root = this.$(".conversationViewRoot");
+    if (app && !root.attr("data-pane")) {
+      root.attr("data-pane", "vote");
+    }
+  },
+  onAppTab: function(e) {
+    e.preventDefault();
+    var pane = $(e.currentTarget).attr("data-pane");
+    this.$(".conversationViewRoot").attr("data-pane", pane);
+    this.$(".appTabbar .appTab").removeClass("active").filter("[data-pane='" + pane + "']").addClass("active");
+    window.scrollTo(0, 0);
+    if (pane === "groups") {
+      // The opinion-groups graph measures its parent on render; it was
+      // display:none until now, so let it measure again.
+      setTimeout(function() { window.dispatchEvent(new Event("resize")); }, 50);
+    }
   },
   firstMathPollResultDeferred: $.Deferred(),
   shouldAffixVis: false,
@@ -527,6 +551,8 @@ module.exports = ConversationView.extend({
 
       // This is a wart. ServerClient should be initialized much earlier, probably as a singleton, and it should be responsible for fetching the first comment.
       serverClient.setNextCachedComment(options.firstCommentPromise);
+
+      that.updateAppMode();
 
       eb.on(eb.vote, function() {
         that.socialButtonsAllowedToShow = true;
@@ -1339,6 +1365,7 @@ module.exports = ConversationView.extend({
 
             // This need to happen quickly, so no debounce
             $(window).resize(function() {
+              that.updateAppMode();
               if (that.shouldShowVisUnderTabs()) {
                 // wait for layout
                 setTimeout(
