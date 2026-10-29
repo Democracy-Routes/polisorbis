@@ -75,6 +75,7 @@ s.tipNoQuestions = "I commenti dovrebbero contenere affermazioni ed evitare di a
 s.notSentSinceDemo = "(non davvero, questa è solo una demo)";
 s.submitComment = "Invia";
 s.tipStarred = "Segnato come importante.";
+s.swipeHint = "Scorri a destra per essere d’accordo, a sinistra per il disaccordo";
 s.participantHelpWelcomeText = "Benvenuti a un nuovo tipo di discussione - <span style='font-weight: 700;'>votate</span> sulle opinioni della gente o <span style='font-weight: 700;'>contribuite</span> con la vostra.";
 s.participantHelpGroupsText = "Chi vota in modo simile <span style='font-weight: 700;'>viene aggregato.</span> Clicca su un gruppo per conoscere quali punti di vista vengono condivisi.<a style='font-weight: 700; cursor: pointer; text-decoration: underline' id='helpTextGroupsExpand'>...continua</a>";
 s.helpWhatAreGroupsDetail = "<p>Avrai visto le raccomandazioni di Amazon sui prodotti o di Netflix sui film o le serie. Ognuno di quei servizi usa le statistiche per unirti a gruppi che comprano o guardano cose simili per poi farti vedere quali cose quelle persone hanno guardato o ascoltato.</p> <p> Quando voti o commenti, vieni messo insieme alle persone che votano no come hai fatto tu! Puoi vedere quei gruppi qui sotto. Ognuno è fatto di persone che hanno opzioni simili. Ci sono alcuni insight molto interessanti da scoprire in ogni conversazione. Vai avanti! Clicca su un gruppo e scopri quali punti di vista sono condivisi e cosa hanno di unico! </p>";

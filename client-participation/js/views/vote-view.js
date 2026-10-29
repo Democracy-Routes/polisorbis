@@ -49,9 +49,69 @@ module.exports = Handlebones.ModelView.extend({
 
     "click #back_home_button": "backHomeClicked",
   },
+  // App mode (phones): swipe right to agree, left to disagree. The gesture
+  // only moves the card and then calls the same handlers as the buttons.
+  // A first-time hint (CSS nudge + caption) shows until the first vote.
+  swipeHintSeen: function() {
+    try { return window.localStorage.getItem("polisSwipeHintSeen") === "1"; } catch (e) { return true; }
+  },
+  markSwipeHintSeen: function() {
+    try { window.localStorage.setItem("polisSwipeHintSeen", "1"); } catch (e) { /* private mode */ }
+  },
+  setupSwipe: function() {
+    var that = this;
+    var card = null, startX = 0, startY = 0, dx = 0, dy = 0, dragging = false, canceled = false, width = 1, t0 = 0;
+    this.$el.on("pointerdown", "#comment_shower", function(e) {
+      if (!document.body.classList.contains("appMode")) return;
+      if (!that.$("#agreeButton").length) return;
+      if ($(e.target).closest("button, a, input, textarea, select").length) return;
+      card = e.currentTarget;
+      startX = e.clientX; startY = e.clientY; dx = 0; dy = 0;
+      dragging = false; canceled = false; width = card.offsetWidth || 1; t0 = Date.now();
+      card.classList.remove("swipeHint");
+    });
+    $(document).on("pointermove.polisSwipe", function(e) {
+      if (!card || canceled) return;
+      dx = e.clientX - startX; dy = e.clientY - startY;
+      if (!dragging) {
+        if (Math.abs(dy) > 30 && Math.abs(dy) > Math.abs(dx)) { canceled = true; return; }
+        if (Math.abs(dx) < 12) return;
+        dragging = true;
+        card.classList.add("swiping");
+      }
+      e.preventDefault();
+      card.style.transform = "translateX(" + dx + "px) rotate(" + (dx / 20) + "deg)";
+      card.classList.toggle("swipeRight", dx > 40);
+      card.classList.toggle("swipeLeft", dx < -40);
+    });
+    $(document).on("pointerup.polisSwipe pointercancel.polisSwipe", function() {
+      if (!card) return;
+      var el = card; card = null;
+      el.classList.remove("swiping");
+      if (!dragging) return;
+      dragging = false;
+      var fast = Math.abs(dx) / Math.max(1, Date.now() - t0) > 0.6;
+      if (Math.abs(dx) > width * 0.35 || (fast && Math.abs(dx) > 60)) {
+        var dir = dx > 0 ? 1 : -1;
+        el.classList.add("swipeOut");
+        el.style.transform = "translateX(" + (dir * width * 1.3) + "px) rotate(" + (dir * 12) + "deg)";
+        setTimeout(function() {
+          el.style.transform = "";
+          el.classList.remove("swipeOut", "swipeRight", "swipeLeft");
+          if (dir > 0) { that.participantAgreed(); } else { that.participantDisagreed(); }
+        }, 180);
+      } else {
+        el.classList.add("swipeBack");
+        el.style.transform = "";
+        el.classList.remove("swipeRight", "swipeLeft");
+        setTimeout(function() { el.classList.remove("swipeBack"); }, 220);
+      }
+    });
+  },
   context: function() {
     var ctx = Handlebones.ModelView.prototype.context.apply(this, arguments);
     ctx.iOS = iOS;
+    ctx.showSwipeHint = document.body.classList.contains("appMode") && !this.swipeHintSeen() && !ctx.empty && !ctx.shouldMod && !ctx.needSocial;
     ctx.customStyles = "";
     // if (ctx.txt && ctx.txt.length < 30) {
     //   ctx.customStyles += "text-align: center; ";
@@ -316,6 +376,9 @@ module.exports = Handlebones.ModelView.extend({
     }
     var serverClient = this.serverClient = options.serverClient;
     var votesByMe = this.votesByMe = options.votesByMe;
+    var thatView = this;
+    this.setupSwipe();
+    eb.on(eb.vote, function onFirstVote() { thatView.markSwipeHintSeen(); eb.off(eb.vote, onFirstVote); });
     var votesByMeFetched = $.Deferred();
     votesByMeFetched.then(function() {
       if (votesByMe.size() > 0) {

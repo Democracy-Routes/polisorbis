@@ -105,6 +105,7 @@ s.commentTooLongByChars = "Statement length limit exceeded by {{CHARACTERS_COUNT
 s.notSentSinceDemo = "(not really, this is a demo)";
 s.submitComment = "Submit";
 s.tipStarred = "Marked as important.";
+s.swipeHint = "Swipe right to agree, left to disagree";
 s.participantHelpWelcomeText = "Welcome to a new kind of conversation - <em>vote</em> on other people's statements.";
 s.participantHelpGroupsText = "People who vote similarly <span style='font-weight: 700;'>are grouped.</span> Click a group to see which viewpoints they share. <a style='font-weight: 700; cursor: pointer; text-decoration: underline' id='helpTextGroupsExpand'>...more</a>";
 s.participantHelpGroupsNotYetText = "The visualization will appear once 7 participants have begun voting";
