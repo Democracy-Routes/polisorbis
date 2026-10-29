@@ -40,7 +40,6 @@ var pHostingCountry = process.env.P_HOSTING_COUNTRY || "";
 var pSupervisoryAuthority = process.env.P_SUPERVISORY_AUTHORITY || "";
 var pRetention = process.env.P_RETENTION || "";
 var pGoverningLaw = process.env.P_GOVERNING_LAW || "";
-var pAiProviderName = process.env.P_AI_PROVIDER_NAME || "";
 
 var pOpenidEnabled = process.env.P_OPENID_ENABLED === 'true';
 var pOpenidProviderName = process.env.P_OPENID_PROVIDER_NAME || "OpenID";
@@ -124,7 +123,6 @@ module.exports = (env, options) => {
         'process.env.P_SUPERVISORY_AUTHORITY': JSON.stringify(pSupervisoryAuthority),
         'process.env.P_RETENTION': JSON.stringify(pRetention),
         'process.env.P_GOVERNING_LAW': JSON.stringify(pGoverningLaw),
-        'process.env.P_AI_PROVIDER_NAME': JSON.stringify(pAiProviderName),
         'process.env.P_OPENID_ENABLED': JSON.stringify(pOpenidEnabled),
         'process.env.P_OPENID_PROVIDER_NAME': JSON.stringify(pOpenidProviderName),
         'process.env.P_OPENID_PROFILE_PAGE_URL': JSON.stringify(pOpenidProfilePageURL)

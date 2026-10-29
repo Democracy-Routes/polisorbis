@@ -4,6 +4,7 @@
 import {
   buildMessages,
   parseStatements,
+  providerInfo,
   providerLabel,
   statementKey,
   wantsJsonMode,
@@ -82,6 +83,17 @@ describe("providerLabel and wantsJsonMode", () => {
     expect(providerLabel("http://host.docker.internal:11434/v1")).toBe("a self-hosted model");
     expect(providerLabel("https://llm.example.org/v1")).toBe("llm.example.org");
     expect(providerLabel("not a url")).toBe("the configured AI provider");
+  });
+
+  it("knows region and privacy policy of the usual providers", () => {
+    expect(providerInfo("https://api.mistral.ai/v1")).toEqual({
+      label: "Mistral AI",
+      region: "the European Union",
+      privacyUrl: "https://mistral.ai/terms/#privacy-policy",
+    });
+    expect(providerInfo("https://ollama.com/v1").label).toBe("Ollama Cloud");
+    expect(providerInfo("http://localhost:11434/v1").region).toBe("this server");
+    expect(providerInfo("https://llm.example.org/v1")).toEqual({ label: "llm.example.org", region: "", privacyUrl: "" });
   });
 
   it("sends JSON mode only to hosts known to accept it unless forced", () => {

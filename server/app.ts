@@ -784,7 +784,7 @@ helpersInitialized.then(
         );
 
         // AI statement drafting for moderators (routes/aiDraft.ts).
-        app.get("/api/v3/ai/status", auth(assignToP), handle_GET_ai_status);
+        app.get("/api/v3/ai/status", authOptional(assignToP), handle_GET_ai_status);
         app.post(
             "/api/v3/ai/draft-statements",
             auth(assignToP),

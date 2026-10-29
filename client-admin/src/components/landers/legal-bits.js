@@ -8,7 +8,9 @@
 // another installation fills in its own; when the essentials are missing the
 // page says so instead of naming anyone.
 
+import React from 'react'
 import { Box, Text, jsx } from 'theme-ui'
+import PolisNet from '../../util/net'
 
 export const operator = {
   name: process.env.P_OPERATOR_NAME || '',
@@ -19,7 +21,6 @@ export const operator = {
   authority: process.env.P_SUPERVISORY_AUTHORITY || '',
   retention: process.env.P_RETENTION || '',
   law: process.env.P_GOVERNING_LAW || '',
-  ai: process.env.P_AI_PROVIDER_NAME || '',
   repo: process.env.P_REPO_URL || '',
   title: process.env.P_TITLE || 'Polis'
 }
@@ -101,6 +102,8 @@ const aiMessages = {
       "When they do, their written request and the conversation's title and " +
       'description are sent to ' + name + ". Participants' statements and " +
       'votes are never sent.',
+    region: (region) => ' The provider processes requests in ' + region + '.',
+    policy: 'Its privacy policy',
     off:
       "The optional AI drafting feature, which would send an organizer's " +
       'request to an AI provider, is switched off on this installation.'
@@ -112,6 +115,8 @@ const aiMessages = {
       'loro richiesta scritta e il titolo e la descrizione della ' +
       'conversazione vengono inviati a ' + name + '. Le affermazioni e i ' +
       'voti dei partecipanti non vengono mai inviati.',
+    region: (region) => ' Il fornitore elabora le richieste in ' + region + '.',
+    policy: 'La sua informativa sulla privacy',
     off:
       'La funzione opzionale di bozza con intelligenza artificiale, che ' +
       'invierebbe la richiesta di un organizzatore a un fornitore esterno, ' +
@@ -119,10 +124,55 @@ const aiMessages = {
   }
 }
 
-// What the AI drafting feature sends, or that it is off.
-export const AiNote = ({ lang = 'en' }) => {
-  const m = aiMessages[lang]
-  return <p>{operator.ai ? m.on(operator.ai) : m.off}</p>
+const regionNames = {
+  it: {
+    'the European Union': "nell'Unione Europea",
+    'the United States': 'negli Stati Uniti',
+    'this server': 'su questo server'
+  }
+}
+
+// What the AI drafting feature sends, read from the server at render time
+// (GET /api/v3/ai/status, public), so a provider change needs no rebuild.
+export class AiNote extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = { status: null }
+  }
+
+  componentDidMount() {
+    PolisNet.polisGet('/api/v3/ai/status').then(
+      (status) => this.setState({ status: status || { enabled: false } }),
+      () => this.setState({ status: { enabled: false } })
+    )
+  }
+
+  render() {
+    const lang = this.props.lang || 'en'
+    const m = aiMessages[lang]
+    const st = this.state.status
+    if (!st) return null
+    if (!st.enabled) return <p>{m.off}</p>
+    let regionText = ''
+    if (st.region) {
+      regionText =
+        lang === 'it'
+          ? ' Il fornitore elabora le richieste ' + (regionNames.it[st.region] || 'in ' + st.region) + '.'
+          : m.region(st.region)
+    }
+    return (
+      <p>
+        {m.on(st.provider)}
+        {regionText}
+        {st.privacyUrl ? (
+          <span>
+            {' ' + m.policy + ': '}
+            <a href={st.privacyUrl}>{st.privacyUrl}</a>
+          </span>
+        ) : null}
+      </p>
+    )
+  }
 }
 
 // Language of the legal pages: ?lang=it|en, then the browser's language.

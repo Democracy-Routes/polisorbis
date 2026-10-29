@@ -14,7 +14,7 @@ import {
   buildMessages,
   correctionMessage,
   parseStatements,
-  providerLabel,
+  providerInfo,
   wantsJsonMode,
   ChatMessage,
   STATEMENT_MAX_LENGTH,
@@ -25,6 +25,8 @@ export type AiConfig = {
   apiKey: string | null;
   model: string | null;
   providerName: string | null;
+  providerRegion: string | null;
+  providerPrivacyUrl: string | null;
   jsonMode: string; // auto | on | off
 };
 
@@ -59,8 +61,17 @@ export function aiEnabled(c: AiConfig): boolean {
   return Boolean(c.baseUrl && c.model);
 }
 
+export function aiProvider(c: AiConfig) {
+  const info = providerInfo(c.baseUrl || "");
+  return {
+    label: c.providerName || info.label,
+    region: c.providerRegion || info.region,
+    privacyUrl: c.providerPrivacyUrl || info.privacyUrl,
+  };
+}
+
 export function aiProviderName(c: AiConfig): string {
-  return c.providerName || providerLabel(c.baseUrl || "");
+  return aiProvider(c).label;
 }
 
 // Provider failures carry a flag instead of a subclass: with the ES5 build
@@ -128,8 +139,15 @@ async function chat(c: AiConfig, messages: ChatMessage[]): Promise<string> {
 }
 
 export function makeHandleGetAiStatus(c: AiConfig) {
+  // Public (authOptional): the privacy page reads it. It tells only whether
+  // the feature is on and who the provider is, which that page publishes.
   return function handle_GET_ai_status(req: any, res: any) {
-    res.json({ enabled: aiEnabled(c), provider: aiEnabled(c) ? aiProviderName(c) : null });
+    if (!aiEnabled(c)) {
+      res.json({ enabled: false, provider: null, region: null, privacyUrl: null });
+      return;
+    }
+    const p = aiProvider(c);
+    res.json({ enabled: true, provider: p.label, region: p.region || null, privacyUrl: p.privacyUrl || null });
   };
 }
 

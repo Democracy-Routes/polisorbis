@@ -28,6 +28,8 @@ const ai = {
     apiKey: process.env.AI_PROVIDER_API_KEY || null as string | null,
     model: process.env.AI_MODEL || null as string | null,
     providerName: process.env.AI_PROVIDER_NAME || null as string | null,
+    providerRegion: process.env.AI_PROVIDER_REGION || null as string | null,
+    providerPrivacyUrl: process.env.AI_PROVIDER_PRIVACY_URL || null as string | null,
     jsonMode: process.env.AI_JSON_MODE || "auto" as string,
 };
 

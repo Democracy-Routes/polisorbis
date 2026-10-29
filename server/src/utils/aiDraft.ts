@@ -141,36 +141,47 @@ export function parseStatements(
   return out;
 }
 
-// A readable provider name from the base URL, for the admin page and the
-// privacy notice. AI_PROVIDER_NAME overrides it.
-export function providerLabel(baseUrl: string): string {
-  let host = "";
-  try {
-    host = new URL(baseUrl).hostname.toLowerCase();
-  } catch (e) {
-    return "the configured AI provider";
-  }
-  const known: { [host: string]: string } = {
-    "api.mistral.ai": "Mistral AI",
-    "api.openai.com": "OpenAI",
-    "api.anthropic.com": "Anthropic",
-    "generativelanguage.googleapis.com": "Google",
-    "ollama.com": "Ollama Cloud",
-    "api.groq.com": "Groq",
-    "openrouter.ai": "OpenRouter",
-  };
-  if (known[host]) return known[host];
-  if (
+export type ProviderInfo = { label: string; region: string; privacyUrl: string };
+
+// What the privacy page and the admin panel say about the provider, from the
+// base URL's host. AI_PROVIDER_NAME, AI_PROVIDER_REGION and
+// AI_PROVIDER_PRIVACY_URL override any field. Regions are where the provider
+// says it processes API requests; blank when not verified.
+const KNOWN_PROVIDERS: { [host: string]: ProviderInfo } = {
+  "api.mistral.ai": { label: "Mistral AI", region: "the European Union", privacyUrl: "https://mistral.ai/terms/#privacy-policy" },
+  "api.openai.com": { label: "OpenAI", region: "the United States", privacyUrl: "https://openai.com/policies/privacy-policy" },
+  "api.anthropic.com": { label: "Anthropic", region: "the United States", privacyUrl: "https://www.anthropic.com/privacy" },
+  "generativelanguage.googleapis.com": { label: "Google", region: "the United States", privacyUrl: "https://policies.google.com/privacy" },
+  "ollama.com": { label: "Ollama Cloud", region: "", privacyUrl: "https://ollama.com/privacy" },
+  "api.groq.com": { label: "Groq", region: "the United States", privacyUrl: "https://groq.com/privacy-policy" },
+  "openrouter.ai": { label: "OpenRouter", region: "the United States", privacyUrl: "https://openrouter.ai/privacy" },
+};
+
+function isLocalHost(host: string): boolean {
+  return (
     host === "localhost" ||
     host.indexOf("127.") === 0 ||
     host.indexOf("10.") === 0 ||
     host.indexOf("192.168.") === 0 ||
     host.indexOf("host.docker.internal") === 0 ||
     host.indexOf(".") < 0
-  ) {
-    return "a self-hosted model";
+  );
+}
+
+export function providerInfo(baseUrl: string): ProviderInfo {
+  let host = "";
+  try {
+    host = new URL(baseUrl).hostname.toLowerCase();
+  } catch (e) {
+    return { label: "the configured AI provider", region: "", privacyUrl: "" };
   }
-  return host;
+  if (KNOWN_PROVIDERS[host]) return KNOWN_PROVIDERS[host];
+  if (isLocalHost(host)) return { label: "a self-hosted model", region: "this server", privacyUrl: "" };
+  return { label: host, region: "", privacyUrl: "" };
+}
+
+export function providerLabel(baseUrl: string): string {
+  return providerInfo(baseUrl).label;
 }
 
 // Whether to send response_format json_object: only to hosts known to accept
