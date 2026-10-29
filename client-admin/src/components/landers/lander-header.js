@@ -24,7 +24,7 @@ class Header extends Component {
                         <ThemeUILink sx={{ variant: 'links.nav' }} as="a" href={pLogoURL}>
                             <Logomark
                                 style={{ marginRight: 10, position: 'relative', top: 6 }}
-                                fill={'#03a9f4'}
+                                fill={'#1d4ed8'}
                             />
                             {pTitle}
                         </ThemeUILink>

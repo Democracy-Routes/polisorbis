@@ -48,7 +48,7 @@ export const CheckboxField = ({
           }
         />
       </Box>
-      <Box sx={{ ml: [2], flexShrink: 0, maxWidth: '35em' }}>
+      <Box sx={{ ml: [2], flexShrink: 1, minWidth: 0, maxWidth: '35em' }}>
         <Text>{children}</Text>
       </Box>
     </Flex>

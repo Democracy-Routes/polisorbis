@@ -18,12 +18,12 @@ class InteriorHeader extends React.Component {
                         color: 'background',
                         zIndex: 1000,
                         py: [3],
-                        px: [4],
+                        px: [3, 4],
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'space-between'
                     }}>
-                    <ThemeUILink sx={{ variant: 'links.nav' }} to={pLogoURL}>
+                    <ThemeUILink sx={{ variant: 'links.header' }} href={pLogoURL}>
                         <Logomark
                             style={{ marginRight: 10, position: 'relative', top: 6 }}
                             fill={'white'}

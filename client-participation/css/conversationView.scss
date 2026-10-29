@@ -686,7 +686,7 @@ svg {
 
 .openIDButton {
   top: 4px;
-  background-color: #0090ff;
+  background-color: #1d4ed8;
 }
 
 .twitterButton {
@@ -952,4 +952,116 @@ svg {
   #vis_sibling_bottom {
     margin-inline-start: auto;
   }
+}
+
+
+/* ------------------------------------------------------------------ */
+/* Democracy Routes refresh: tokens from base/_variables.scss. Later   */
+/* rules win over the older ones above; inline template styles were    */
+/* moved into these classes where they fought the tokens.              */
+/* ------------------------------------------------------------------ */
+
+.conversationViewRoot {
+  padding: 16px;
+  background-color: $surface;
+  @media (min-width: 768px) {
+    margin-top: 16px !important;
+    margin-bottom: 16px !important;
+    padding: 24px 32px;
+    border-radius: $radius;
+    box-shadow: $shadow;
+  }
+}
+
+.HeadingA, h2.HeadingA {
+  font-family: $headline-font;
+  font-weight: 600;
+  color: $ink;
+  letter-spacing: -0.01em;
+}
+
+.Btn, .Btn-small {
+  font-family: $sans-font;
+  font-weight: 600;
+  text-transform: none;
+  letter-spacing: 0;
+  border-radius: $radius;
+  box-shadow: none;
+  transition: background-color 120ms ease, border-color 120ms ease;
+}
+.Btn-primary, #comment_button {
+  background-color: $brand-color !important;
+  color: white !important;
+  letter-spacing: 0 !important;
+  border-radius: $radius !important;
+  min-height: 44px;
+  &:hover { background-color: $btn-hover-color !important; }
+}
+.Btn-alt {
+  background-color: $pass-bg;
+  color: $brand-color;
+  letter-spacing: 0;
+}
+
+/* Vote buttons: pills with a 44px tap height, equal width on phones. */
+.reactionButton,
+#agreeButton, #disagreeButton, #passButton {
+  flex: 1 1 0;
+  min-height: 44px;
+  margin: 4px;
+  padding: 8px 12px !important;
+  border: 1px solid transparent !important;
+  border-radius: $radius !important;
+  font-family: $sans-font;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.2;
+  transition: background-color 120ms ease, border-color 120ms ease, transform 120ms ease;
+  .svgIcon { top: 3px; width: 20px; }
+}
+.reactionButton:hover { transform: translateY(-1px); }
+#agreeButton { background-color: $agree-bg !important; color: $agree-text !important; }
+#agreeButton:hover, #agreeButton.vote-btn-w-hover:hover { background-color: #bbf7d0 !important; border-color: $agree-text !important; }
+#disagreeButton { background-color: $disagree-bg !important; color: $disagree-text !important; }
+#disagreeButton:hover, #disagreeButton.vote-btn-w-hover:hover { background-color: #fecaca !important; border-color: $disagree-text !important; }
+#passButton { background-color: $pass-bg !important; color: $pass-text !important; }
+#passButton:hover, #passButton.vote-btn-w-hover:hover { background-color: #e2e8f0 !important; border-color: $pass-text !important; }
+
+/* Visible keyboard focus everywhere the old styles removed it. */
+.reactionButton:focus-visible, .Btn:focus-visible, .groupButton:focus-visible,
+.nav-tabs > li > a:focus-visible, #comment_form_textarea:focus-visible, button:focus-visible {
+  outline: 3px solid $accent !important;
+  outline-offset: 2px;
+}
+
+/* The statement card. */
+#comment_shower {
+  background-color: $surface;
+  border: 1px solid $border;
+  border-radius: $radius;
+  box-shadow: $shadow;
+  padding: 16px;
+  @media (min-width: 768px) { padding: 20px 24px; }
+}
+#comment_shower p { font-size: 18px; line-height: 1.5; color: $ink; }
+@media (min-width: 768px) { #comment_shower p { font-size: 20px; } }
+
+/* Tabs: underline in the brand colour. */
+.nav-tabs > li.active { border-bottom: 3px solid $brand-color; }
+.nav-tabs > li.active > a, .nav-tabs > li.active > a:hover, .nav-tabs > li.active > a:focus { color: $brand-color; }
+.nav-tabs > li > a { color: $muted; font-weight: 600; }
+
+/* Write box. */
+#comment_form_textarea {
+  border: 1px solid $border;
+  border-radius: $radius;
+  padding: 10px 12px;
+  font-size: 16px;
+  background-color: $surface;
+}
+
+/* Description quote and footer links. */
+.conversationDescription {
+  border-inline-start: 4px solid $brand-color;
+  color: $muted;
 }

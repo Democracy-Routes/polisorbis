@@ -1,3 +1,4 @@
+/* The Space Grotesk @font-face rules are in public/index.html (css-loader would try to bundle the files). */
 /*begin http://bl.ocks.org/jensgrubert/7789216 */
 .box {
   font: 10px sans-serif;
@@ -39,7 +40,7 @@ shape-rendering: crispEdges;
 /*end  http://bl.ocks.org/jensgrubert/7789216 */
 
 html, p, div, input, button {
-  font-family: "Helvetica Neue", "Helvetica", sans-serif;
+  font-family: 'Space Grotesk', system-ui, sans-serif, "Helvetica", sans-serif;
   font-weight: 400;
   /*color: rgb(160, 160, 179);*/
 }

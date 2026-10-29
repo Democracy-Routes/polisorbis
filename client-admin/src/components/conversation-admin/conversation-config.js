@@ -84,7 +84,8 @@ class ConversationConfig extends React.Component {
                         sx={{
                             fontFamily: 'body',
                             fontSize: [2],
-                            width: '35em',
+                            width: '100%',
+                                    maxWidth: '35em',
                             borderRadius: 2,
                             padding: [2],
                             border: '1px solid',
@@ -104,7 +105,8 @@ class ConversationConfig extends React.Component {
                         sx={{
                             fontFamily: 'body',
                             fontSize: [2],
-                            width: '35em',
+                            width: '100%',
+                                    maxWidth: '35em',
                             height: '7em',
                             resize: 'none',
                             padding: [2],
@@ -341,7 +343,7 @@ export default ConversationConfig
 /* <InputField
             ref={"style_btn"}
 
-            style={{ width: 360 }}
+            style={{ width: '100%', maxWidth: 360 }}
             onBlur={this.handleStringValueChange("style_btn").bind(this)}
             hintText="ie., #e63082"
             onChange={this.handleConfigInputTyping("style_btn")}
@@ -355,7 +357,7 @@ export default ConversationConfig
 /* <InputField
             ref={"help_bgcolor"}
 
-            style={{ width: 360 }}
+            style={{ width: '100%', maxWidth: 360 }}
             onBlur={this.handleStringValueChange("help_bgcolor").bind(this)}
             onChange={this.handleConfigInputTyping("help_bgcolor")}
             value={this.props.zid_metadata.help_bgcolor}
@@ -369,7 +371,7 @@ export default ConversationConfig
 /* <InputField
             ref={"help_color"}
 
-            style={{ width: 360 }}
+            style={{ width: '100%', maxWidth: 360 }}
             onBlur={this.handleStringValueChange("help_color").bind(this)}
             onChange={this.handleConfigInputTyping("help_color")}
             value={this.props.zid_metadata.help_color}

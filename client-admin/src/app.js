@@ -177,9 +177,18 @@ class App extends React.Component {
                   return null
                 }
                 return (
-                  <Flex>
-                    <Box sx={{ mr: [5], p: [4], flex: '0 0 auto' }}>
-                      <Box sx={{ mb: [3] }}>
+                  <Flex sx={{ flexDirection: ['column', 'row'] }}>
+                    <Flex
+                      sx={{
+                        flexDirection: ['row', 'column'],
+                        flexWrap: 'wrap',
+                        mr: [0, 5],
+                        px: [3, 4],
+                        pt: [3, 4],
+                        pb: [0, 4],
+                        flex: '0 0 auto'
+                      }}>
+                      <Box sx={{ mb: [3], mr: [4, 0] }}>
                         <Link sx={{ variant: 'links.nav' }} to={`/`}>
                           Conversations
                         </Link>
@@ -194,13 +203,14 @@ class App extends React.Component {
                           Account
                         </Link>
                       </Box>
-                    </Box>
+                    </Flex>
                     <Box
                       sx={{
-                        p: [4],
-                        flex: '0 0 auto',
-                        maxWidth: '35em',
-                        mx: [4]
+                        p: [3, 4],
+                        flex: '1 1 auto',
+                        width: '100%',
+                        maxWidth: '40em',
+                        mx: [0, 4]
                       }}>
                       <PrivateRoute
                         isLoading={this.isLoading()}

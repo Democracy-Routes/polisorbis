@@ -25,7 +25,7 @@ class Comment extends React.Component {
 
   render() {
     return (
-      <Card sx={{ mb: [3], minWidth: '35em' }}>
+      <Card sx={{ mb: [3], width: '100%', maxWidth: '40em' }}>
         <Box>
           <Text sx={{ mb: [3] }}>{this.props.comment.txt}</Text>
           <Flex

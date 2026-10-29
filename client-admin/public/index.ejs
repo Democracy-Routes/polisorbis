@@ -8,12 +8,15 @@
 
   <link id="page-shortcut-icon" rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
   <link id="page-icon" rel="icon" href="/favicon.ico" type="image/x-icon" />
-  <!--link
-    href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap"
-    rel="stylesheet"
-  /-->
   <style>
+    /* Self-hosted fonts (public/fonts/brand, SIL OFL). */
+    @font-face { font-family: 'Space Grotesk'; font-style: normal; font-weight: 400; font-display: swap; src: url('/fonts/brand/space-grotesk-latin-400-normal.woff2') format('woff2'); }
+    @font-face { font-family: 'Space Grotesk'; font-style: normal; font-weight: 600; font-display: swap; src: url('/fonts/brand/space-grotesk-latin-600-normal.woff2') format('woff2'); }
+    @font-face { font-family: 'Fraunces'; font-style: normal; font-weight: 600; font-display: swap; src: url('/fonts/brand/fraunces-latin-600-normal.woff2') format('woff2'); }
     * { font-variant-ligatures: none; }
+    html { background-color: #fffdf8; }
+    body { margin: 0; -webkit-font-smoothing: antialiased; }
+    @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
   </style>
 </head>
 <body class="viewport avenir">

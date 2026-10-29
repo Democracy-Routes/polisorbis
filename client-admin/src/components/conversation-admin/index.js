@@ -68,8 +68,18 @@ class ConversationAdminContainer extends React.Component {
         const url = location.pathname.split('/')[3]
 
         return (
-            <Flex>
-                <Box sx={{ mr: [5], p: [4], flex: '0 0 275' }}>
+            <Flex sx={{ flexDirection: ['column', 'row'] }}>
+                <Flex
+                    sx={{
+                        flexDirection: ['row', 'column'],
+                        flexWrap: 'wrap',
+                        mr: [0, 5],
+                        px: [3, 4],
+                        pt: [3, 4],
+                        pb: [0, 4],
+                        flex: ['0 0 auto', '0 0 220px'],
+                        '& > div': { mr: [4, 0] }
+                    }}>
                     <Box sx={{ mb: [3] }}>
                         <Link sx={{ variant: 'links.nav' }} to={`/`}>
                             All
@@ -162,8 +172,8 @@ class ConversationAdminContainer extends React.Component {
                             </>
                         )}
                     </Box>
-                </Box>
-                <Box sx={{ p: [4], flex: '0 0 auto', maxWidth: '35em', mx: [4] }}>
+                </Flex>
+                <Box sx={{ p: [3, 4], flex: '1 1 auto', width: '100%', maxWidth: '40em', mx: [0, 4] }}>
                     <Switch>
                         <Route
                             exact

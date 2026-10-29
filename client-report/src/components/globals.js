@@ -1,6 +1,6 @@
 // Copyright (C) 2012-present, The Authors. This program is free software: you can redistribute it and/or  modify it under the terms of the GNU Affero General Public License, version 3, as published by the Free Software Foundation. This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more details. You should have received a copy of the GNU Affero General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-export const sans = "Helvetica Neue";
+export const sans = "'Space Grotesk', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif";
 export const serif = "Georgia";
 export const paragraphWidth = 475;
 export const paragraphLineHeight = "24px";
@@ -12,9 +12,9 @@ export const brandColors = {
   agreeColorblind: "rgb(0, 140, 230)",
   disagree: "rgb(231, 76, 60)",
   pass: "rgb(230,230,230)",
-  comment: "#03a9f4",
+  comment: "#1d4ed8",
   yellowForRadial: "#DFE74D",
-  blue: "#03A9F4",
+  blue: "#1d4ed8",
   mediumGrey: "rgb(130,130,130)",
   lightgrey: "rgb(215,215,215)",
 };

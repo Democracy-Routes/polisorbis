@@ -33,23 +33,37 @@ $dark-green: #27ae60;
 $header-footer-color: #F4F4F4;
 
 // $brand-light-color: #4daae8;
-$brand-color: #3498db;
-$brand-text-color: #0a77bf;
+$brand-color: #1d4ed8; // democracyroutes.com blue, see docs/branding.md
+$brand-text-color: #1d4ed8;
 
 $panel-color: #f7f7f7;
 
 $bg-color: #f7f7f7;
 $bg-alt-color: #e3e4e5;
-$text-color: $darker5; //contrast ratio 4.5
+$text-color: #334155;
 
 $default-border-color: #e4e4e4;
 
 // Links
 $link-color: $brand-text-color;
-$hover-color: #0565a6;
+$ink: #0f172a;
+$muted: #475569;
+$surface: #ffffff;
+$page-bg: #f7f7f3;
+$border: #e2e8f0;
+$accent: #c2410c;
+$radius: 8px;
+$shadow: 0 1px 3px rgba(15, 23, 42, 0.08), 0 4px 16px rgba(15, 23, 42, 0.06);
+$agree-bg: #dcfce7;
+$agree-text: #166534;
+$disagree-bg: #fee2e2;
+$disagree-text: #991b1b;
+$pass-bg: #f1f5f9;
+$pass-text: #334155;
+$hover-color: #1e40af;
 
 // Buttons
-$btn-hover-color: #0a77bf;
+$btn-hover-color: #1e40af;
 
 // Notifications
 $warning-bg-color: #eeeff0;
@@ -77,14 +91,14 @@ $default-leading: 1.5;
 
  // "canada-type-gibson","Futura", "Gill Sans",
 
-$headline-font: "Helvetica Neue", Helvetica, sans-serif;
-$sans-font: "Helvetica Neue", Helvetica, sans-serif;
+$headline-font: 'Space Grotesk', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+$sans-font: 'Space Grotesk', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
 //  alternate sans-serif (?): "Droid Sans", sans-serif;
 // "chaparral-pro", "Chaparral Pro",
 // "chaparral-pro-display",
 
-$serif-font: "Helvetica Neue", Helvetica, sans-serif;
-$serif-headline-font: "Helvetica Neue", Helvetica, sans-serif;
+$serif-font: 'Space Grotesk', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+$serif-headline-font: 'Space Grotesk', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
 
 
 // $serif-font: "canada-type-gibson", "Hoefler Text", "Baskerville", "Garamond", "Cambria", Georgia, serif;
