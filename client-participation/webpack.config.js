@@ -24,8 +24,9 @@ const pClaim = process.env.P_CLAIM || "Input Crowd, Output Meaning";
 const pDescription = process.env.P_DESCRIPTION || "PolisOrbis is a real-time system for gathering, analyzing and understanding what large groups of people think in their own words, enabled by advanced statistics and machine learning";
 const pDocURL = process.env.P_DOC_URL || "https://doc.polisorbis.copernicani.it";
 const pRepoURL = process.env.P_REPO_URL || "https://gitlab.com/copernicani/polisorbis/codebase";
-const pTosURL = process.env.P_TOS_URL;
-const pPrivacyPolicyURL = process.env.P_PRIVACY_POLICY_URL;
+// Blank means the built-in pages served by the admin client.
+const pTosURL = process.env.P_TOS_URL || "/tos";
+const pPrivacyPolicyURL = process.env.P_PRIVACY_POLICY_URL || "/privacy";
 
 const pOpenidEnabled = process.env.P_OPENID_ENABLED === 'true';
 const pOpenidProviderName = process.env.P_OPENID_PROVIDER_NAME || "OpenID";

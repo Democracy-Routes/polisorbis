@@ -28,8 +28,19 @@ var pClaim = process.env.P_CLAIM || "Input Crowd, Output Meaning";
 var pDescription = process.env.P_DESCRIPTION || "PolisOrbis is a real-time system for gathering, analyzing and understanding what large groups of people think in their own words, enabled by advanced statistics and machine learning";
 var pDocURL = process.env.P_DOC_URL || "https://doc.polisorbis.copernicani.it";
 var pRepoURL = process.env.P_REPO_URL || "https://gitlab.com/copernicani/polisorbis/codebase";
-var pTosURL = process.env.P_TOS_URL;
-var pPrivacyPolicyURL = process.env.P_PRIVACY_POLICY_URL;
+// Blank means the built-in pages (src/content/tos.md, privacy.md).
+var pTosURL = process.env.P_TOS_URL || "/tos";
+var pPrivacyPolicyURL = process.env.P_PRIVACY_POLICY_URL || "/privacy";
+// Operator details shown by the built-in legal pages (src/components/landers/legal-bits.js).
+var pOperatorName = process.env.P_OPERATOR_NAME || "";
+var pOperatorAddress = process.env.P_OPERATOR_ADDRESS || "";
+var pOperatorEmail = process.env.P_OPERATOR_EMAIL || "";
+var pOperatorDpo = process.env.P_OPERATOR_DPO || "";
+var pHostingCountry = process.env.P_HOSTING_COUNTRY || "";
+var pSupervisoryAuthority = process.env.P_SUPERVISORY_AUTHORITY || "";
+var pRetention = process.env.P_RETENTION || "";
+var pGoverningLaw = process.env.P_GOVERNING_LAW || "";
+var pAiProviderName = process.env.P_AI_PROVIDER_NAME || "";
 
 var pOpenidEnabled = process.env.P_OPENID_ENABLED === 'true';
 var pOpenidProviderName = process.env.P_OPENID_PROVIDER_NAME || "OpenID";
@@ -105,6 +116,15 @@ module.exports = (env, options) => {
         'process.env.P_REPO_URL': JSON.stringify(pRepoURL),
         'process.env.P_TOS_URL': JSON.stringify(pTosURL),
         'process.env.P_PRIVACY_POLICY_URL': JSON.stringify(pPrivacyPolicyURL),
+        'process.env.P_OPERATOR_NAME': JSON.stringify(pOperatorName),
+        'process.env.P_OPERATOR_ADDRESS': JSON.stringify(pOperatorAddress),
+        'process.env.P_OPERATOR_EMAIL': JSON.stringify(pOperatorEmail),
+        'process.env.P_OPERATOR_DPO': JSON.stringify(pOperatorDpo),
+        'process.env.P_HOSTING_COUNTRY': JSON.stringify(pHostingCountry),
+        'process.env.P_SUPERVISORY_AUTHORITY': JSON.stringify(pSupervisoryAuthority),
+        'process.env.P_RETENTION': JSON.stringify(pRetention),
+        'process.env.P_GOVERNING_LAW': JSON.stringify(pGoverningLaw),
+        'process.env.P_AI_PROVIDER_NAME': JSON.stringify(pAiProviderName),
         'process.env.P_OPENID_ENABLED': JSON.stringify(pOpenidEnabled),
         'process.env.P_OPENID_PROVIDER_NAME': JSON.stringify(pOpenidProviderName),
         'process.env.P_OPENID_PROFILE_PAGE_URL': JSON.stringify(pOpenidProfilePageURL)
