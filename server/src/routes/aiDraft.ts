@@ -9,6 +9,7 @@
 // that module shadows Promise with bluebird (see routes/commentsBulk.ts).
 
 import fail from "../utils/fail";
+import { makeBudget } from "../utils/rateLimit";
 import logger from "../utils/logger";
 import {
   buildMessages,
@@ -41,21 +42,7 @@ const MAX_TOKENS = 4000;
 const KEPT_MAX_ITEMS = 60;
 
 // Per-user budget: generations per hour. Kept in memory; a restart resets it.
-const RATE_LIMIT = 30;
-const RATE_WINDOW_MS = 60 * 60 * 1000;
-const recent: { [uid: string]: number[] } = {};
-
-function overBudget(uid: any): boolean {
-  const now = Date.now();
-  const stamps = (recent[uid] || []).filter((t) => now - t < RATE_WINDOW_MS);
-  if (stamps.length >= RATE_LIMIT) {
-    recent[uid] = stamps;
-    return true;
-  }
-  stamps.push(now);
-  recent[uid] = stamps;
-  return false;
-}
+const overBudget = makeBudget(30, 60 * 60 * 1000);
 
 export function aiEnabled(c: AiConfig): boolean {
   return Boolean(c.baseUrl && c.model);

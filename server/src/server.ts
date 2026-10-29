@@ -109,6 +109,7 @@ import SQL from "./db/sql";
 // End of re-import
 import logger from "./utils/logger";
 import { makeHandlePostCommentsBulk } from "./routes/commentsBulk";
+import { makeHandlePostCitizensImport } from "./routes/citizensImport";
 import { makeHandleGetAiStatus, makeHandlePostAiDraftStatements } from "./routes/aiDraft";
 
 // # notifications
@@ -1057,6 +1058,16 @@ function initializePolisHelpers() {
                     );
                 } else if (token) {
                     doCookieAuth(assigner, isOptional, req, res, onDone);
+                } else if (/^Bearer\s+\S+/i.test(req?.headers?.authorization || "")) {
+                    // API key as a bearer token (Citizens import).
+                    doApiKeyAuth(
+                        assigner,
+                        String(req?.headers?.authorization || "").replace(/^Bearer\s+/i, "").trim(),
+                        isOptional,
+                        req,
+                        res,
+                        onDone
+                    );
                 } else if (req?.headers?.authorization) {
                     doApiKeyBasicAuth(
                         assigner,
@@ -1119,7 +1130,9 @@ function initializePolisHelpers() {
                     return next();
                 })
                 .catch((err: any) => {
-                    res.status(500);
+                    // Keep a 401/403 an auth step already chose; 500 only for the unexpected.
+                    const code = (res as any).statusCode;
+                    if (!code || code === 200) res.status(500);
                     logger.error("polis_err_auth_error_432", err);
                     next(err || "polis_err_auth_error_432");
                 });
@@ -7173,6 +7186,22 @@ Email verified! You can close this tab or hit the back button.
         modOk: polisTypes.mod.ok,
     });
 
+    // Conversation + seeds in one call for Citizens (routes/citizensImport.ts).
+    const handle_POST_citizens_import = makeHandlePostCitizensImport({
+        getPidPromise,
+        addParticipant,
+        commentExists,
+        detectLanguage,
+        pgQueryP,
+        updateLastInteractionTimeForConversation,
+        modOk: polisTypes.mod.ok,
+        insertConversation: insertConversationForOwner,
+        generateAndRegisterZinvite,
+        getZinvite,
+        createReport,
+        getServerNameWithProtocol,
+    });
+
     // AI statement drafting (routes/aiDraft.ts).
     const handle_GET_ai_status = makeHandleGetAiStatus(Config.ai);
     const handle_POST_ai_draft_statements = makeHandlePostAiDraftStatements({
@@ -9977,7 +10006,7 @@ Email verified! You can close this tab or hit the back button.
             return pgQueryP("insert into reports (zid, report_id) values ($1, $2);", [
                 zid,
                 report_id,
-            ]);
+            ]).then(() => report_id);
         });
     }
     function handle_POST_reports(
@@ -10312,6 +10341,40 @@ Email verified! You can close this tab or hit the back button.
                 fail(res, 500, "polis_err_reserve_conversation_id", err);
             });
     }
+    // A conversation with the admin page's defaults, owned by uid. Used by the
+    // Citizens import route (routes/citizensImport.ts). Resolves to the zid.
+    function insertConversationForOwner(
+        uid: any,
+        fields: { topic: string; description: string; context: string; strict_moderation: boolean }
+    ) {
+        const q = sql_conversations
+            .insert({
+                owner: uid,
+                org_id: uid,
+                topic: fields.topic,
+                description: fields.description,
+                is_active: true,
+                is_data_open: false,
+                is_draft: false,
+                is_public: true,
+                is_anon: false,
+                profanity_filter: true,
+                spam_filter: true,
+                strict_moderation: !!fields.strict_moderation,
+                context: fields.context || null,
+                owner_sees_participation_stats: false,
+                auth_needed_to_vote: DEFAULTS.auth_needed_to_vote,
+                auth_needed_to_write: DEFAULTS.auth_needed_to_write,
+                auth_opt_allow_3rdparty: DEFAULTS.auth_opt_allow_3rdparty,
+                auth_opt_fb: DEFAULTS.auth_opt_fb,
+                auth_opt_tw: DEFAULTS.auth_opt_tw,
+                auth_opt_openid: DEFAULTS.auth_opt_openid,
+            })
+            .returning("zid")
+            .toString();
+        return pgQueryP(q, []).then((rows: any) => Number(rows[0].zid));
+    }
+
     function handle_POST_conversations(
         req: {
             p: {
@@ -14993,6 +15056,7 @@ Thanks for using Polis!
         handle_POST_auth_pwresettoken,
         handle_POST_comments,
         handle_POST_comments_bulk,
+        handle_POST_citizens_import,
         handle_GET_ai_status,
         handle_POST_ai_draft_statements,
         handle_POST_contexts,

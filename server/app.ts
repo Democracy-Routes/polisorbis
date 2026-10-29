@@ -144,6 +144,7 @@ helpersInitialized.then(
             handle_POST_auth_pwresettoken,
             handle_POST_comments,
             handle_POST_comments_bulk,
+            handle_POST_citizens_import,
             handle_GET_ai_status,
             handle_POST_ai_draft_statements,
             handle_POST_contexts,
@@ -240,7 +241,8 @@ helpersInitialized.then(
 
         app.use(redirectIfNotHttps);
         app.use(express.cookieParser());
-        app.use(express.bodyParser());
+        // 200 statements of 400 characters exceed the 100kb default.
+        app.use(express.bodyParser({ limit: "1mb" }));
         app.use(writeDefaultHead);
 
         if (devMode) {
@@ -781,6 +783,14 @@ helpersInitialized.then(
             ),
             resolve_pidThing("pid", assignToP, "post:comments-bulk"),
             handle_POST_comments_bulk
+        );
+
+        // Conversation + seed statements in one call, for Citizens
+        // (routes/citizensImport.ts). API key as `Authorization: Bearer`.
+        app.post(
+            "/api/v3/citizens/import",
+            auth(assignToP),
+            handle_POST_citizens_import
         );
 
         // AI statement drafting for moderators (routes/aiDraft.ts).
