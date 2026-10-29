@@ -18,6 +18,9 @@ function getVoteTotals(math_main) {
     z.pctAgreed = z.agreed / z.saw;
     z.pctDisagreed = z.disagreed / z.saw;
     z.pctVoted = (z.saw - z.disagreed - z.agreed) / z.saw;
+    // The "% passed" sort read a field nobody set; pctVoted above is in fact
+    // the pass share, kept under its old name for anything else reading it.
+    z.pctPassed = z.pctVoted;
   });
   return x;
 }
@@ -26,4 +29,3 @@ const dataUtils = {
   getVoteTotals: getVoteTotals,
 };
 export default dataUtils;
-

@@ -2,55 +2,29 @@
 
 import React from "react";
 import * as globals from "../globals";
-import CommentList from "./commentList";
-import Legend from "../framework/legend";
+import CommentList, { Legend } from "./commentList";
+import { t, fmt } from "../../strings";
 
-const MajorityStrict = ({
-  conversation,
-  comments,
-  ptptCount,
-  consensus,
-  formatTid,
-  math,
-  voteColors,
-}) => {
-  if (!conversation) {
-    return <div>Loading Majority (strict)...</div>;
-  }
-
-  // const _comments = _.keyBy(comments, "tid");
-  const _consensusTids = [];
-  consensus.agree.forEach((c) => {
-    _consensusTids.push(c.tid);
-  });
-  consensus.disagree.forEach((c) => {
-    _consensusTids.push(c.tid);
-  });
-
+const MajorityStrict = ({ conversation, comments, ptptCount, consensus, math, groupNames }) => {
+  if (!conversation) return null;
+  const tids = [];
+  consensus.agree.forEach((c) => tids.push(c.tid));
+  consensus.disagree.forEach((c) => tids.push(c.tid));
+  tids.sort((a, b) => a - b);
+  const pct = Math.round(globals.majorityThreshold * 100);
   return (
-    <div>
-      <p style={globals.primaryHeading}> Majority </p>
-      <p style={globals.paragraph}>Here&apos;s what most people agreed with.</p>
-      <p style={globals.paragraph}>
-        60% or more of all participants voted one way or the other, regardless of whether large
-        amounts of certain minority opinion groups voted the other way.
-      </p>
-      <Legend voteColors={voteColors} />
-      <div style={{ marginTop: 20 }}>
-        <CommentList
-          conversation={conversation}
-          ptptCount={ptptCount}
-          math={math}
-          formatTid={formatTid}
-          tidsToRender={_consensusTids.sort((a, b) => a - b)}
-          comments={comments}
-          voteColors={voteColors}
-        />
-      </div>
-    </div>
+    <section className="sec" id="majority">
+      <h2>{t("majority")}</h2>
+      <p className="lead">{t("majorityIntro")}</p>
+      <p className="lead">{fmt("majorityRule", { pct })}</p>
+      <Legend />
+      {tids.length ? (
+        <CommentList math={math} ptptCount={ptptCount} groupNames={groupNames} tidsToRender={tids} comments={comments} />
+      ) : (
+        <p className="empty">{fmt("majorityNone", { pct })}</p>
+      )}
+    </section>
   );
 };
 
 export default MajorityStrict;
-
-// These comments were also voted on by greater than [n%] of total voters.

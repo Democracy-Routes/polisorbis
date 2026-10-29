@@ -2,43 +2,17 @@
 
 import React from "react";
 import CommentList from "./commentList";
-import * as globals from "../globals";
+import { t } from "../../strings";
 
-const Metadata = ({ conversation, comments, ptptCount, formatTid, math, voteColors }) => {
-  if (!conversation) {
-    return <div>Loading Metadata...</div>;
-  }
-
-  const _metadataTids = [];
-
-  comments.forEach((comment/*, i*/) => {
-    if (comment.is_meta) {
-      _metadataTids.push(comment.tid);
-    }
-  });
-
-  if (_metadataTids.length === 0) {
-    return null;
-  }
-
+const Metadata = ({ conversation, comments, ptptCount, math, groupNames }) => {
+  if (!conversation) return null;
+  const tids = comments.filter((c) => c.is_meta).map((c) => c.tid).sort((a, b) => a - b);
+  if (!tids.length) return null;
   return (
     <div>
-      <p style={globals.primaryHeading}> Metadata </p>
-      <p style={globals.paragraph}>
-        The demographic breakdown of each group, as self reported by agreeing and disagreeing on
-        statements marked &apos;metadata&apos; by moderators.
-      </p>
-      <div style={{ marginTop: 50 }}>
-        <CommentList
-          conversation={conversation}
-          ptptCount={ptptCount}
-          math={math}
-          formatTid={formatTid}
-          tidsToRender={_metadataTids.sort((a, b) => a - b) /* es6 ftw */}
-          comments={comments}
-          voteColors={voteColors}
-        />
-      </div>
+      <h3>{t("metadata")}</h3>
+      <p className="lead">{t("metadataIntro")}</p>
+      <CommentList math={math} ptptCount={ptptCount} groupNames={groupNames} tidsToRender={tids} comments={comments} />
     </div>
   );
 };

@@ -12617,9 +12617,11 @@ Thanks for using Polis!
             for (let i = 0; i < indexToBid.length; i++) {
                 bidToIndex[indexToBid[i]] = i;
             }
-            let indexToPids = o[1].bidToPid; // actually index to [pid]
-            let cluster = clusters[gid];
-            if (!cluster) {
+            // The bid-to-pid mapping lags the maths by a tick; until it is
+            // stored there are no pids to report (was a 500 on the report page).
+            let indexToPids = o[1] && o[1].bidToPid; // actually index to [pid]
+            let cluster = clusters && clusters[gid];
+            if (!cluster || !indexToPids) {
                 return [];
             }
             let members = cluster.members; // bids

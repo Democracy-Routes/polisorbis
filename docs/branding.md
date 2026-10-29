@@ -22,3 +22,12 @@ Fonts: Space Grotesk 400/600 (UI, body) and Fraunces 600 (landing heading),
 self-hosted under `client-admin/public/fonts/brand/` and served at
 `/fonts/brand/` for every client; declared in `client-admin/public/index.ejs`,
 `client-participation/css/polis_main.scss` and `client-report/src/index.css`.
+
+## Report
+
+`client-report/src/report.css` holds the same tokens as CSS variables on
+`:root` (`--primary`, `--ink`, `--muted`, `--bg`, `--surface`, `--line`,
+`--accent`) plus the vote colours `--agree #15803d`, `--disagree #b91c1c`,
+`--pass #cbd5e1`, `--novote #f1f5f9`; the colour-blind switch
+(`.report--cb`) swaps agree/disagree to `#1d4ed8` / `#c2410c`. Opinion-group
+colours for the map stay in `src/components/globals.js`.

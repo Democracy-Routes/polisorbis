@@ -2,96 +2,61 @@
 
 import React from "react";
 import _ from "lodash";
-import CommentList from "./commentList";
+import CommentList, { Legend } from "./commentList";
 import * as globals from "../globals";
+import { t } from "../../strings";
 
+const byDesc = (field) => (comments) => _.map(_.reverse(_.sortBy(comments, field)), (c) => c.tid);
 
-function sortByTid(comments) {
-  return _.map(comments, (comment) => comment.tid).sort((a, b) => a - b);
-}
+const SORTS = {
+  tid: (comments) => _.map(comments, (c) => c.tid).sort((a, b) => a - b),
+  consensus: byDesc((c) => c["group-aware-consensus"]),
+  numvotes: byDesc("count"),
+  pctAgreed: byDesc("pctAgreed"),
+  pctDisagreed: byDesc("pctDisagreed"),
+  pctPassed: byDesc("pctPassed"),
+};
+const OPTIONS = [
+  ["tid", "sortTid"],
+  ["consensus", "sortConsensus"],
+  ["numvotes", "sortVotes"],
+  ["pctAgreed", "sortAgreed"],
+  ["pctDisagreed", "sortDisagreed"],
+  ["pctPassed", "sortPassed"],
+];
 
-function sortByVoteCount(comments) {
-  return _.map(_.reverse(_.sortBy(comments, "count")), (c) => {return c.tid;});
-}
-function sortByGroupAwareConsensus(comments) {
-  return _.map(_.reverse(_.sortBy(comments, (c) => {return c["group-aware-consensus"];})), (c) => {return c.tid;});
-}
-function sortByPctAgreed(comments) {
-  return _.map(_.reverse(_.sortBy(comments, (c) => {return c["pctAgreed"];})), (c) => {return c.tid;});
-}
-function sortByPctDisagreed(comments) {
-  return _.map(_.reverse(_.sortBy(comments, (c) => {return c["pctDisagreed"];})), (c) => {return c.tid;});
-}
-function sortByPctPassed(comments) {
-  return _.map(_.reverse(_.sortBy(comments, (c) => {return c["pctPassed"];})), (c) => {return c.tid;});
-}
-
-class allCommentsModeratedIn extends React.Component {
-
+class AllCommentsModeratedIn extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      sortStyle: globals.allCommentsSortDefault,
-    };
-  }
-
-  onSortChanged(event) {
-    this.setState({
-      sortStyle: event.target.value,
-    });
+    this.state = { sortStyle: globals.allCommentsSortDefault };
   }
 
   render() {
-
-    if (!this.props.conversation) {
-      return <div>Loading allCommentsModeratedIn...</div>
-    }
-
-    let sortFunction = null;
-    if (this.state.sortStyle === "tid") {
-      sortFunction = sortByTid;
-    } else if (this.state.sortStyle === "numvotes") {
-      sortFunction = sortByVoteCount;
-    } else if (this.state.sortStyle === "consensus") {
-      sortFunction = sortByGroupAwareConsensus;
-    } else if (this.state.sortStyle === "pctAgreed") {
-      sortFunction = sortByPctAgreed;
-    } else if (this.state.sortStyle === "pctDisagreed") {
-      sortFunction = sortByPctDisagreed;
-    } else if (this.state.sortStyle === "pctPassed") {
-      sortFunction = sortByPctPassed;
-    } else {
-      console.error('missing sort function', this.state.sortStyle);
-    }
-
+    const { conversation, comments, math, ptptCount, groupNames } = this.props;
+    if (!conversation) return null;
+    const sortFunction = SORTS[this.state.sortStyle] || SORTS.tid;
     return (
-      <div>
-        <p style={globals.primaryHeading}> All statements </p>
-        <p style={globals.paragraph}>
-          Group votes across all statements, excluding those statements which were moderated out.
-        </p>
-        <label htmlFor="allCommentsSortMode">Sort by: </label>
-        <select id="allCommentsSortMode" onChange={this.onSortChanged.bind(this)} value={this.state.sortStyle}>
-          <option value="tid">Statement Id</option>
-          <option value="consensus">Group-informed Consensus</option>
-          <option value="numvotes">Number of votes</option>
-          <option value="pctAgreed">% Agreed</option>
-          <option value="pctDisagreed">% Disagreed</option>
-          <option value="pctPassed">% Passed</option>
-        </select>
-        <div style={{marginTop: 50}}>
-          <CommentList
-            conversation={this.props.conversation}
-            ptptCount={this.props.ptptCount}
-            math={this.props.math}
-            formatTid={this.props.formatTid}
-            tidsToRender={sortFunction(this.props.comments)}
-            comments={this.props.comments}
-            voteColors={this.props.voteColors}/>
+      <section className="sec" id="all">
+        <h2>{t("all")}</h2>
+        <p className="lead">{t("allIntro")}</p>
+        <div className="sort">
+          <label htmlFor="allCommentsSortMode">{t("sortBy")}</label>
+          <select
+            id="allCommentsSortMode"
+            value={this.state.sortStyle}
+            onChange={(e) => this.setState({ sortStyle: e.target.value })}>
+            {OPTIONS.map(([v, k]) => (
+              <option key={v} value={v}>
+                {t(k)}
+              </option>
+            ))}
+          </select>
         </div>
-      </div>
+        <Legend />
+        <CommentList math={math} ptptCount={ptptCount} groupNames={groupNames} tidsToRender={sortFunction(comments)} comments={comments} />
+      </section>
     );
   }
 }
 
-export default allCommentsModeratedIn;
+export default AllCommentsModeratedIn;

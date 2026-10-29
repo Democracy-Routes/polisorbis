@@ -26,8 +26,10 @@ const port = self.location.port;
 
 const getDomainPrefix = () => {
   if (hostname === 'localhost') {
-    if (port === '' || port === '80') return 'http://localhost/';
-    return 'http://localhost:5000/';
+    // webpack-dev-server (port 5010) talks to the dev API server on 5000;
+    // any other local port is the API server (or a proxy) serving this page.
+    if (port === '5010') return 'http://localhost:5000/';
+    return `${self.origin}/`;
   }
 
   if (hostname.includes('pol.is')) return `https://${hostname}/`;
