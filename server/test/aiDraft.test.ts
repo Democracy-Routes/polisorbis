@@ -66,14 +66,19 @@ describe("buildMessages", () => {
     expect(system.content).toContain("Write everything in Italian.");
     expect(system.content).toContain("* Buses should be free.");
     expect(system.content).toContain("Apply this instruction to the new statements: shorter");
-    expect(user.content).toContain("Conversation topic: Transport");
-    expect(user.content).toContain("Write exactly 7 statements.");
+    expect(system.content).toContain('the conversation is titled "Transport" and described as: d');
+    expect(system.content).toContain("even when the title is about something else");
+    expect(user.content.indexOf("Subject of the statements: statements about buses")).toBe(0);
+    expect(user.content).toContain("Write exactly 7 statements about this subject.");
+    expect(user.content).not.toContain("Transport");
   });
 
   it("falls back to the language of the request and omits an empty description", () => {
     const [system, user] = buildMessages({ topic: "T", description: "", request: "r", count: 3 });
     expect(system.content).toContain("language of the request");
-    expect(user.content).not.toContain("Conversation description");
+    expect(system.content).toContain('titled "T".');
+    expect(system.content).not.toContain("described as");
+    expect(user.content).not.toContain("Conversation");
   });
 });
 

@@ -110,6 +110,7 @@ import SQL from "./db/sql";
 import logger from "./utils/logger";
 import { makeHandlePostCommentsBulk } from "./routes/commentsBulk";
 import { makeHandlePostCitizensImport } from "./routes/citizensImport";
+import { makeHandleGetListedConversations } from "./routes/listedConversations";
 import { makeHandleGetAiStatus, makeHandlePostAiDraftStatements } from "./routes/aiDraft";
 
 // # notifications
@@ -7186,6 +7187,9 @@ Email verified! You can close this tab or hit the back button.
         modOk: polisTypes.mod.ok,
     });
 
+    // Open conversations shown on the home page (routes/listedConversations.ts).
+    const handle_GET_listed_conversations = makeHandleGetListedConversations({ pgQueryP_readOnly });
+
     // Conversation + seeds in one call for Citizens (routes/citizensImport.ts).
     const handle_POST_citizens_import = makeHandlePostCitizensImport({
         getPidPromise,
@@ -8802,6 +8806,7 @@ Email verified! You can close this tab or hit the back button.
                 uid?: any;
                 verifyMeta: any;
                 is_active: any;
+                is_listed: any;
                 is_anon: any;
                 is_draft: any;
                 is_data_open: any;
@@ -8846,6 +8851,9 @@ Email verified! You can close this tab or hit the back button.
                 }
 
                 let fields: ConversationType = {};
+                if (!_.isUndefined(req.p.is_listed)) {
+                    fields.is_listed = req.p.is_listed;
+                }
                 if (!_.isUndefined(req.p.is_active)) {
                     fields.is_active = req.p.is_active;
                 }
@@ -10222,7 +10230,10 @@ Email verified! You can close this tab or hit the back button.
                     .catch(function (err: any) {
                         fail(res, 500, "polis_err_get_conversations_1", err);
                     });
-            } else if (req.p.uid || req.p.context) {
+            } else if (req.p.uid) {
+                // Listing by context without a login used to be allowed; it
+                // exposed every conversation sharing a context (e.g. the
+                // Citizens imports). The home page uses /api/v3/listed-conversations.
                 getConversations(req, res);
             } else {
                 fail(res, 403, "polis_err_need_auth");
@@ -15059,6 +15070,7 @@ Thanks for using Polis!
         handle_POST_comments,
         handle_POST_comments_bulk,
         handle_POST_citizens_import,
+        handle_GET_listed_conversations,
         handle_GET_ai_status,
         handle_POST_ai_draft_statements,
         handle_POST_contexts,

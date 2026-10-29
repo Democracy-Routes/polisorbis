@@ -11,6 +11,7 @@ const sql_conversations: any = sql.define({
     "is_active",
     "is_draft",
     "is_public", // TODO remove this column
+    "is_listed", // shown on the home page (GET /api/v3/listed-conversations)
     "is_data_open",
     "profanity_filter",
     "spam_filter",

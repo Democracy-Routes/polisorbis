@@ -193,8 +193,8 @@ class DraftStatementsAi extends React.Component {
     return (
       <Box sx={{ mb: [4] }}>
         <Text sx={{ mb: [2], fontSize: [1], color: 'muted' }}>
-          Describe the statements you want, for example &ldquo;20 statements about AI and the
-          environment, from different points of view&rdquo;. You review the list before anything is
+          Describe the statements you want, for example &ldquo;20 statements about parking in the
+          town centre, from different points of view&rdquo;. You review the list before anything is
           added.
         </Text>
         <Text sx={{ mb: [2], fontSize: [1], color: 'gray' }}>

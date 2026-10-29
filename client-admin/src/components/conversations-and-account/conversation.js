@@ -43,6 +43,11 @@ class Conversation extends React.Component {
             }}>
             {open ? 'Open' : 'Closed'}
           </Text>
+          {c.is_listed ? (
+            <Text sx={{ flexShrink: 0, fontSize: 0, fontWeight: 'bold', px: 2, py: '2px', borderRadius: 'pill', bg: '#dbeafe', color: 'primaryDark' }}>
+              On home page
+            </Text>
+          ) : null}
         </Flex>
         {c.description ? (
           <Text
@@ -88,7 +93,8 @@ Conversation.propTypes = {
     description: PropTypes.string,
     parent_url: PropTypes.string,
     participant_count: PropTypes.number,
-    is_active: PropTypes.bool
+    is_active: PropTypes.bool,
+    is_listed: PropTypes.bool
   }),
   i: PropTypes.number.isRequired,
   goToConversation: PropTypes.func.isRequired

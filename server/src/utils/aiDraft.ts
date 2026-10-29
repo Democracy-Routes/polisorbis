@@ -38,9 +38,17 @@ function languageRule(code?: string): string {
 
 export function buildMessages(input: DraftInput): ChatMessage[] {
   const kept = (input.kept || []).filter((s) => s && s.trim());
+  const description = (input.description || "").trim().slice(0, 1200);
+  const topic = (input.topic || "").trim();
   const rules = [
     "You draft seed statements for a Polis conversation, where members of the",
     "public vote agree, disagree or pass on each statement.",
+    "",
+    topic
+      ? "Background only: the conversation is titled \"" + topic + "\"" +
+        (description ? " and described as: " + description : "") +
+        ". The statements must be about the subject the organizer asks for below, even when the title is about something else; do not add the title's theme unless the request mentions it."
+      : "",
     "",
     "Rules:",
     '- Respond with ONLY a JSON object: {"statements": ["...", "..."]}',
@@ -64,18 +72,13 @@ export function buildMessages(input: DraftInput): ChatMessage[] {
     rules.push("- Apply this instruction to the new statements: " + input.instruction.trim());
   }
 
-  const description = (input.description || "").trim().slice(0, 1200);
   const user = [
-    "Conversation topic: " + (input.topic || "").trim(),
-    description ? "Conversation description: " + description : "",
-    "Request: " + input.request.trim(),
-    "Write exactly " + input.count + " statements.",
-  ]
-    .filter((line) => line)
-    .join("\n");
+    "Subject of the statements: " + input.request.trim(),
+    "Write exactly " + input.count + " statements about this subject.",
+  ].join("\n");
 
   return [
-    { role: "system", content: rules.join("\n") },
+    { role: "system", content: rules.filter((line, i, all) => line || (i > 0 && all[i - 1])).join("\n") },
     { role: "user", content: user },
   ];
 }

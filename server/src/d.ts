@@ -142,6 +142,7 @@ export type UserType = {
 // TODO in standalone change
 export type ConversationType = {
     is_active?: any;
+    is_listed?: any;
     is_anon?: any;
     is_draft?: any;
     is_data_open?: any;

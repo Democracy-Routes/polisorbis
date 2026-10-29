@@ -113,7 +113,10 @@ class ConversationConfig extends React.Component {
           </Box>
         </Section>
 
-        <Section title="Participants can…" intro="What the voting page shows and allows.">
+        <Section title="Participants can…" intro="What the voting page shows and allows, and whether the conversation is listed on this site's home page.">
+          <CheckboxField field="is_listed" label="Show on the home page">
+            Appear on the home page of this site (while the conversation is open)
+          </CheckboxField>
           <CheckboxField field="write_type" label="Comment form" isIntegerBool>
             Write their own statements
           </CheckboxField>

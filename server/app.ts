@@ -145,6 +145,7 @@ helpersInitialized.then(
             handle_POST_comments,
             handle_POST_comments_bulk,
             handle_POST_citizens_import,
+            handle_GET_listed_conversations,
             handle_GET_ai_status,
             handle_POST_ai_draft_statements,
             handle_POST_contexts,
@@ -793,6 +794,9 @@ helpersInitialized.then(
             handle_POST_citizens_import
         );
 
+        // Open conversations an organizer chose to show on the home page (routes/listedConversations.ts).
+        app.get("/api/v3/listed-conversations", handle_GET_listed_conversations);
+
         // AI statement drafting for moderators (routes/aiDraft.ts).
         app.get("/api/v3/ai/status", authOptional(assignToP), handle_GET_ai_status);
         app.post(
@@ -1086,6 +1090,7 @@ helpersInitialized.then(
                 assignToPCustom("zid")
             ),
             need("conversation_id", getStringLimitLength(1, 1000), assignToP), // we actually need conversation_id to build a url
+            want("is_listed", getBool, assignToP),
             want("is_active", getBool, assignToP),
             want("is_anon", getBool, assignToP),
             want("is_draft", getBool, assignToP, false),
