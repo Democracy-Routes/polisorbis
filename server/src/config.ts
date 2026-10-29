@@ -21,6 +21,16 @@ const openidPostLogout = `${devMode ? `http://${devHostname}` : `https://${prodH
 
 const openidEnabled = isTrue(process.env.P_OPENID_ENABLED) as boolean;
 
+// AI statement drafting (routes/aiDraft.ts): any OpenAI-compatible chat API.
+// Off unless base URL and model are set; the key is optional (local Ollama).
+const ai = {
+    baseUrl: process.env.AI_PROVIDER_BASE_URL || null as string | null,
+    apiKey: process.env.AI_PROVIDER_API_KEY || null as string | null,
+    model: process.env.AI_MODEL || null as string | null,
+    providerName: process.env.AI_PROVIDER_NAME || null as string | null,
+    jsonMode: process.env.AI_JSON_MODE || "auto" as string,
+};
+
 const openID = {
     enabled: openidEnabled,
     issuerURL: openidIssuerURL,
@@ -40,6 +50,7 @@ import('source-map-support').then((sourceMapSupport) => {
 });
 
 export default {
+    ai,
     domainOverride: domainOverride as string | null,
     isDevMode: devMode as boolean,
     serverPort: serverPort as number,

@@ -17,6 +17,12 @@ s.polis_err_reg_need_name = 'Please include your name.'
 s.polis_err_post_comment_duplicate =
   'Error posting: This comment already exists!'
 
+s.polis_err_csv_header = 'The first row must be "position,statement" or "comment_text".'
+s.polis_err_csv_malformed = 'The file is not a valid CSV (check quotes and line breaks).'
+s.polis_err_ai_not_configured = 'AI drafting is not configured on this server.'
+s.polis_err_ai_rate_limited = 'You have used this hour\u2019s budget of drafts. Try again in a few minutes.'
+s.polis_err_ai_upstream = 'The AI provider did not answer. Try again later.'
+s.polis_err_ai_bad_response = 'The model did not answer usefully. Try again, or reword the request.'
 s.polis_err_fetching_tweet =
   'Error fetching tweet. Expected a URL to a twitter tweet.'
 

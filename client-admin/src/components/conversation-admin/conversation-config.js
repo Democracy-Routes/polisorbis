@@ -16,6 +16,7 @@ import emoji from 'react-easy-emoji'
 import { CheckboxField } from './CheckboxField'
 import ModerateCommentsSeed from './seed-comment'
 import SeedCommentsCsv from './seed-comment-csv'
+import DraftStatementsAi from './draft-statements-ai'
 // import ModerateCommentsSeedTweet from "./seed-tweet";
 
 @connect((state) => state.user)
@@ -131,6 +132,19 @@ class ConversationConfig extends React.Component {
                     params={{ conversation_id: this.props.zid_metadata.conversation_id }}
                 />
                 <SeedCommentsCsv
+                    params={{ conversation_id: this.props.zid_metadata.conversation_id }}
+                />
+
+                <Heading
+                    as="h6"
+                    sx={{
+                        fontSize: [1, null, 2],
+                        lineHeight: 'body',
+                        my: [3, null, 4]
+                    }}>
+                    Draft statements with AI
+                </Heading>
+                <DraftStatementsAi
                     params={{ conversation_id: this.props.zid_metadata.conversation_id }}
                 />
 

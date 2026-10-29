@@ -43,6 +43,8 @@ class SeedCommentsCsv extends React.Component {
           error:
             reason === 'polis_err_csv_header'
               ? 'The first row must be "position,statement" (Citizens export) or "comment_text".'
+              : reason === 'polis_err_csv_malformed'
+              ? 'The file is not a valid CSV (check quotes and line breaks).'
               : 'Upload failed' + (reason ? ': ' + reason : '.')
         })
       }

@@ -109,6 +109,7 @@ import SQL from "./db/sql";
 // End of re-import
 import logger from "./utils/logger";
 import { makeHandlePostCommentsBulk } from "./routes/commentsBulk";
+import { makeHandleGetAiStatus, makeHandlePostAiDraftStatements } from "./routes/aiDraft";
 
 // # notifications
 import emailSenders from "./email/senders";
@@ -7170,6 +7171,14 @@ Email verified! You can close this tab or hit the back button.
         pgQueryP,
         updateLastInteractionTimeForConversation,
         modOk: polisTypes.mod.ok,
+    });
+
+    // AI statement drafting (routes/aiDraft.ts).
+    const handle_GET_ai_status = makeHandleGetAiStatus(Config.ai);
+    const handle_POST_ai_draft_statements = makeHandlePostAiDraftStatements({
+        isModerator,
+        getConversationInfo,
+        config: Config.ai,
     });
 
     function handle_POST_comments(
@@ -14984,6 +14993,8 @@ Thanks for using Polis!
         handle_POST_auth_pwresettoken,
         handle_POST_comments,
         handle_POST_comments_bulk,
+        handle_GET_ai_status,
+        handle_POST_ai_draft_statements,
         handle_POST_contexts,
         handle_POST_contributors,
         handle_POST_conversation_close,

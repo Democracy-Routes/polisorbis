@@ -144,6 +144,8 @@ helpersInitialized.then(
             handle_POST_auth_pwresettoken,
             handle_POST_comments,
             handle_POST_comments_bulk,
+            handle_GET_ai_status,
+            handle_POST_ai_draft_statements,
             handle_POST_contexts,
             handle_POST_contributors,
             handle_POST_conversation_close,
@@ -779,6 +781,23 @@ helpersInitialized.then(
             ),
             resolve_pidThing("pid", assignToP, "post:comments-bulk"),
             handle_POST_comments_bulk
+        );
+
+        // AI statement drafting for moderators (routes/aiDraft.ts).
+        app.get("/api/v3/ai/status", auth(assignToP), handle_GET_ai_status);
+        app.post(
+            "/api/v3/ai/draft-statements",
+            auth(assignToP),
+            need(
+                "conversation_id",
+                getConversationIdFetchZid,
+                assignToPCustom("zid")
+            ),
+            need("request", getStringLimitLength(1, 2000), assignToP),
+            want("count", getIntInRange(1, 40), assignToP, 10),
+            want("language", getStringLimitLength(1, 10), assignToP),
+            want("instruction", getStringLimitLength(1, 2000), assignToP),
+            handle_POST_ai_draft_statements
         );
 
         app.get(

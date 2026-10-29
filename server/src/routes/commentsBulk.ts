@@ -44,7 +44,14 @@ export function makeHandlePostCommentsBulk(h: Helpers) {
         fail(res, 403, "polis_err_post_comment_auth");
         return;
       }
-      const texts = parseSeedCsv(String(csv));
+      let texts: string[] | null;
+      try {
+        texts = parseSeedCsv(String(csv));
+      } catch (parseErr) {
+        // Not a CSV at all (unbalanced quotes, ragged rows): the client's fault.
+        fail(res, 400, "polis_err_csv_malformed");
+        return;
+      }
       if (!texts) {
         fail(res, 400, "polis_err_csv_header");
         return;
