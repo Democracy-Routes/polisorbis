@@ -27,6 +27,8 @@ module.exports = {
         new CopyWebpackPlugin({
             patterns: [
                 { from: 'public/favicon.ico', to: 'favicon.ico' },
+                // d3 and Font Awesome served from here, not from their CDNs.
+                { from: 'public/vendor', to: 'report_vendor' },
             ],
         }),
         new HtmlWebpackPlugin({
