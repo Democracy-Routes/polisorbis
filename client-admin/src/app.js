@@ -8,8 +8,8 @@ import { populateUserStore } from './actions'
 
 import _ from 'lodash'
 
-import { Switch, Route, Link, Redirect } from 'react-router-dom'
-import { Flex, Box, jsx } from 'theme-ui'
+import { Switch, Route, Redirect } from 'react-router-dom'
+import { Box, jsx } from 'theme-ui'
 
 /* landers */
 import Home from './components/landers/home'
@@ -177,78 +177,36 @@ class App extends React.Component {
                   return null
                 }
                 return (
-                  <Flex sx={{ flexDirection: ['column', 'row'], maxWidth: '72em', mx: 'auto', width: '100%' }}>
-                    <Flex
-                      sx={{
-                        flexDirection: ['row', 'column'],
-                        flexWrap: ['nowrap', 'wrap'],
-                        overflowX: ['auto', 'visible'],
-                        WebkitOverflowScrolling: 'touch',
-                        scrollbarWidth: 'none',
-                        '&::-webkit-scrollbar': { display: 'none' },
-                        whiteSpace: ['nowrap', 'normal'],
-                        '& > div': { flexShrink: 0 },
-                        mr: [0, 5],
-                        px: [3, 4],
-                        pt: [3, 4],
-                        pb: [0, 4],
-                        flex: '0 0 auto'
-                      }}>
-                      <Box sx={{ mb: [3], mr: [4, 0] }}>
-                        <Link sx={{ variant: 'links.nav' }} to={`/`}>
-                          Conversations
-                        </Link>
-                      </Box>
-					  {/*<Box sx={{ mb: [3] }}>
-                        <Link sx={{ variant: 'links.nav' }} to={`/integrate`}>
-                          Integrate
-                        </Link>
-                      </Box>*/}
-                      <Box sx={{ mb: [3] }}>
-                        <Link sx={{ variant: 'links.nav' }} to={`/account`}>
-                          Account
-                        </Link>
-                      </Box>
-                    </Flex>
-                    <Box
-                      sx={{
-                        p: [3, 4],
-                        flex: '1 1 auto',
-                        width: '100%',
-                        minWidth: 0,
-                        maxWidth: ['100%', '48em'],
-                        mx: [0, 4]
-                      }}>
-                      <PrivateRoute
-                        isLoading={this.isLoading()}
-                        authed={this.isAuthed()}
-                        exact
-                        path="/"
-                        component={Conversations}
-                      />
-                      <PrivateRoute
-                        isLoading={this.isLoading()}
-                        authed={this.isAuthed()}
-                        exact
-                        path="/conversations"
-                        component={Conversations}
-                      />
-                      <PrivateRoute
-                        isLoading={this.isLoading()}
-                        authed={this.isAuthed()}
-                        exact
-                        path="/account"
-                        component={Account}
-                      />
-                      <PrivateRoute
-                        isLoading={this.isLoading()}
-                        authed={this.isAuthed()}
-                        exact
-                        path="/integrate"
-                        component={Integrate}
-                      />
-                    </Box>
-                  </Flex>
+                  <Box sx={{ maxWidth: '64em', mx: 'auto', width: '100%', px: [3, 4], py: [3, 4] }}>
+                    <PrivateRoute
+                      isLoading={this.isLoading()}
+                      authed={this.isAuthed()}
+                      exact
+                      path="/"
+                      component={Conversations}
+                    />
+                    <PrivateRoute
+                      isLoading={this.isLoading()}
+                      authed={this.isAuthed()}
+                      exact
+                      path="/conversations"
+                      component={Conversations}
+                    />
+                    <PrivateRoute
+                      isLoading={this.isLoading()}
+                      authed={this.isAuthed()}
+                      exact
+                      path="/account"
+                      component={Account}
+                    />
+                    <PrivateRoute
+                      isLoading={this.isLoading()}
+                      authed={this.isAuthed()}
+                      exact
+                      path="/integrate"
+                      component={Integrate}
+                    />
+                  </Box>
                 )
               }}
             />

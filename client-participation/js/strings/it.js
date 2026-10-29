@@ -85,6 +85,6 @@ s.connectOpenIDButton = `Collegati tramite ${pOpenidProviderName}`;
 s.polis_err_reg_fb_verification_email_sent = "Per favore, controlla la mail e cerca il link di attivazione, poi continua da qui.";
 s.polis_err_reg_fb_verification_noemail_unverified = "Il tuo account Facebook non è verificato. Per favore verifica il tuo indirizzo mail di Facebook, poi torna qui per proseguire.";
 
-s.returnHome = `Ritorna a ${pHomeName}`;
+s.returnHome = "Torna all’inizio";
 
 module.exports = s;

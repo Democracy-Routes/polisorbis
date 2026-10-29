@@ -267,7 +267,7 @@ module.exports = Handlebones.ModelView.extend({
   },
 
   backHomeClicked: function(e) {
-    window.location = Strings.logoURL;
+    window.location = Strings.homeURL || Strings.logoURL;
   },
 
   spamToggle: function() {

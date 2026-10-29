@@ -3,6 +3,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import NumberCard from './conversation-stats-number-card'
+import { Box } from 'theme-ui'
 
 class NumberCards extends React.Component {
   render() {
@@ -11,7 +12,7 @@ class NumberCards extends React.Component {
       data.voteTimes.length / data.firstVoteTimes.length
     ).toFixed(2)
     return (
-      <div>
+      <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(9em, 1fr))', gap: 2 }}>
         <NumberCard
           datum={data.firstVoteTimes.length}
           subheading="participants voted"
@@ -36,7 +37,7 @@ class NumberCards extends React.Component {
           subheading="comments submitted"
           icon="comments"
         />
-      </div>
+      </Box>
     )
   }
 }

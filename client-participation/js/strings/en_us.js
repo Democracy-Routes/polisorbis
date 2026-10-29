@@ -4,12 +4,14 @@ const pHomeName = process.env.P_HOME_NAME;
 const pTosURL = process.env.P_TOS_URL;
 const pPrivacyPolicyURL = process.env.P_PRIVACY_POLICY_URL;
 const pLogoURL = process.env.P_LOGO_URL;
+const pHomeURL = process.env.P_HOME_URL;
 const pLogoIcoURL = process.env.P_LOGO_ICO_URL;
 const pOpenidProviderName = process.env.P_OPENID_PROVIDER_NAME;
 
 var s = {};
 
 s.logoURL = pLogoURL;
+s.homeURL = pHomeURL;
 s.logoIcoURL = pLogoIcoURL;
 
 s.agree = "Agree";
@@ -130,7 +132,7 @@ s.noCommentsYouVotedOnAll = "You've voted on all the statements.";
 s.noCommentsTryWritingOne = "If you have something to add, try writing your own statement.";
 s.convIsClosed = "This conversation is closed.";
 s.noMoreVotingAllowed = "No further voting is allowed.";
-s.returnHome = `Return to ${pHomeName}`;
+s.returnHome = "Back to the start";
 
 s.rateOrbis = "Rate your Orbis experience";
 

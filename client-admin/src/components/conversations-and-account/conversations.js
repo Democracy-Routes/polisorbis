@@ -9,9 +9,8 @@ import {
 } from '../../actions'
 
 import Url from '../../util/url'
-import { Box, Heading, Button, Text } from 'theme-ui'
+import { Box, Flex, Heading, Button, Text } from 'theme-ui'
 import Conversation from './conversation'
-import PolisNet from '../../util/net'
 
 @connect((state) => state.conversations)
 class Conversations extends React.Component {
@@ -41,14 +40,6 @@ class Conversations extends React.Component {
             }
             this.props.history.push(`/m/${conversation_id}`)
         }
-    }
-
-    deleteConversation = (conversation_id) => {
-        PolisNet.polisDelete('/api/v3/conversation', {
-            conversation_id: conversation_id
-        }).then(() => {
-            window.location.reload()
-        })
     }
 
     filterCheck(c) {
@@ -84,47 +75,35 @@ class Conversations extends React.Component {
         const err = this.props.error
         const { conversations } = this.props
 
+        const own = conversations ? conversations.filter((c) => this.filterCheck(c)) : []
         return (
             <Box>
-                <Heading
-                    as="h3"
-                    sx={{
-                        fontSize: [3, null, 4],
-                        lineHeight: 'body',
-                        mb: [3, null, 4]
-                    }}>
-                    All Conversations
-                </Heading>
-                <Box sx={{ mb: [3, null, 4] }}>
-                    <Button onClick={this.onNewClicked.bind(this)}>
-                        Create new conversation
+                <Flex sx={{ alignItems: 'center', justifyContent: 'space-between', gap: 3, mb: [3, 4], flexWrap: 'wrap' }}>
+                    <Heading as="h1" sx={{ fontSize: [4, 5], lineHeight: 'heading' }}>
+                        Conversations
+                    </Heading>
+                    <Button onClick={this.onNewClicked.bind(this)} data-test-id="create-conversation">
+                        New conversation
                     </Button>
-                </Box>
-                <Box>
-                    <Box sx={{ mb: [3] }}>
-                        {this.props.loading ? 'Loading conversations...' : null}
-                    </Box>
-                    {err ? (
-                        <Text>
-                            {'Error loading conversations: ' +
-                                err.status +
-                                ' ' +
-                                err.statusText}
-                        </Text>
-                    ) : null}
-                    {conversations
-                        ? conversations.map((c, i) => {
-                            return this.filterCheck(c) ? (
-                                <Conversation
-                                    key={c.conversation_id}
-                                    c={c}
-                                    i={i}
-                                    goToConversation={this.goToConversation(c.conversation_id)}
-                                    deleteConversation={this.deleteConversation}
-                                />
-                            ) : null
-                        })
-                        : null}
+                </Flex>
+                {this.props.loading ? <Text sx={{ color: 'muted' }}>Loading conversations…</Text> : null}
+                {err ? (
+                    <Text sx={{ color: 'red' }}>
+                        {'Error loading conversations: ' + err.status + ' ' + err.statusText}
+                    </Text>
+                ) : null}
+                {conversations && !own.length && !this.props.loading ? (
+                    <Text sx={{ color: 'muted' }}>No conversations yet. Create one to get a voting page and a report.</Text>
+                ) : null}
+                <Box sx={{ display: 'grid', gridTemplateColumns: ['1fr', null, '1fr 1fr'], gap: 3, alignItems: 'stretch' }}>
+                    {own.map((c, i) => (
+                        <Conversation
+                            key={c.conversation_id}
+                            c={c}
+                            i={i}
+                            goToConversation={this.goToConversation(c.conversation_id)}
+                        />
+                    ))}
                 </Box>
             </Box>
         )

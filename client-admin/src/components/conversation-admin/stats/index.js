@@ -84,15 +84,11 @@ class ConversationStats extends React.Component {
 
     return (
       <div>
-        <Heading
-          as="h3"
-          sx={{
-            fontSize: [3, null, 4],
-            lineHeight: 'body',
-            mb: [3, null, 4]
-          }}>
-          Monitor
-        </Heading>
+        {this.props.embedded ? null : (
+          <Heading as="h3" sx={{ fontSize: [3, null, 4], lineHeight: 'body', mb: [3, null, 4] }}>
+            Monitor
+          </Heading>
+        )}
         <NumberCards data={conversation_stats} />
         <Voters
           firstVoteTimes={conversation_stats.firstVoteTimes}

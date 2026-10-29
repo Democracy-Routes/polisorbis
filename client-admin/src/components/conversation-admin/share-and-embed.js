@@ -1,12 +1,13 @@
 // Copyright (C) 2012-present, The Authors. This program is free software: you can redistribute it and/or  modify it under the terms of the GNU Affero General Public License, version 3, as published by the Free Software Foundation. This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more details. You should have received a copy of the GNU Affero General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+/** @jsx jsx */
 import ConversationHasCommentsCheck from './conversation-has-comments-check'
 import React from 'react'
 import PropTypes from 'prop-types'
 import Url from '../../util/url'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
-import { Heading } from 'theme-ui'
+import { Heading, Flex, Text, Button, jsx } from 'theme-ui'
 import ComponentHelpers from '../../util/component-helpers'
 import NoPermission from './no-permission'
 
@@ -32,31 +33,45 @@ class ShareAndEmbed extends React.Component {
     }
 
     const { match } = this.props
+    const link = Url.urlPrefix + match.params.conversation_id
     return (
       <div>
-        <Heading
-          as="h3"
-          sx={{
-            fontSize: [3, null, 4],
-            lineHeight: 'body',
-            mb: [3, null, 4]
-          }}>
-          Distribute
-        </Heading>
-        <ConversationHasCommentsCheck
-          conversation_id={match.params.conversation_id}
-          strict_moderation={this.props.zid_metadata.strict_moderation}
-        />
-        <div>
-          <p> Share </p>
-          <p>
-            <a
-              target="blank"
-              href={Url.urlPrefix + match.params.conversation_id}>
-              {Url.urlPrefix + match.params.conversation_id}
-            </a>
-          </p>
-        </div>
+        {this.props.embedded ? null : (
+          <Heading as="h3" sx={{ fontSize: [3, null, 4], lineHeight: 'body', mb: [3, null, 4] }}>
+            Distribute
+          </Heading>
+        )}
+        <Flex sx={{ gap: 2, alignItems: 'center', flexWrap: 'wrap', mb: 2 }}>
+          <input
+            readOnly
+            value={link}
+            data-test-id="share-link"
+            onFocus={(e) => e.target.select()}
+            sx={{ variant: 'forms.input', maxWidth: '28em', flex: '1 1 14em' }}
+          />
+          <Button
+            variant="secondary"
+            onClick={() => {
+              const done = () => {
+                this.setState({ copied: true })
+                setTimeout(() => this.setState({ copied: false }), 2000)
+              }
+              if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(link).then(done, () => {})
+              }
+            }}>
+            {this.state && this.state.copied ? 'Copied' : 'Copy link'}
+          </Button>
+          <a href={link} target="_blank" rel="noreferrer" sx={{ fontSize: 1 }}>
+            Open ↗
+          </a>
+        </Flex>
+        <Text sx={{ fontSize: 1, color: 'muted' }}>
+          <ConversationHasCommentsCheck
+            conversation_id={match.params.conversation_id}
+            strict_moderation={this.props.zid_metadata.strict_moderation}
+          />
+        </Text>
         {/* <div>
           <p> Embed</p>
           <div>
@@ -91,6 +106,7 @@ ShareAndEmbed.propTypes = {
       conversation_id: PropTypes.string
     })
   }),
+  embedded: PropTypes.bool,
   zid_metadata: PropTypes.shape({
     parent_url: PropTypes.string,
     strict_moderation: PropTypes.bool

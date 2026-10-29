@@ -7,9 +7,9 @@ import { Text, Flex } from 'theme-ui'
 class NumberCard extends React.Component {
   render() {
     return (
-      <Flex sx={{ my: [2] }}>
-        <Text sx={{ fontWeight: 700, mr: [2] }}>{this.props.datum}</Text>
-        <Text> {this.props.subheading} </Text>
+      <Flex sx={{ flexDirection: 'column', bg: 'secondary', borderRadius: 'default', p: 3 }}>
+        <Text sx={{ fontWeight: 700, fontSize: 5, lineHeight: 1.1 }}>{this.props.datum}</Text>
+        <Text sx={{ fontSize: 1, color: 'muted', mt: 1 }}>{this.props.subheading}</Text>
       </Flex>
     )
   }

@@ -4,7 +4,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
-import { Box, Heading } from 'theme-ui'
+import { Box, Heading, Text } from 'theme-ui'
 
 import Spinner from '../framework/spinner'
 
@@ -15,42 +15,35 @@ const pOpenidProfilePageURL = process.env.P_OPENID_PROFILE_PAGE_URL;
 @connect((state) => state.user)
 class Account extends React.Component {
     buildAccountMarkup() {
+        const u = this.props.user
         return (
-            <>
-                <Box>
-                    <Heading
-                        as="h3"
-                        sx={{
-                            fontSize: [3, null, 4],
-                            lineHeight: 'body',
-                            mb: [3, null, 4]
-                        }}>
-                        Account
-                    </Heading>
-                    {
-                        pOpenidEnabled ? (
-                            <a
-                                target="_blank"
-                                rel="noreferrer"
-                                href={pOpenidProfilePageURL}>
-                                Go to {pOpenidProviderName} profile
-                            </a>
-                        ) : (
-                            <>
-                                <p>Hi {this.props.user.hname.split(' ')[0]}!</p>
-                                <Box>
-                                    <p>{this.props.user.hname}</p>
-                                    <p>{this.props.user.email}</p>
-                                    <p>Social:</p>
-                                    <p>{this.props.user.hasFacebook ? 'Facebook is connected' : ''} </p>
-                                    <p>{this.props.user.hasTwitter ? 'Twitter is connected' : ''}</p>
-                                    <p>{this.props.user.hasOpenID ? 'OpenID is connected' : ''}</p>
-                                </Box>
-                            </>
-                        )
-                    }
-                </Box >
-            </>
+            <Box>
+                <Heading as="h1" sx={{ fontSize: [4, 5], lineHeight: 'heading', mb: [3, 4] }}>
+                    Account
+                </Heading>
+                <Box sx={{ variant: 'cards.primary', p: [3, 4], maxWidth: '36em' }}>
+                    {pOpenidEnabled ? (
+                        <a target="_blank" rel="noreferrer" href={pOpenidProfilePageURL}>
+                            Go to {pOpenidProviderName} profile
+                        </a>
+                    ) : (
+                        <Box sx={{ display: 'grid', gridTemplateColumns: '8em 1fr', rowGap: 2, fontSize: 1 }}>
+                            <Text sx={{ color: 'muted' }}>Name</Text>
+                            <Text>{u.hname}</Text>
+                            <Text sx={{ color: 'muted' }}>Email</Text>
+                            <Text sx={{ overflowWrap: 'anywhere' }}>{u.email}</Text>
+                            {u.hasFacebook || u.hasTwitter || u.hasOpenID ? (
+                                <>
+                                    <Text sx={{ color: 'muted' }}>Connected</Text>
+                                    <Text>
+                                        {[u.hasFacebook && 'Facebook', u.hasTwitter && 'Twitter', u.hasOpenID && 'OpenID'].filter(Boolean).join(', ')}
+                                    </Text>
+                                </>
+                            ) : null}
+                        </Box>
+                    )}
+                </Box>
+            </Box>
         )
     }
 

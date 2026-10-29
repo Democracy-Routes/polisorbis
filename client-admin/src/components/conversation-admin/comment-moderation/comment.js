@@ -25,9 +25,9 @@ class Comment extends React.Component {
 
   render() {
     return (
-      <Card sx={{ mb: [3], width: '100%', maxWidth: '40em' }}>
+      <Card sx={{ mb: [2], width: '100%' }}>
         <Box>
-          <Text sx={{ mb: [3] }}>{this.props.comment.txt}</Text>
+          <Text sx={{ mb: [2], overflowWrap: 'anywhere' }}>{this.props.comment.txt}</Text>
           <Flex
             sx={{
               justifyContent: 'space-between',
@@ -36,14 +36,12 @@ class Comment extends React.Component {
             }}>
             <Box>
               {this.props.acceptButton ? (
-                <Button
-                  sx={{ mr: [3] }}
-                  onClick={this.onAcceptClicked.bind(this)}>
+                <Button sx={{ mr: [2], minHeight: 36, py: 1, textTransform: 'capitalize' }} onClick={this.onAcceptClicked.bind(this)}>
                   {this.props.acceptButtonText}
                 </Button>
               ) : null}
               {this.props.rejectButton ? (
-                <Button onClick={this.onRejectClicked.bind(this)}>
+                <Button variant="secondary" sx={{ minHeight: 36, py: 1, textTransform: 'capitalize' }} onClick={this.onRejectClicked.bind(this)}>
                   {this.props.rejectButtonText}
                 </Button>
               ) : null}

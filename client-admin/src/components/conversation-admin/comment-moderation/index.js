@@ -56,51 +56,34 @@ class CommentModeration extends React.Component {
 
     const url = location.pathname.split('/')[4]
 
+    const tabs = [
+      ['', 'To review', this.props.unmoderated.unmoderated_comments, !url],
+      ['/accepted', 'Accepted', this.props.accepted.accepted_comments, url === 'accepted'],
+      ['/rejected', 'Rejected', this.props.rejected.rejected_comments, url === 'rejected']
+    ]
     return (
       <Box>
-        <Heading
-          as="h3"
-          sx={{
-            fontSize: [3, null, 4],
-            lineHeight: 'body',
-            mb: [3, null, 4]
-          }}>
-          Moderate
-        </Heading>
-        <Flex sx={{ mb: [4] }}>
-          <Link
-            sx={{
-              mr: [4],
-              variant: url ? 'links.nav' : 'links.activeNav'
-            }}
-            to={`${match.url}`}>
-            Unmoderated{' '}
-            {this.props.unmoderated.unmoderated_comments
-              ? this.props.unmoderated.unmoderated_comments.length
-              : null}
-          </Link>
-          <Link
-            sx={{
-              mr: [4],
-              variant: url === 'accepted' ? 'links.activeNav' : 'links.nav'
-            }}
-            to={`${match.url}/accepted`}>
-            Accepted{' '}
-            {this.props.accepted.accepted_comments
-              ? this.props.accepted.accepted_comments.length
-              : null}
-          </Link>
-          <Link
-            sx={{
-              mr: [4],
-              variant: url === 'rejected' ? 'links.activeNav' : 'links.nav'
-            }}
-            to={`${match.url}/rejected`}>
-            Rejected{' '}
-            {this.props.rejected.rejected_comments
-              ? this.props.rejected.rejected_comments.length
-              : null}
-          </Link>
+        <Flex sx={{ mb: 3, gap: 1, bg: 'secondary', borderRadius: 'pill', p: 1, width: 'fit-content', maxWidth: '100%' }}>
+          {tabs.map(([suffix, label, list, on]) => (
+            <Link
+              key={label}
+              to={`${match.url}${suffix}`}
+              sx={{
+                textDecoration: 'none',
+                fontSize: 1,
+                fontWeight: 'bold',
+                px: 3,
+                py: 2,
+                borderRadius: 'pill',
+                whiteSpace: 'nowrap',
+                color: on ? 'surface' : 'text',
+                bg: on ? 'primary' : 'transparent',
+                '&:hover': { color: on ? 'surface' : 'primary' }
+              }}>
+              {label}
+              {list ? <span sx={{ ml: 1, opacity: 0.8 }}>{list.length}</span> : null}
+            </Link>
+          ))}
         </Flex>
         <Box>
           <Switch>

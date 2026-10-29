@@ -5,7 +5,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import Url from '../../../util/url'
 import { connect } from 'react-redux'
-import { Heading, Box, Button } from 'theme-ui'
+import { Heading, Box, Button, Text } from 'theme-ui'
 import ComponentHelpers from '../../../util/component-helpers'
 import NoPermission from '../no-permission'
 
@@ -59,32 +59,27 @@ class ReportsList extends React.Component {
     }
     return (
       <Box>
-        <Heading
-          as="h3"
-          sx={{
-            fontSize: [3, null, 4],
-            lineHeight: 'body',
-            mb: [3, null, 4]
-          }}>
-          Report
-        </Heading>
-        <Box sx={{ mb: [3, null, 4] }}>
-          <Button onClick={this.createReportClicked.bind(this)}>
-            Create report url
-          </Button>
-        </Box>
-        {this.state.reports.map((report) => {
-          return (
-            <Box sx={{ mb: [2] }} key={report.report_id}>
-              <a
-                target="_blank"
-                rel="noreferrer"
-                href={Url.urlPrefix + 'report/' + report.report_id}>
-                {Url.urlPrefix}report/{report.report_id}
-              </a>
-            </Box>
-          )
-        })}
+        {this.props.embedded ? null : (
+          <Heading as="h3" sx={{ fontSize: [3, null, 4], lineHeight: 'body', mb: [3, null, 4] }}>
+            Report
+          </Heading>
+        )}
+        {this.state.reports.map((report) => (
+          <Box sx={{ mb: 2 }} key={report.report_id}>
+            <a target="_blank" rel="noreferrer" href={Url.urlPrefix + 'report/' + report.report_id}>
+              Open the report ↗
+            </a>
+            <Text sx={{ fontSize: 0, color: 'muted', overflowWrap: 'anywhere' }}>
+              {Url.urlPrefix}report/{report.report_id}
+            </Text>
+          </Box>
+        ))}
+        {this.state.reports.length ? null : (
+          <Text sx={{ fontSize: 1, color: 'muted', mb: 2 }}>No report link yet.</Text>
+        )}
+        <Button variant={this.state.reports.length ? 'secondary' : 'primary'} onClick={this.createReportClicked.bind(this)}>
+          {this.state.reports.length ? 'Create another report link' : 'Create the report link'}
+        </Button>
       </Box>
     )
   }
@@ -96,6 +91,7 @@ ReportsList.propTypes = {
       conversation_id: PropTypes.string
     })
   }),
+  embedded: PropTypes.bool,
   zid_metadata: PropTypes.shape({
     is_mod: PropTypes.bool
   })

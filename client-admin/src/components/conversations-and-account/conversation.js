@@ -1,88 +1,97 @@
 /** @jsx jsx */
-import { jsx, Button, Text, Card } from 'theme-ui'
+import { jsx, Box, Flex, Text, Card } from 'theme-ui'
+import { Link } from 'react-router-dom'
 import PropTypes from 'prop-types'
 import React from 'react'
+import Url from '../../util/url'
 
+// One conversation in the list: title, status, description, numbers and
+// the three sections as links. Deleting lives in Set up.
 class Conversation extends React.Component {
-    constructor(props) {
-        super(props)
-        this.state = {
-            openDelete: false
-        }
-    }
-
-    onButtonClicked(state) {
-        this.setState({openDelete: state})
-    }
-
-    render() {
-        return (
-            <Card
-                onClick={this.props.goToConversation}
-                sx={{ cursor: 'pointer', 'overflow-wrap': 'break-word', mb: [3] }}
-                key={this.props.i}>
-                <Text sx={{ fontWeight: 'bold', fontSize: [3], mb: [2] }}>{this.props.c.topic}</Text>
-                <Text>{this.props.c.description}</Text>
-                <Text data-test-id="embed-page">
-                    {this.props.c.parent_url ? `Embedded on ${this.props.c.parent_url}` : null}
-                </Text>
-                <Text sx={{ mt: [2] }}>{this.props.c.participant_count} participants</Text>
-                <div style={{display: "flex", justifyContent: "end"}}>
-                    <Button variant="secondary" sx={{ mt: "8px" }} onClick={(e) => {
-                            e.stopPropagation()
-                            this.onButtonClicked(true)
-                        }}>
-                        Delete
-                    </Button>
-                </div>
-                {this.state.openDelete && (
-                    <>
-                        <div style={{zIndex: 10, position: "fixed", top: 0, left: 0, width: "100%", height: "100%", backgroundColor: "rgba(15,23,42,0.5)"}}
-                        onClick={(e) => {
-                                e.stopPropagation()
-                                this.onButtonClicked(false)
-                            }}></div>
-                        <div style={{zIndex: "10", position: "fixed", top: "0", left: "0", width: "100%", height: "100%", display: "flex", alignItems: "center", justifyItems: "center"}}
-                            onClick={(e) => {
-                                    e.stopPropagation()
-                                    this.onButtonClicked(false)
-                                }}>
-                            <div style={{display: "flex", flexDirection: "column", margin: "auto", width: "90%", maxWidth: "28em", backgroundColor: "#ffffff", borderRadius: 8, padding: "16px 20px", boxShadow: "0 1px 3px rgba(15,23,42,0.08), 0 4px 16px rgba(15,23,42,0.06)"}}>
-                                <Text sx={{ mb: "8px" }}>Are you sure you want to delete <b>{this.props.c.topic}</b>?</Text>
-                                <div style={{display: "flex", marginTop: "auto", alignContent: "end", justifyContent: "end", gap: "8px"}}>
-                                    <Button variant="secondary" onClick={(e) => {
-                                            e.stopPropagation()
-                                            this.onButtonClicked(false)
-                                        }}>
-                                        Back
-                                    </Button>
-                                    <Button variant="danger" onClick={(e) => {
-                                            e.stopPropagation()
-                                            this.props.deleteConversation(this.props.c.conversation_id)
-                                        }}>
-                                        Delete
-                                    </Button>
-                                </div>
-                            </div>
-                        </div>
-                    </>
-                )}
-            </Card>
-        )
-    }
+  render() {
+    const c = this.props.c
+    const base = `/m/${c.conversation_id}`
+    const open = c.is_active !== false
+    const link = (to, label) => (
+      <Link
+        to={to}
+        onClick={(e) => e.stopPropagation()}
+        sx={{ variant: 'links.nav', fontSize: 1, borderBottom: 'none', '&:hover': { textDecoration: 'underline' } }}>
+        {label}
+      </Link>
+    )
+    return (
+      <Card
+        onClick={this.props.goToConversation}
+        data-test-id="conversation-card"
+        sx={{ cursor: 'pointer', overflowWrap: 'anywhere', display: 'flex', flexDirection: 'column', gap: 2, minWidth: 0 }}
+        key={this.props.i}>
+        <Flex sx={{ alignItems: 'flex-start', gap: 2 }}>
+          <Text sx={{ fontWeight: 'bold', fontSize: 3, lineHeight: 'heading', flex: 1, minWidth: 0 }}>
+            {c.topic || 'Untitled conversation'}
+          </Text>
+          <Text
+            sx={{
+              flexShrink: 0,
+              fontSize: 0,
+              fontWeight: 'bold',
+              px: 2,
+              py: '2px',
+              borderRadius: 'pill',
+              bg: open ? '#dcfce7' : 'secondary',
+              color: open ? '#166534' : 'muted'
+            }}>
+            {open ? 'Open' : 'Closed'}
+          </Text>
+        </Flex>
+        {c.description ? (
+          <Text
+            sx={{
+              color: 'muted',
+              fontSize: 1,
+              display: '-webkit-box',
+              WebkitLineClamp: 2,
+              WebkitBoxOrient: 'vertical',
+              overflow: 'hidden'
+            }}>
+            {c.description}
+          </Text>
+        ) : null}
+        <Text sx={{ fontSize: 1, color: 'muted' }}>
+          {c.participant_count} {c.participant_count === 1 ? 'participant' : 'participants'}
+          {c.parent_url ? (
+            <span data-test-id="embed-page"> · embedded on {c.parent_url}</span>
+          ) : null}
+        </Text>
+        <Flex sx={{ gap: 3, mt: 'auto', pt: 1, flexWrap: 'wrap', alignItems: 'center' }}>
+          {link(base, 'Set up')}
+          {link(`${base}/comments`, 'Moderate')}
+          {link(`${base}/results`, 'Results')}
+          <a
+            href={Url.urlPrefix + c.conversation_id}
+            target="_blank"
+            rel="noreferrer"
+            onClick={(e) => e.stopPropagation()}
+            sx={{ fontSize: 1, ml: 'auto', color: 'muted' }}>
+            Voting page ↗
+          </a>
+        </Flex>
+      </Card>
+    )
+  }
 }
 
 Conversation.propTypes = {
-    c: PropTypes.shape({
-        conversation_id: PropTypes.string,
-        topic: PropTypes.string,
-        description: PropTypes.string,
-        parent_url: PropTypes.string,
-        participant_count: PropTypes.number
-    }),
-    i: PropTypes.number.isRequired,
-    goToConversation: PropTypes.func.isRequired,
-    deleteConversation: PropTypes.func.isRequired
+  c: PropTypes.shape({
+    conversation_id: PropTypes.string,
+    topic: PropTypes.string,
+    description: PropTypes.string,
+    parent_url: PropTypes.string,
+    participant_count: PropTypes.number,
+    is_active: PropTypes.bool
+  }),
+  i: PropTypes.number.isRequired,
+  goToConversation: PropTypes.func.isRequired
 }
 
 export default Conversation
