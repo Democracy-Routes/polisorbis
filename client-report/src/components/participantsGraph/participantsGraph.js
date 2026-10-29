@@ -66,8 +66,78 @@ class ParticipantsGraph extends React.Component {
       showAxes: false,
       showRadialAxes: true,
       k: 1,
+      vb: { x: 0, y: 0, w: globals.side, h: globals.side },
+      width: globals.side,
     };
     this.onResize = _.throttle(() => this.measure(), 150);
+    this.pointers = new Map();
+    this.lastTap = 0;
+  }
+
+  // --- pan and pinch zoom (viewBox), one finger drags, two pinch, double-tap resets
+  onPointerDown(e) {
+    this.pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    e.currentTarget.setPointerCapture && e.currentTarget.setPointerCapture(e.pointerId);
+    if (this.pointers.size === 1) {
+      const now = Date.now();
+      if (now - this.lastTap < 320) this.resetZoom();
+      this.lastTap = now;
+    }
+    this.moved = false;
+  }
+  onPointerMove(e) {
+    if (!this.pointers.has(e.pointerId)) return;
+    const prev = this.pointers.get(e.pointerId);
+    const cur = { x: e.clientX, y: e.clientY };
+    const { vb, width } = this.state;
+    const unit = vb.w / (width || globals.side); // viewBox units per screen pixel
+    if (this.pointers.size === 1) {
+      const dx = (cur.x - prev.x) * unit;
+      const dy = (cur.y - prev.y) * unit;
+      if (Math.abs(cur.x - prev.x) + Math.abs(cur.y - prev.y) > 2) this.moved = true;
+      if (vb.w < globals.side) this.setVb({ x: vb.x - dx, y: vb.y - dy, w: vb.w, h: vb.h });
+    } else if (this.pointers.size === 2) {
+      const pts = [...this.pointers.entries()];
+      const other = pts.find(([id]) => id !== e.pointerId)[1];
+      const d0 = Math.hypot(prev.x - other.x, prev.y - other.y) || 1;
+      const d1 = Math.hypot(cur.x - other.x, cur.y - other.y) || 1;
+      const scale = d0 / d1;
+      const w = Math.min(globals.side, Math.max(globals.side / 6, vb.w * scale));
+      const rect = e.currentTarget.getBoundingClientRect();
+      const mx = vb.x + ((cur.x + other.x) / 2 - rect.left) * unit;
+      const my = vb.y + ((cur.y + other.y) / 2 - rect.top) * unit;
+      const f = w / vb.w;
+      this.moved = true;
+      this.setVb({ x: mx - (mx - vb.x) * f, y: my - (my - vb.y) * f, w, h: w });
+    }
+    this.pointers.set(e.pointerId, cur);
+  }
+  onPointerUp(e) {
+    this.pointers.delete(e.pointerId);
+  }
+  onWheel(e) {
+    if (!e.ctrlKey) return;
+    e.preventDefault();
+    const { vb, width } = this.state;
+    const unit = vb.w / (width || globals.side);
+    const rect = e.currentTarget.getBoundingClientRect();
+    const mx = vb.x + (e.clientX - rect.left) * unit;
+    const my = vb.y + (e.clientY - rect.top) * unit;
+    const w = Math.min(globals.side, Math.max(globals.side / 6, vb.w * (e.deltaY > 0 ? 1.15 : 0.87)));
+    const f = w / vb.w;
+    this.setVb({ x: mx - (mx - vb.x) * f, y: my - (my - vb.y) * f, w, h: w });
+  }
+  setVb(vb) {
+    const max = globals.side - vb.w;
+    vb.x = Math.min(Math.max(vb.x, 0), max);
+    vb.y = Math.min(Math.max(vb.y, 0), max);
+    this.setState({ vb, k: this.kFor(vb.w, this.state.width) });
+  }
+  resetZoom() {
+    this.setVb({ x: 0, y: 0, w: globals.side, h: globals.side });
+  }
+  kFor(vbw, width) {
+    return Math.min(3, Math.max(0.4, vbw / (width || globals.side)));
   }
 
   componentDidMount() {
@@ -89,17 +159,21 @@ class ParticipantsGraph extends React.Component {
     const el = this.wrap.current;
     if (!el) return;
     const w = el.getBoundingClientRect().width || globals.side;
-    const k = Math.min(3, Math.max(1, globals.side / w));
-    if (Math.abs(k - this.state.k) > 0.05) this.setState({ k });
+    const k = this.kFor(this.state.vb.w, w);
+    if (Math.abs(k - this.state.k) > 0.05 || w !== this.state.width) this.setState({ k, width: w });
   }
 
   handleCommentClick(selectedComment) {
-    return () => this.setState({ selectedComment });
+    return () => {
+      if (this.moved) return; // a drag, not a tap
+      this.setState({ selectedComment });
+    };
   }
 
   render() {
     if (!this.props.math) return null;
-    const { k } = this.state;
+    const { k, vb } = this.state;
+    const zoomed = vb.w < globals.side;
     const { xx, yy, commentsPoints, xCenter, yCenter, baseClustersScaled, commentScaleupFactorX, commentScaleupFactorY, hulls } =
       graphUtil(this.props.comments, this.props.math, this.props.badTids);
 
@@ -120,7 +194,18 @@ class ParticipantsGraph extends React.Component {
           ))}
         </div>
         <div className="map" ref={this.wrap}>
-          <svg viewBox={`0 0 ${globals.side} ${globals.side}`} width={globals.side} height={globals.side} role="img" aria-label={t("map")}>
+          <svg
+            viewBox={`${vb.x} ${vb.y} ${vb.w} ${vb.h}`}
+            width={globals.side}
+            height={globals.side}
+            role="img"
+            aria-label={t("map")}
+            className={zoomed ? "is-zoomed" : ""}
+            onPointerDown={this.onPointerDown.bind(this)}
+            onPointerMove={this.onPointerMove.bind(this)}
+            onPointerUp={this.onPointerUp.bind(this)}
+            onPointerCancel={this.onPointerUp.bind(this)}
+            onWheel={this.onWheel.bind(this)}>
             {this.state.showRadialAxes ? (
               <g>
                 <circle strokeWidth={k} stroke="#e2e8f0" fill="#f8fafc" cx={xCenter} cy={yCenter} r={globals.side / 2.3} />
@@ -159,6 +244,14 @@ class ParticipantsGraph extends React.Component {
                 ))
               : null}
           </svg>
+          <div className="map__tools">
+            <span className="note">{t("zoomHint")}</span>
+            {zoomed ? (
+              <button type="button" className="chip" onClick={() => this.resetZoom()}>
+                {t("resetZoom")}
+              </button>
+            ) : null}
+          </div>
           {this.state.showParticipants ? (
             <div className="map__legend">
               {hulls.map((h, i) => (

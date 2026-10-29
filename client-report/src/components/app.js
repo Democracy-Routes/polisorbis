@@ -14,6 +14,7 @@ import AllCommentsModeratedIn from "./lists/allCommentsModeratedIn";
 import ParticipantGroups from "./lists/participantGroups";
 import ParticipantsGraph from "./participantsGraph/participantsGraph";
 import Beeswarm from "./beeswarm/beeswarm";
+import Summary from "./summary";
 import { t, fmt } from "../strings";
 
 import net from "../util/net";
@@ -309,6 +310,13 @@ class App extends React.Component {
       <div className={cls}>
         {header}
         <div className="report__sections">
+          <Summary
+            {...common}
+            consensus={this.state.consensus}
+            extremity={this.state.extremity}
+            uncertainty={this.state.uncertainty}
+            ptptCountTotal={this.state.ptptCountTotal}
+          />
           <Overview
             computedStats={this.state.computedStats}
             math={this.state.math}

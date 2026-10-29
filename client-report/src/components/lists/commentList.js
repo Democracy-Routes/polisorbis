@@ -45,37 +45,50 @@ const Bar = ({ voteCounts, nMembers }) => {
   );
 };
 
-const Row = ({ comment, groups, groupNames, ptptCount }) => {
-  if (!comment) return null;
-  let totalMembers = 0;
-  const cols = [];
-  _.forEach(groups, (g, i) => {
-    totalMembers += g["n-members"];
-    cols.push({ key: i, name: groupLabel(groupNames, Number(i)), votes: g.votes[comment.tid], n: g["n-members"] });
-  });
-  cols.unshift({
-    key: "all",
-    name: t("colAll"),
-    votes: { A: comment.agreed, D: comment.disagreed, S: comment.saw },
-    n: totalMembers,
-  });
-  return (
-    <div className="srow">
-      <div className="srow__text">
-        <span className="tid">{comment.tid}</span>
-        <span className="srow__txt">{comment.txt}</span>
+class Row extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { open: false };
+  }
+  render() {
+    const { comment, groups, groupNames } = this.props;
+    if (!comment) return null;
+    let totalMembers = 0;
+    const cols = [];
+    _.forEach(groups, (g, i) => {
+      totalMembers += g["n-members"];
+      cols.push({ key: i, name: groupLabel(groupNames, Number(i)), votes: g.votes[comment.tid], n: g["n-members"] });
+    });
+    cols.unshift({
+      key: "all",
+      name: t("colAll"),
+      votes: { A: comment.agreed, D: comment.disagreed, S: comment.saw },
+      n: totalMembers,
+    });
+    const open = this.state.open;
+    return (
+      <div className={"srow" + (open ? " srow--open" : "")}>
+        <div className="srow__text">
+          <span className="tid">{comment.tid}</span>
+          <span className="srow__txt">{comment.txt}</span>
+        </div>
+        <div className="srow__cols">
+          {cols.map((c) => (
+            <div className={"col" + (c.key === "all" ? " col--all" : "")} key={c.key}>
+              <span className="col__name">{c.name}</span>
+              <Bar voteCounts={c.votes} nMembers={c.n} />
+            </div>
+          ))}
+          {cols.length > 1 ? (
+            <button type="button" className="srow__toggle" aria-expanded={open ? "true" : "false"} onClick={() => this.setState({ open: !open })}>
+              {open ? t("hideGroups") : t("showGroups") + " ▾"}
+            </button>
+          ) : null}
+        </div>
       </div>
-      <div className="srow__cols">
-        {cols.map((c) => (
-          <div className="col" key={c.key}>
-            <span className="col__name">{c.name}</span>
-            <Bar voteCounts={c.votes} nMembers={c.n} />
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-};
+    );
+  }
+}
 
 export const Legend = () => (
   <div className="legend" aria-hidden="true">
