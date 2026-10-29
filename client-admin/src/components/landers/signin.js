@@ -230,14 +230,16 @@ class SignIn extends React.Component {
 
         return (
             <StaticLayout>
+              <Box sx={{ maxWidth: '28em', mx: 'auto' }}>
                 <Heading as="h1" sx={{ my: [4, null, 5], fontSize: [5, null, 6] }}>
                     Sign in
                 </Heading>
-                <Card sx={{ maxWidth: '28em' }}>
+                <Card>
                     {this.props.facebookError !== 'polis_err_user_with_this_email_exists'
                         ? this.drawLoginForm()
                         : this.drawPasswordConnectFacebookForm()}
                 </Card>
+              </Box>
             </StaticLayout>
         )
     }

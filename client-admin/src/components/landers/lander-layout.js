@@ -5,7 +5,7 @@ import Footer from './lander-footer'
 import { Box } from 'theme-ui'
 
 const Layout = ({ children }) => {
-  const globalWidth = '45em'
+  const globalWidth = '48em'
   return (
     <Box
       sx={{

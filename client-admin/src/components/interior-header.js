@@ -17,22 +17,28 @@ class InteriorHeader extends React.Component {
                         backgroundColor: 'primary',
                         color: 'background',
                         zIndex: 1000,
-                        py: [3],
-                        px: [3, 4],
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'space-between'
+                        py: [3]
                     }}>
-                    <ThemeUILink sx={{ variant: 'links.header' }} href={pLogoURL}>
-                        <Logomark
-                            style={{ marginRight: 10, position: 'relative', top: 6 }}
-                            fill={'white'}
-                        />
-                        {pTitle}
-                    </ThemeUILink>
-                    <Link id="signoutLink" sx={{ variant: 'links.header' }} to="/signout">
-                        sign out
-                    </Link>
+                    <Box
+                        sx={{
+                            maxWidth: '72em',
+                            mx: 'auto',
+                            px: [3, 4],
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'space-between'
+                        }}>
+                        <ThemeUILink sx={{ variant: 'links.header' }} href={pLogoURL}>
+                            <Logomark
+                                style={{ marginRight: 10, position: 'relative', top: 6 }}
+                                fill={'white'}
+                            />
+                            {pTitle}
+                        </ThemeUILink>
+                        <Link id="signoutLink" sx={{ variant: 'links.header' }} to="/signout">
+                            sign out
+                        </Link>
+                    </Box>
                 </Box>
                 <Box>{this.props.children}</Box>
             </Box>

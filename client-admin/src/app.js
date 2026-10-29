@@ -177,7 +177,7 @@ class App extends React.Component {
                   return null
                 }
                 return (
-                  <Flex sx={{ flexDirection: ['column', 'row'] }}>
+                  <Flex sx={{ flexDirection: ['column', 'row'], maxWidth: '72em', mx: 'auto', width: '100%' }}>
                     <Flex
                       sx={{
                         flexDirection: ['row', 'column'],
@@ -215,7 +215,8 @@ class App extends React.Component {
                         p: [3, 4],
                         flex: '1 1 auto',
                         width: '100%',
-                        maxWidth: '40em',
+                        minWidth: 0,
+                        maxWidth: ['100%', '48em'],
                         mx: [0, 4]
                       }}>
                       <PrivateRoute
