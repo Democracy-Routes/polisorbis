@@ -192,7 +192,7 @@ class DraftStatementsAi extends React.Component {
     const busy = loading || adding
     return (
       <Box sx={{ mb: [4] }}>
-        <Text sx={{ mb: [2] }}>
+        <Text sx={{ mb: [2], fontSize: [1], color: 'muted' }}>
           Describe the statements you want, for example &ldquo;20 statements about AI and the
           environment, from different points of view&rdquo;. You review the list before anything is
           added.
@@ -210,7 +210,7 @@ class DraftStatementsAi extends React.Component {
             onChange={(e) => this.setState({ request: e.target.value })}
           />
         </Box>
-        <Flex sx={{ alignItems: 'center', flexWrap: 'wrap', mb: [2] }}>
+        <Flex sx={{ alignItems: 'center', flexWrap: 'wrap', gap: 2, mb: [2] }}>
           <Text sx={{ mr: [2] }}>Number</Text>
           <input
             type="number"

@@ -5,7 +5,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { doSignin, doFacebookSignin } from '../../actions'
 import { Link, Redirect } from 'react-router-dom'
-import { Heading, Box, Text, Button, jsx } from 'theme-ui'
+import { Heading, Box, Text, Button, jsx, Card } from 'theme-ui'
 import StaticLayout from './lander-layout'
 import crypto from 'crypto'
 
@@ -88,6 +88,7 @@ class SignIn extends React.Component {
                 {!(openidEnabled || votingCertificateEnabled || digitalWalletEnabled) && (
                     <form>
                         <Box sx={{ my: [2] }}>
+                            <label htmlFor="signinEmailInput" sx={{ display: 'block', fontSize: [1], mb: 1 }}>Email</label>
                             <input
                                 sx={{
                                     fontFamily: 'body',
@@ -101,11 +102,12 @@ class SignIn extends React.Component {
                                 }}
                                 id="signinEmailInput"
                                 ref={(c) => (this.email = c)}
-                                placeholder="nickname"
+                                placeholder="you@example.org"
                                 type="text"
                             />
                         </Box>
                         <Box sx={{ my: [2] }}>
+                            <label htmlFor="signinPasswordInput" sx={{ display: 'block', fontSize: [1], mb: 1 }}>Password</label>
                             <input
                                 sx={{
                                     fontFamily: 'body',
@@ -125,7 +127,7 @@ class SignIn extends React.Component {
                         </Box>
                         {this.maybeErrorMessage()}
                         <Button
-                            sx={{ my: [2] }}
+                            sx={{ my: [2], width: ['100%', 'auto'] }}
                             id="signinButton"
                             onClick={this.handleLoginClicked.bind(this)}>
                             {this.props.pending ? 'Signing in...' : 'Sign In'}
@@ -228,12 +230,14 @@ class SignIn extends React.Component {
 
         return (
             <StaticLayout>
-                <Heading as="h1" sx={{ my: [4, null, 5], fontSize: [6, null, 7] }}>
-                    Sign In
+                <Heading as="h1" sx={{ my: [4, null, 5], fontSize: [5, null, 6] }}>
+                    Sign in
                 </Heading>
-                {this.props.facebookError !== 'polis_err_user_with_this_email_exists'
-                    ? this.drawLoginForm()
-                    : this.drawPasswordConnectFacebookForm()}{' '}
+                <Card sx={{ maxWidth: '28em' }}>
+                    {this.props.facebookError !== 'polis_err_user_with_this_email_exists'
+                        ? this.drawLoginForm()
+                        : this.drawPasswordConnectFacebookForm()}
+                </Card>
             </StaticLayout>
         )
     }

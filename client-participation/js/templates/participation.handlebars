@@ -64,7 +64,7 @@ should have received a copy of the GNU Affero General Public License along with 
 
             {{#if show_admin_button}}
             <div style="padding: 10px 0px 20px 0px">
-                {{!-- <a href="share{{url_name}}" class="Btn Btn-alt" style="margin-inline-end: 20px">
+                {{!-- <a href="share{{url_name}}" class="Btn Btn-alt adminLink" style="margin-inline-end: 20px">
                     <i class="fa fa-link">
                     </i>
                     &nbsp;SHARE
@@ -139,18 +139,7 @@ should have received a copy of the GNU Affero General Public License along with 
                 " dir="auto">
                 {{topic}}
                 {{#unless is_active}}
-                <span class="no_you_vote" style="
-                    color: white;
-                    background-color: rgb(231, 76, 60);
-                    /* font-size: 0.7em; */
-                    /* padding: .2em; */
-                    font-size: 20px;
-                    padding: 0px 10px;
-                    border-radius: 3px;
-                    position: relative;
-                    top: -5px;
-                    left: 6px;
-                    ">closed</span>
+                <span class="no_you_vote">closed</span>
                 {{/unless}}
             </h2>
             {{/ifDefined}}
@@ -158,24 +147,14 @@ should have received a copy of the GNU Affero General Public License along with 
 
             {{#unless no_description}}
             {{#ifDefined description}}
-            <p style="
-                    border-inline-start: 4px solid #1d4ed8;
-                    padding-inline-start: 10px;
-                    font-family: inherit;
-                    word-wrap:break-word;
-                " dir="auto">
+            <p class="conversationDescription" dir="auto">
                 {{{description}}}
             </p>
             {{/ifDefined}}
             {{/unless}}
 
             {{#if link_url}}
-            <p style="
-                    border-inline-start: 4px solid #1d4ed8;
-                    padding-inline-start: 10px;
-                    font-family: inherit;
-                    word-wrap:break-word;
-                " dir="auto">
+            <p class="conversationDescription" dir="auto">
                 {{linkExternal link_url link_url}}
             </p>
             {{/if}}
@@ -193,7 +172,6 @@ should have received a copy of the GNU Affero General Public License along with 
             {{!-- color: {{help_color}}; --}}
             color: black;
             padding: 5px 0px 5px 0px;
-            font-style: italic;
             font-family: inherit;
         " class="
         clickDoesNotDeselectHull
@@ -312,7 +290,6 @@ should have received a copy of the GNU Affero General Public License along with 
         position: relative; --}}
 
         padding: 5px 0px 5px 0px;
-        font-style: italic;
         font-family: inherit;
 
       " class="
@@ -385,11 +362,7 @@ should have received a copy of the GNU Affero General Public License along with 
     </span> {{!-- end no_vis toggle wrapper --}}
 
     {{! ------------ RATE ORBIS --------------- }}
-    <div style="margin-top: 40px; margin-bottom: 20px;">
-        <a href={{s.logoURL}} target="_blank">
-            {{s.rateOrbis}}
-        </a>
-    </div>
+
 
     {{! ------------ BEGIN FOOTER --------------- }}
     {{#unless no_footer}}

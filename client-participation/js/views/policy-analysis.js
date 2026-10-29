@@ -7,6 +7,8 @@ var URLs = require("../util/url");
 var Utils = require("../util/utils");
 var Strings = require("../strings");
 var $ = require("jquery");
+// Orbis's own satisfaction survey, off unless the build sets P_ORBIS_RATING.
+var ORBIS_RATING = process.env.P_ORBIS_RATING === true || process.env.P_ORBIS_RATING === "true";
 
 var iOS = Utils.isIos();
 
@@ -183,7 +185,7 @@ module.exports = Handlebones.ModelView.extend({
         </ol>
     </div>
     <div>${htmlText}</div>
-    <h2 style="margin-top: 4rem;">Rate your Orbis experience</h2>
+    ${ORBIS_RATING ? `<h2 style="margin-top: 4rem;">Rate your Orbis experience</h2>
     <form id="reviewForm">
         <table>
             <thead>
@@ -252,7 +254,7 @@ module.exports = Handlebones.ModelView.extend({
                 </tr>
             </tbody>
         </table>
-    </form>
+    </form>` : ""}
     <button id="submitBtn" class="submit-button" type="button" onclick="handleSubmit(event)">Submit Review</button>
     <button id="downloadBtn" class="download-button" type="button" onclick="downloadReviews(event)">Download Reviews</button>
     <script>

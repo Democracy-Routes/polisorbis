@@ -21,14 +21,14 @@ class Conversation extends React.Component {
                 onClick={this.props.goToConversation}
                 sx={{ cursor: 'pointer', 'overflow-wrap': 'break-word', mb: [3] }}
                 key={this.props.i}>
-                <Text sx={{ fontWeight: 700, mb: [2] }}>{this.props.c.topic}</Text>
+                <Text sx={{ fontWeight: 'bold', fontSize: [3], mb: [2] }}>{this.props.c.topic}</Text>
                 <Text>{this.props.c.description}</Text>
                 <Text data-test-id="embed-page">
                     {this.props.c.parent_url ? `Embedded on ${this.props.c.parent_url}` : null}
                 </Text>
                 <Text sx={{ mt: [2] }}>{this.props.c.participant_count} participants</Text>
                 <div style={{display: "flex", justifyContent: "end"}}>
-                    <Button sx={{ mt: "8px", backgroundColor: "#e74c3c" }} onClick={(e) => {
+                    <Button variant="secondary" sx={{ mt: "8px" }} onClick={(e) => {
                             e.stopPropagation()
                             this.onButtonClicked(true)
                         }}>
@@ -37,7 +37,7 @@ class Conversation extends React.Component {
                 </div>
                 {this.state.openDelete && (
                     <>
-                        <div style={{zIndex: "10", position: "fixed", top: "0", left: "0", width: "100%", height: "100%", backgroundColor: "black", opacity: "50%"}}
+                        <div style={{zIndex: 10, position: "fixed", top: 0, left: 0, width: "100%", height: "100%", backgroundColor: "rgba(15,23,42,0.5)"}}
                         onClick={(e) => {
                                 e.stopPropagation()
                                 this.onButtonClicked(false)
@@ -47,16 +47,16 @@ class Conversation extends React.Component {
                                     e.stopPropagation()
                                     this.onButtonClicked(false)
                                 }}>
-                            <div style={{display: "flex", flexDirection: "column", margin: "auto", maxWidth: "50%", backgroundColor: "white", borderRadius: "4px", padding: "8px 16px"}}>
+                            <div style={{display: "flex", flexDirection: "column", margin: "auto", width: "90%", maxWidth: "28em", backgroundColor: "#ffffff", borderRadius: 8, padding: "16px 20px", boxShadow: "0 1px 3px rgba(15,23,42,0.08), 0 4px 16px rgba(15,23,42,0.06)"}}>
                                 <Text sx={{ mb: "8px" }}>Are you sure you want to delete <b>{this.props.c.topic}</b>?</Text>
                                 <div style={{display: "flex", marginTop: "auto", alignContent: "end", justifyContent: "end", gap: "8px"}}>
-                                    <Button onClick={(e) => {
+                                    <Button variant="secondary" onClick={(e) => {
                                             e.stopPropagation()
                                             this.onButtonClicked(false)
                                         }}>
                                         Back
                                     </Button>
-                                    <Button sx={{ backgroundColor: "#e74c3c" }} onClick={(e) => {
+                                    <Button variant="danger" onClick={(e) => {
                                             e.stopPropagation()
                                             this.props.deleteConversation(this.props.c.conversation_id)
                                         }}>

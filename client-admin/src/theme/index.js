@@ -197,6 +197,7 @@ export default {
   styles: {
     root: {
       fontFamily: 'body',
+      fontSize: [17, 16],
       lineHeight: 'body',
       fontWeight: 'body',
       color: 'text',

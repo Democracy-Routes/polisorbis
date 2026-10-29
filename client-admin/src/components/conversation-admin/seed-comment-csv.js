@@ -74,7 +74,7 @@ class SeedCommentsCsv extends React.Component {
     const { csv, fileName, loading, error } = this.state
     return (
       <Box sx={{ mb: [4] }}>
-        <Text sx={{ mb: [2] }}>
+        <Text sx={{ mb: [2], fontSize: [1], color: 'muted' }}>
           Or upload a CSV of seed comments: the statements.csv exported by
           Citizens, or a file whose first row is comment_text. Duplicates and
           empty rows are skipped.

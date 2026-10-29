@@ -72,13 +72,18 @@ class ConversationAdminContainer extends React.Component {
                 <Flex
                     sx={{
                         flexDirection: ['row', 'column'],
-                        flexWrap: 'wrap',
+                        flexWrap: ['nowrap', 'wrap'],
+                        overflowX: ['auto', 'visible'],
+                        WebkitOverflowScrolling: 'touch',
+                        scrollbarWidth: 'none',
+                        '&::-webkit-scrollbar': { display: 'none' },
+                        whiteSpace: ['nowrap', 'normal'],
                         mr: [0, 5],
                         px: [3, 4],
                         pt: [3, 4],
                         pb: [0, 4],
-                        flex: ['0 0 auto', '0 0 220px'],
-                        '& > div': { mr: [4, 0] }
+                        flex: ['0 0 auto', '0 0 180px'],
+                        '& > div': { flexShrink: 0, mr: [4, 0] }
                     }}>
                     <Box sx={{ mb: [3] }}>
                         <Link sx={{ variant: 'links.nav' }} to={`/`}>
@@ -151,16 +156,16 @@ class ConversationAdminContainer extends React.Component {
                                         e.stopPropagation()
                                         this.onButtonClicked(false)
                                     }}>
-                                    <div style={{display: "flex", flexDirection: "column", margin: "auto", maxWidth: "50%", backgroundColor: "white", borderRadius: "4px", padding: "8px 16px"}}>
+                                    <div style={{display: "flex", flexDirection: "column", margin: "auto", width: "90%", maxWidth: "28em", backgroundColor: "#ffffff", borderRadius: 8, padding: "16px 20px", boxShadow: "0 1px 3px rgba(15,23,42,0.08), 0 4px 16px rgba(15,23,42,0.06)"}}>
                                         <Text sx={{ mb: "8px" }}>Are you sure you want to delete <b>{this.props.match.params.topic}</b>?</Text>
                                         <div style={{ display: "flex", marginTop: "auto", alignContent: "end", justifyContent: "end", gap: "8px" }}>
-                                            <Button onClick={(e) => {
+                                            <Button variant="secondary" onClick={(e) => {
                                                 e.stopPropagation()
                                                 this.onButtonClicked(false)
                                             }}>
                                                 Back
                                             </Button>
-                                            <Button sx={{ backgroundColor: "#e74c3c" }} onClick={(e) => {
+                                            <Button variant="danger" onClick={(e) => {
                                                 e.stopPropagation()
                                                 this.deleteConversation()
                                             }}>

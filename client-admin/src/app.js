@@ -181,7 +181,13 @@ class App extends React.Component {
                     <Flex
                       sx={{
                         flexDirection: ['row', 'column'],
-                        flexWrap: 'wrap',
+                        flexWrap: ['nowrap', 'wrap'],
+                        overflowX: ['auto', 'visible'],
+                        WebkitOverflowScrolling: 'touch',
+                        scrollbarWidth: 'none',
+                        '&::-webkit-scrollbar': { display: 'none' },
+                        whiteSpace: ['nowrap', 'normal'],
+                        '& > div': { flexShrink: 0 },
                         mr: [0, 5],
                         px: [3, 4],
                         pt: [3, 4],

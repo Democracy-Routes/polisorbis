@@ -2,9 +2,7 @@
 
 {{!-- ================ PROTIPS ================ --}}
 
-<div
-  style="
-    {{#if no_write_hint}}visibility: hidden;{{/if}}
+<div class="helpText" style="{{#if no_write_hint}}visibility: hidden;{{/if}}
     {{!--
     width: 40%;
     {{#if desktop}}width: 60%;{{/if}}
@@ -13,8 +11,8 @@
 
     color: black;
     padding: 5px 0px 5px 0px;
-    font-style: italic;
-    font-family: chaparral-pro;
+    
+    
 
     "
     dir={{direction}}> {{! protips column }}
@@ -122,13 +120,12 @@
     ">
 
     {{!-- ================ SOCIAL PICTURE && TEXT AREA ================ --}}
-    <div style="display: table; width: 100%" dir={{direction}}>
+    <div class="writeRow" dir={{direction}}>
       {{#unless is_anon}}
-      <span style="display: table-cell">
-        {{view profilePicView}}
+      <span class="writeAvatar">{{view profilePicView}}
       </span>
       {{/unless}}
-      <span style="display: table-cell; width: 100%">
+      <span class="writeField">
         <textarea
           class="form-control"
           id="comment_form_textarea"

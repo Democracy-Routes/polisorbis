@@ -124,9 +124,9 @@ class ConversationConfig extends React.Component {
                 <Heading
                     as="h6"
                     sx={{
-                        fontSize: [1, null, 2],
+                        fontSize: [2, null, 3],
                         lineHeight: 'body',
-                        my: [3, null, 4]
+                        mt: [5], mb: [3]
                     }}>
                     Seed Comments
                 </Heading>
@@ -140,9 +140,9 @@ class ConversationConfig extends React.Component {
                 <Heading
                     as="h6"
                     sx={{
-                        fontSize: [1, null, 2],
+                        fontSize: [2, null, 3],
                         lineHeight: 'body',
-                        my: [3, null, 4]
+                        mt: [5], mb: [3]
                     }}>
                     Draft statements with AI
                 </Heading>
@@ -157,9 +157,9 @@ class ConversationConfig extends React.Component {
                 <Heading
                     as="h6"
                     sx={{
-                        fontSize: [1, null, 2],
+                        fontSize: [2, null, 3],
                         lineHeight: 'body',
-                        my: [3, null, 4]
+                        mt: [5], mb: [3]
                     }}>
                     Customize the user interface
                 </Heading>
@@ -232,9 +232,9 @@ class ConversationConfig extends React.Component {
                 <Heading
                     as="h6"
                     sx={{
-                        fontSize: [1, null, 2],
+                        fontSize: [2, null, 3],
                         lineHeight: 'body',
-                        my: [3, null, 4]
+                        mt: [5], mb: [3]
                     }}>
                     Identification requirements
                 </Heading>
@@ -307,9 +307,9 @@ class ConversationConfig extends React.Component {
                 <Heading
                     as="h6"
                     sx={{
-                        fontSize: [1, null, 2],
+                        fontSize: [2, null, 3],
                         lineHeight: 'body',
-                        my: [3, null, 4]
+                        mt: [5], mb: [3]
                     }}>
                     Schemes
                 </Heading>

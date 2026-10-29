@@ -11,21 +11,13 @@ const HexLogo = () => {
             userSelect: "none",
             display: "flex",
             alignItems: "center",
-            color: "#60656F",
-            "&:hover": {
-                color: "#60656F",
-                borderBottom: "solid",
-                borderWidth: 2,
-                borderColor: "#60656F"
-            },
+            color: "#0f172a",
             textDecoration: "none",
-            fontFamily: "'Space Mono', monospace",
+            fontFamily: "inherit",
+            fontSize: 16,
             lineHeight: 1.5,
-            fontWeight: 700,
+            fontWeight: 600,
             cursor: "pointer",
-            borderBottom: "solid",
-            borderWidth: 2,
-            borderColor: "#FFF",
             marginTop: "auto",
             marginBottom: "auto"
         }} width="20" viewBox="0 0 264 304">
